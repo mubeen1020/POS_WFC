@@ -1,4 +1,4 @@
-import React from 'react'
+import {React,useEffect} from 'react'
 
 import {
   CAvatar,
@@ -55,6 +55,12 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
 const Dashboard = () => {
+  useEffect(() => {
+    if(!localStorage.getItem('token')){
+      navigate("/")
+    }
+  
+   }, [])
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   const progressExample = [

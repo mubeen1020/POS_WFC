@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CButton,
   CCard,
@@ -12,41 +12,102 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilLockLocked, cilUser } from '@coreui/icons';
+import UsersService from 'src/services/user_services';
+import 'primereact/resources/primereact.min.css'; 
+import 'primereact/resources/themes/saga-blue/theme.css'; 
+import { Toast } from 'primereact/toast';
+
+
+
+
 
 const Login = () => {
+  const navigate = useNavigate();
+  const toast = useRef(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleemail = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlepassword = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const postData = (event) => {
+    event.preventDefault(); // Prevent form submission
+
+    let formData = {
+      email: email,
+      password: password,
+    };
+
+    const api = new UsersService();
+    api
+      .loginUser(formData)
+      .then((res) => {
+        const token = res.data.token;
+        if (token) {
+          toast.current.show({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'You have successfully logged in',
+            life: 3000,
+          });
+          localStorage.setItem('token', token);
+          setTimeout(()=>{
+            navigate('/home'); 
+          },[2000])
+        
+        }
+      })
+      .catch((error) => {
+        toast.current.show({
+          severity: 'info',
+          summary: 'Error',
+          detail: `${error}`,
+          life: 3000,
+        });
+        console.log('error: ', error);
+      });
+  };
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+      <Toast ref={toast} />
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={(event) => postData(event)}>
                     <h1>Login</h1>
                     <p className="text-medium-emphasis">Sign In to your account</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput onChange={handleemail} placeholder="email" autoComplete="email" required/>
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
+                        onChange={handlepassword}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        required
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton type='submit' color="primary" className="px-4">
                           Login
                         </CButton>
                       </CCol>
