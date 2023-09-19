@@ -1,0 +1,163 @@
+import { React, useEffect, useState, useRef } from "react";
+import {
+    CButton,
+    CCard,
+    CCardBody,
+    CCol,
+} from '@coreui/react'
+import {
+    BrowserRouter as Router,
+    Link,
+    useNavigate
+
+} from "react-router-dom";
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog } from 'primereact/confirmdialog';
+import '../../scss/style.scss';
+import { cilPlus, cilTrash } from "@coreui/icons";
+import CIcon from "@coreui/icons-react";
+import { Toast } from 'primereact/toast';
+import { globalEventAtom } from "src/_state/globalEventAtom";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { fishpackAtom } from "src/_state/fishpackAtom";
+import FishpackService from "src/services/fishpack_services";
+import FishService from "src/services/fish_services";
+
+function FishPack_List() {
+    const navigate = useNavigate();
+    const toast = useRef(null);
+    const [globalFilterValue, setGlobalFilterValue] = useState('');
+    const [selectedRows, setSelectedRows] = useState([]);
+    const setGlobatEvent = useSetRecoilState(globalEventAtom);
+    const fishpack = useRecoilValue(fishpackAtom)
+
+    const renderHeader = () => {
+        return (
+            <div className="flex justify-content-between">
+                <span className="mb-3">
+                    <h4><strong>Fish Pack</strong><span className="" style={{ float: "right" }}>
+                        <>
+                            <Link to="/Fish/FishPackList/FishPack">
+                                <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
+                                    <CIcon icon={cilPlus} className="mr-1" />  Add
+                                </CButton>
+                            </Link>
+                            <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
+                                <CIcon icon={cilTrash} className="mr-2" />Delete
+                            </CButton>
+
+                        </>
+                    </span></h4>
+                </span>
+                <span className="p-input-icon-left">
+                    <i className="pi pi-search" />
+                    <InputText onChange={onGlobalFilterChange} value={globalFilterValue} placeholder="Keyword Search" />
+                </span>
+
+            </div>
+        )
+    }
+
+    const onGlobalFilterChange = (e) => {
+        const value = e.target.value;
+        setGlobalFilterValue(value);
+        get_data(value);
+    }
+
+    const handleClick = (event) => {
+        const clickedRowData = event.data;
+        const clickedRowId = clickedRowData.id;
+        navigate(`/Fish/FishPackList/FishPack/fishPackupdate/${clickedRowId}/`);
+    }
+
+
+    let delete_record = () => {
+        let _data = selectedRows.map(i => i.id);
+        let api = new FishpackService();
+        _data.forEach((id) => {
+
+            api.deletefishpack(id)
+                .then((res) => {
+                    get_data();
+                    toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
+                })
+                .catch((err) => { })
+        });
+    };
+
+    const handleDelete = () => {
+        if (selectedRows.length > 0) {
+            confirmDialog({
+                message: 'Are you sure you want to proceed?',
+                header: 'Confirmation',
+                icon: 'pi pi-exclamation-triangle',
+                accept: delete_record,
+            });
+        } else {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select the row that says to Delete' });
+        }
+    };
+
+    const header = renderHeader();
+
+
+    const get_data = (search) => {
+        setGlobatEvent({ eventName: 'refreshfishpack', search })
+    }
+
+
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr.packing_date);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    useEffect(() => { get_data(); }, [])
+
+    return (
+        <>
+            <CCol xs={12} className="mb-4">
+                <ConfirmDialog />
+                <Toast ref={toast} />
+                <CCard className="mb-4">
+                    <CCardBody>
+                        <DataTable
+                            className="responsive-table"
+                            selectionMode={'checkbox'}
+                            selection={selectedRows}
+                            onSelectionChange={(e) => { setSelectedRows(e.value); }}
+                            onRowDoubleClick={(e) => { handleClick(e) }}
+                            value={fishpack}
+                            header={header}
+                            showGridlines
+                            responsiveLayout="scroll"
+                            size="small" paginator
+                            rowHover
+                            rows={10}
+                            rowsPerPageOptions={[10, 20, 50]}>
+                            <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="packing_date" header="Packing Date " body={formatDate}></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_payment" header="Whole Fish Payment" sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_total_weight" header="Whole Fish Total Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_packs" header="Fish Packs" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_pack_weight" header="Whole Fish Pack Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_purchase_rate" header="Whole Fish Purchase Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_sale_rate" header="Whole Fish Sale Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_sale_rate" header="Net Meat Sale Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_weight_per_kg" header="Net Meat Weight Per Kg" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_total_weight" header="Bones Total Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_packs" header="Bones Packs" ></Column>
+                        </DataTable>
+                    </CCardBody>
+                </CCard>
+            </CCol>
+        </>
+    )
+}
+export default FishPack_List;

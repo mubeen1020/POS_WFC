@@ -1,6 +1,5 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
   CHeader,
@@ -17,17 +16,21 @@ import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 import { logo } from 'src/assets/brand/logo'
+import { sidebarAtom } from 'src/_state/sidebarAtom'
+import { useRecoilState } from 'recoil'
 
 const AppHeader = () => {
-  const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const [state, setSideBarState] = useRecoilState(sidebarAtom);
+  const toggleSidebar = () => {
+    setSideBarState(!state);
+  };
 
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
         <CHeaderToggler
           className="ps-1"
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+          onClick={() => { toggleSidebar() }}
         >
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>

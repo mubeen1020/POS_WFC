@@ -1,5 +1,12 @@
 import React from 'react'
 import Login from './views/pages/login/Login'
+import Customer from './views/customer/customer'
+import CustomerList from './views/customer/customerlist'
+import Fish from './views/fish/fish'
+import Customer_List from './views/customer/customerlist'
+import Fish_List from './views/fish/fishlist'
+import FishPack_List from './views/fishpack/fishpacklist'
+import FishPack from './views/fishpack/fishpack'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -54,8 +61,27 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/home', exact: true, name: 'Home' },
   { path: '/', name: 'Login Page', element: Login },
+  
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  
+  { path: '/Customer', name: 'Customer', element: CustomerList, exact: true },
+  { path: '/Customer/customerList/customer', name: 'Add Customer', element: Customer },
+  { path: '/Customer/customerList', name: 'Customer List', element: Customer_List },
+  { path: '/Customer/customerList/customerupdate/:id', name: 'update Customer', element: Customer },
+
+  { path: '/Fish', name: 'Fish', element: FileList, exact: true },
+  { path: '/Fish/FishList/Fish', name: 'Add Fish', element: Fish },
+  { path: '/Fish/FishList', name: 'Fish List', element: Fish_List },
+  { path: '/Fish/FishList/Fish/fishupdate/:id', name: 'update Fish', element: Fish },
+
+  { path: '/Fish/FishPackList', name: 'Fish Pack List', element: FishPack_List },
+  { path: '/Fish/FishPackList/FishPack', name: 'Add Fish Pack', element: FishPack },
+  { path: '/Fish/FishPackList/FishPack/fishPackupdate/:id', name: 'update Fish', element: FishPack },
+
+
+
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
+  
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
   { path: '/base', name: 'Base', element: Cards, exact: true },

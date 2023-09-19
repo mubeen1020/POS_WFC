@@ -16,13 +16,10 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilLockLocked, cilUser } from '@coreui/icons';
 import UsersService from 'src/services/user_services';
-import 'primereact/resources/primereact.min.css'; 
-import 'primereact/resources/themes/saga-blue/theme.css'; 
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/saga-blue/theme.css';
 import { Toast } from 'primereact/toast';
-
-
-
-
+import '../../../scss/style.scss';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,11 +27,11 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleemail = (e) => {
+  const handleEmail = (e) => {
     setEmail(e.target.value);
   };
 
-  const handlepassword = (e) => {
+  const handlePassword = (e) => {
     setPassword(e.target.value);
   };
 
@@ -59,10 +56,9 @@ const Login = () => {
             life: 3000,
           });
           localStorage.setItem('token', token);
-          setTimeout(()=>{
-            navigate('/home'); 
-          },[2000])
-        
+          setTimeout(() => {
+            navigate('/home');
+          }, [2000]);
         }
       })
       .catch((error) => {
@@ -82,23 +78,61 @@ const Login = () => {
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
+              <CCard
+                className="text-white bg-primary py-5"
+                style={{ width: '100%' }}
+              >
+                <CCardBody className="text-center">
+                  <div>
+                    <img 
+                      src="https://smartpossoftware.com/assets/images/logo/smart-pos-software-logo.png"
+                      width="371px"
+                      alt="Logo"
+                    />
+                    <p>
+                      Streamline your business operations with our cutting-edge
+                      Point of Sale software. Boost efficiency, enhance customer
+                      experiences, and drive growth – all with a simple and
+                      intuitive solution
+                    </p>
+                    <Link to="/register">
+                      <CButton
+                        color="primary"
+                        className="mt-3  "
+                        active
+                        tabIndex={-1}
+                      >
+                        <p className='button-86'>Register Now!</p>
+                        
+                      </CButton>
+                    </Link>
+                  </div>
+                </CCardBody>
+              </CCard>
               <CCard className="p-4">
                 <CCardBody>
                   <CForm onSubmit={(event) => postData(event)}>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <h1 className='mt-5'>Login</h1>
+                    <p className="text-medium-emphasis mb-5">
+                      Sign In to your account
+                    </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput onChange={handleemail} placeholder="email" autoComplete="email" required/>
+                      <CFormInput
+                        onChange={handleEmail}
+                        placeholder="Email"
+                        autoComplete="email"
+                        required
+                      />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
+                    <CInputGroup className="mb-5">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                        onChange={handlepassword}
+                        onChange={handlePassword}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
@@ -107,7 +141,7 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton type='submit' color="primary" className="px-4">
+                        <CButton type="submit" color="primary" className="px-4 py-2">
                           Login
                         </CButton>
                       </CCol>
@@ -120,28 +154,12 @@ const Login = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
-                </CCardBody>
-              </CCard>
             </CCardGroup>
           </CCol>
         </CRow>
       </CContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
