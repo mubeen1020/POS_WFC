@@ -1,46 +1,105 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
 import { Toast } from 'primereact/toast';
-import CustomerService from "src/services/customer_services";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
-import FishService from "src/services/fish_services";
+import OrdersService from "src/services/order_services";
+import CustomerService from "src/services/customer_services";
+import OrderStatusService from "src/services/orderstatus_services";
+import PaymentmodeService from "src/services/paymentmode_services";
+import PaymentstatusService from "src/services/paymentstatus_services";
 
 
-export default function Fish() {
+export default function Orders() {
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
     const params = useParams()
     const [Customer, setCustomer] = useState('')
+    const [Customer_id, setCustomer_id] = useState('')
     const [Order_date, setOrder_date] = useState('')
     const [Delivery_deadline, setDelivery_deadline] = useState('')
     const [Order_status, setOrder_status] = useState('')
-    const [Delivery_charges, setDelivery_charges] = useState('')
-    const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState('')
+    const [Delivery_charges, setDelivery_charges] = useState(0)
+    const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState()
     const [Order_total, setOrder_total] = useState('')
     const [Payment_status, setPayment_status] = useState('')
+    const [Payment_mode, setPayment_mode] = useState('')
 
     const [Order_Data, setOrder_Data] = useState([])
+    const [filteredCustomers, setFilteredCustomers] = useState([])
+    const [CustomerData, setCustomerData] = useState([])
+    const [Orderstatusdata, setOrderstatusdata] = useState([])
+    const [Paymentmodedata, setPaymentmodedata] = useState([])
+    const [Paymentstatusdata, setPaymentstatusdata] = useState([])
+
+    const [customerNotFound, setCustomerNotFound] = useState(false)
 
 
-    const handlecustomer = (e) => { setCustomer(e.target.value) }
-    const handleorderdate = (e) => { setOrder_date(e.target.value) }
-    const handledeliverydeadline = (e) => { setDelivery_deadline(e.target.value) }
+    const handlecustomer = (e) => {
+        const value = e.target.value;
+        setCustomer(value)
+        const selectedCustomer = CustomerData.find((customer) =>
+            customer.name.toLowerCase() === value.toLowerCase()
+        );
+        if (selectedCustomer) {
+
+            setCustomer_id(selectedCustomer.id);
+            setCustomerNotFound(false);
+            setDelivery_charges(selectedCustomer.delivery_charges);
+
+        } else {
+            setCustomer_id(null);
+            setCustomerNotFound(true);
+            setDelivery_charges(0);
+        }
+        const filtered = CustomerData.filter((customer) =>
+            customer.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredCustomers(filtered);
+        if (params.id) {
+            if (filteredCustomers && filteredCustomers.length > 0) {
+                setDelivery_charges(filteredCustomers[0].delivery_charges);
+            }
+        }
+    }
     const handleorderstatus = (e) => { setOrder_status(e.target.value) }
-    const handledeliverycharges = (e) => { setDelivery_charges(e.target.value) }
-    const handlenurgentdeliverycharges = (e) => { setUrgent_delivery_charges(e.target.value) }
+    const handledeliverycharges = (e) => { setDelivery_charges(e.target.value); }
+    const handlenurgentdeliverycharges = (e) => {
+        const urgentDeliveryCharge = Number(e.target.value);
+        const newDeliveryCharge = Number(Delivery_charges) + urgentDeliveryCharge;
+        setUrgent_delivery_charges(urgentDeliveryCharge);
+        // setDelivery_charges(newDeliveryCharge);
+    };
+
+
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
     const handlepaymentstatus = (e) => { setPayment_status(e.target.value) }
+    const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
-    let get_fish_data = () => {
-        let api = new FishService;
-        api.getfishbyId(params.id).then((res) => {
-            setOrder_Data(res.data.fish[0]);
-
+    let get_order_data = () => {
+        let api = new OrdersService;
+        api.getordersbyId(params.id).then((res) => {
+            setOrder_Data(res.data.order);
+            setDelivery_charges(res.data.order.delivery_charges)
+            setOrder_date(res.data.order.order_date)
+            const orderDate = res.data.order.order_date;
+            const deliverydeadlineDate = res.data.order.delivery_deadline
+            if (orderDate) {
+                const parsedDate = new Date(orderDate);
+                parsedDate.setHours(parsedDate.getHours() + 5);
+                const formattedDate = parsedDate.toISOString().split('T')[0];
+                setOrder_date(formattedDate);
+            }
+            if (deliverydeadlineDate) {
+                const parsedDate = new Date(deliverydeadlineDate);
+                parsedDate.setHours(parsedDate.getHours() + 5);
+                const formattedDate = parsedDate.toISOString().split('T')[0];
+                setDelivery_deadline(formattedDate);
+            }
         }).catch((err) => { });
     }
 
@@ -48,19 +107,20 @@ export default function Fish() {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            customer: Customer,
+            customer: Customer_id,
             order_date: Order_date,
             delivery_deadline: Delivery_deadline,
             order_status: Order_status,
-            delivery_charges: Delivery_charges,
+            delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges),
             urgent_delivery_charges: Urgent_delivery_charges,
             order_total: Order_total,
-            payment_status: Payment_status
+            payment_status: Payment_status,
+            payment_mode: Payment_mode
         };
 
-        const api = new FishService();
+        const api = new OrdersService();
         api
-            .createfish(formData)
+            .createorders(formData)
             .then((res) => {
 
                 toast.current.show({
@@ -70,7 +130,7 @@ export default function Fish() {
                     life: 3000,
                 });
                 setTimeout(() => {
-                    navigate('/Fish/FishList');
+                    navigate('/Order/OrderList');
                 }, [3000])
 
             })
@@ -89,19 +149,20 @@ export default function Fish() {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            customer: Customer || Order_Data.customer,
+            customer: Customer_id || Order_Data.customer,
             order_date: Order_date || Order_Data.order_date,
             delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
             order_status: Order_status || Order_Data.order_status,
-            delivery_charges: Delivery_charges || Order_Data.delivery_charges,
+            delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
-            payment_status: Payment_status || Order_Data.payment_status
+            payment_status: Payment_status || Order_Data.payment_status,
+            payment_mode: Payment_mode || Order_Data.payment_mode
         };
 
-        const api = new FishService();
+        const api = new OrdersService();
         api
-            .updatefish(params.id, formData)
+            .updateorders(params.id, formData)
             .then((res) => {
 
                 toast.current.show({
@@ -111,7 +172,7 @@ export default function Fish() {
                     life: 3000,
                 });
                 setTimeout(() => {
-                    navigate('/Fish/FishList');
+                    navigate('/Order/OrderList');
                 }, [3000])
 
             })
@@ -137,10 +198,56 @@ export default function Fish() {
     }
 
 
+    const Customer_Data_Get = (search = "") => {
+        let api = new CustomerService;
+        api.getCustomer(search).then((res) => { setCustomerData(res.data.customers); })
+            .catch((err) => { });
+    }
+
+    const orderstatus_Data_Get = (search = "") => {
+        let api = new OrderStatusService;
+        api.getorderStatus(search).then((res) => { setOrderstatusdata(res.data.orderStatuses); })
+            .catch((err) => { });
+    }
+
+    const paymentmode_Data_Get = (search = "") => {
+        let api = new PaymentmodeService;
+        api.getpaymentmode(search).then((res) => { setPaymentmodedata(res.data.paymentmodes); })
+            .catch((err) => { });
+    }
+
+    const paymentstatus_Data_Get = (search = "") => {
+        let api = new PaymentstatusService;
+        api.getpaymentStatus(search).then((res) => { setPaymentstatusdata(res.data.paymentStatuses); })
+            .catch((err) => { });
+    }
+
+    const filter_name = CustomerData.filter((customer) => {
+        return customer.id === Order_Data.customer;
+
+    });
+
 
     useEffect(() => {
-        params.id ? get_fish_data() : ''
+        Customer_Data_Get();
+        orderstatus_Data_Get();
+        paymentmode_Data_Get();
+        paymentstatus_Data_Get();
+        const currentDate = new Date().toISOString().split('T')[0];
+        params.id ? get_order_data() : setOrder_date(currentDate)
+
     }, [])
+
+
+    useEffect(() => {
+        if (Order_date) {
+            const orderDate = new Date(Order_date);
+            orderDate.setDate(orderDate.getDate() + 2);
+            const deliveryDeadline = orderDate.toISOString().split('T')[0];
+            setDelivery_deadline(deliveryDeadline);
+        }
+    }, [Order_date]);
+
 
     return (
         <>
@@ -150,7 +257,7 @@ export default function Fish() {
                 <CCol xs={12}>
                     <CCard className="mb-4">
                         <CCardHeader>
-                            <h4><Link to="/Fish/FishList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Fish</strong></h4>
+                            <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong></h4>
                         </CCardHeader>
                         <CCardBody>
                             <CForm
@@ -164,18 +271,31 @@ export default function Fish() {
 
                                 <div>
                                     <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
-                                        <CSelect
-                                            name="customer"
+                                        <CFormLabel htmlFor="validationCustomUsername">Care of Customer</CFormLabel>
+                                        <CFormInput
                                             onChange={handlecustomer}
-                                            value={orderData.customer}
+                                            defaultValue={
+                                                params.id && filter_name.length > 0 ? filter_name[0].name : Customer
+                                            }
+                                            list="customerSuggestions"
+                                            type="text"
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
-                                        >
-                                            <option value="">Select Customer</option>
-                                        </CSelect>
-                                        <CFormFeedback invalid>Please choose a customer.</CFormFeedback>
+                                            className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
+                                            style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                        />
+                                        {customerNotFound && (
+                                            <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>
+                                        )}
                                     </CCol>
                                 </div>
+
+                                <datalist id="customerSuggestions" >
+                                    {filteredCustomers.map((customer) => (
+                                        <option key={customer.id} value={customer.name} />
+                                    ))}
+                                </datalist>
 
                                 <div>
                                     <CCol>
@@ -183,8 +303,10 @@ export default function Fish() {
                                         <CFormInput
                                             name="order_date"
                                             type="date"
-                                            onChange={handleorderdate}
-                                            defaultValue={params.id ? Fish_Data.local_name : Local_name}
+                                            value={Order_date}
+                                            onChange={(e) => setOrder_date(e.target.value)}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
                                         />
                                         <CFormFeedback invalid>Please choose an Order Date.</CFormFeedback>
@@ -197,8 +319,10 @@ export default function Fish() {
                                         <CFormInput
                                             name="delivery_deadline"
                                             type="date"
-                                            onChange={handledeliverydeadline}
-                                            value={orderData.delivery_deadline}
+                                            value={Delivery_deadline}
+                                            onChange={(e) => setDelivery_deadline(e.target.value)}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
                                         />
                                         <CFormFeedback invalid>Please choose a Delivery Deadline.</CFormFeedback>
@@ -208,20 +332,24 @@ export default function Fish() {
                                 <div>
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Order Status</CFormLabel>
-                                        <CSelect
+                                        <CFormSelect
                                             name="order_status"
                                             onChange={handleorderstatus}
-                                            value={orderData.order_status}
+                                            value={params.id ? Order_Data.order_status : Order_status}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
                                         >
-                                            <option value="new">New</option>
-                                            <option value="quotation">Quotation</option>
-                                            <option value="pending">Pending</option>
-                                            <option value="confirm">Confirm</option>
-                                            <option value="delivered">Delivered</option>
-                                            <option value="cancelled">Cancelled</option>
-                                            <option value="returned">Returned</option>
-                                        </CSelect>
+                                            <option>Select</option>
+                                            {
+                                                Orderstatusdata.map((i) => {
+                                                    return (
+                                                        <option key={i.id} value={i.id}>{i.order_status}</option>
+                                                    )
+                                                })
+                                            }
+
+                                        </CFormSelect>
                                         <CFormFeedback invalid>Please choose an Order Status.</CFormFeedback>
                                     </CCol>
                                 </div>
@@ -233,12 +361,15 @@ export default function Fish() {
                                             name="delivery_charges"
                                             type="number"
                                             onChange={handledeliverycharges}
-                                            value={orderData.delivery_charges}
+                                            value={Delivery_charges}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
                                         />
                                         <CFormFeedback invalid>Please enter Delivery Charges.</CFormFeedback>
                                     </CCol>
                                 </div>
+
 
                                 <div>
                                     <CCol>
@@ -247,23 +378,51 @@ export default function Fish() {
                                             name="urgent_delivery_charges"
                                             type="number"
                                             onChange={handlenurgentdeliverycharges}
-                                            value={orderData.urgent_delivery_charges}
+                                            defaultValue={params.id ? Order_Data.urgent_delivery_charges : Urgent_delivery_charges}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
                                         />
+                                        <CFormFeedback invalid>Please enter Urgent Delivery Charges.</CFormFeedback>
+                                    </CCol>
+                                </div>
+
+                                <div>
+                                    <CCol>
+                                        <CFormLabel htmlFor="validationCustomUsername">Order Total</CFormLabel>
+                                        <CFormInput
+                                            name="order_total"
+                                            type="number"
+                                            onChange={handleordertotal}
+                                            defaultValue={params.id ? Order_Data.order_total : Order_total}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                        />
+                                        <CFormFeedback invalid>Please enter Order Total.</CFormFeedback>
                                     </CCol>
                                 </div>
 
                                 <div>
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Payment Status</CFormLabel>
-                                        <CSelect
+                                        <CFormSelect
                                             name="payment_status"
                                             onChange={handlepaymentstatus}
-                                            value={orderData.payment_status}
+                                            value={params.id ? Order_Data.payment_status : Payment_status}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
                                             required
                                         >
-                                            <option value="unpaid">Unpaid</option>
-                                            <option value="paid">Paid</option>
-                                        </CSelect>
+                                            <option>Select</option>
+                                            {
+                                                Paymentstatusdata.map((i) => {
+                                                    return (
+                                                        <option key={i.id} value={i.id}>{i.payment_status}</option>
+                                                    )
+                                                })
+                                            }
+                                        </CFormSelect>
                                         <CFormFeedback invalid>Please choose a Payment Status.</CFormFeedback>
                                     </CCol>
                                 </div>
@@ -271,17 +430,24 @@ export default function Fish() {
                                 <div>
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Payment Mode</CFormLabel>
-                                        <CSelect
+                                        <CFormSelect
                                             name="payment_mode"
-                                            onChange={handlepa}
-                                            value={orderData.payment_mode}
+                                            onChange={handlepaymentmode}
+                                            value={params.id ? Order_Data.payment_mode : Payment_mode}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
                                         >
-                                            <option value="">Select Payment Mode</option>
-                                            <option value="cash">Cash</option>
-                                            <option value="easypaisa">Easypaisa</option>
-                                            <option value="jazzcash">Jazzcash</option>
-                                            <option value="meezan">Meezan</option>
-                                        </CSelect>
+                                            <option>Select</option>
+                                            {
+                                                Paymentmodedata.map((i) => {
+                                                    return (
+                                                        <option key={i.id} value={i.id}>{i.payment_mode}</option>
+                                                    )
+                                                })
+                                            }
+                                        </CFormSelect>
+                                        <CFormFeedback invalid>Please enter Payment Mode.</CFormFeedback>
                                     </CCol>
                                 </div>
 

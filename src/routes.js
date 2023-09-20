@@ -7,6 +7,8 @@ import Customer_List from './views/customer/customerlist'
 import Fish_List from './views/fish/fishlist'
 import FishPack_List from './views/fishpack/fishpacklist'
 import FishPack from './views/fishpack/fishpack'
+import Orders from './views/order/order'
+import Order_List from './views/order/orderlist'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -77,6 +79,11 @@ const routes = [
   { path: '/Fish/FishPackList', name: 'Fish Pack List', element: FishPack_List },
   { path: '/Fish/FishPackList/FishPack', name: 'Add Fish Pack', element: FishPack },
   { path: '/Fish/FishPackList/FishPack/fishPackupdate/:id', name: 'update Fish', element: FishPack },
+
+  { path: '/order', name: 'Order', element: FileList, exact: true },
+  { path: '/Order/OrderList/Order', name: 'Add Order', element: Orders },
+  { path: '/Order/OrderList', name: 'Order List', element: Order_List },
+  { path: '/Order/OrderList/Order/Orderupdate/:id', name: 'update Order', element: Orders },
 
 
 

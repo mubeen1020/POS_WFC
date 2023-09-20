@@ -44,11 +44,10 @@ export default function FishPack() {
     const [Fish_Pack_Data, setFish_Pack_Data] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
     const [Fishname, setFishname] = useState([])
-    const [Fishcut,setFishcut] = useState([])
+    const [Fishcut, setFishcut] = useState([])
 
     const [FishNotFound, setFishNotFound] = useState(false)
 
-    const handlepackingdate = (e) => { setPacking_date(e.target.value) }
     const handlefish = (e) => {
         const fishvalue = e.target.value;
         setFish(fishvalue)
@@ -90,11 +89,25 @@ export default function FishPack() {
     const handleavailablepacks = (e) => { setAvailable_packs(e.target.value) }
 
     let get_fish_pack_data = () => {
-        let api = new FishpackService;
+        let api = new FishpackService();
         api.getfishpackbyId(params.id).then((res) => {
-            setFish_Pack_Data(res.data.fishPack);
+          setFish_Pack_Data(res.data.fishPack);
+          setHead_removed(res.data.fishPack.head_removed)
+          setSkin_removed(res.data.fishPack.skin_removed)
+          setFish_cut(res.data.fishPack.fish_cut)
+          const isoDate = res.data.fishPack.packing_date;
+
+          if (isoDate) {
+            const parsedDate = new Date(isoDate);
+            parsedDate.setHours(parsedDate.getHours() + 5);
+            const formattedDate = parsedDate.toISOString().split('T')[0];
+            setPacking_date(formattedDate);
+          } else {
+          }
+          
         }).catch((err) => { });
-    }
+      }
+      
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
@@ -224,7 +237,7 @@ export default function FishPack() {
 
     const Fish_Cut_Data_Get = (search = "") => {
         let api = new FishCutsService;
-        api.getfishCuts(search).then((res) => {setFishcut(res.data.fishCuts); })
+        api.getfishCuts(search).then((res) => { setFishcut(res.data.fishCuts); })
             .catch((err) => { });
     }
 
@@ -233,18 +246,14 @@ export default function FishPack() {
 
     });
 
-    function formatDateToLocal(isoDate) {
-        const date = new Date(isoDate);
-        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        const formattedDate = date.toISOString().split('T')[0];
-        return formattedDate;
-    }
 
 
     useEffect(() => {
         Fish_Data_Get();
         Fish_Cut_Data_Get();
-        params.id ? get_fish_pack_data() : ''
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        params.id ? get_fish_pack_data() : setPacking_date(currentDate)
     }, [])
 
     return (
@@ -269,12 +278,8 @@ export default function FishPack() {
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Packing Date</CFormLabel>
                                         <CFormInput
-                                            onChange={handlepackingdate}
-                                            defaultValue={
-                                                params.id && Fish_Pack_Data && Fish_Pack_Data.packing_date
-                                                    ? formatDateToLocal(Fish_Pack_Data.packing_date)
-                                                    : formatDateToLocal(new Date() || Packing_date)
-                                            }
+                                            onChange={(e) => { setPacking_date(e.target.value) }}
+                                            value={Packing_date}
                                             type="date"
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
@@ -283,6 +288,7 @@ export default function FishPack() {
                                         <CFormFeedback invalid>Please choose a Packing Date.</CFormFeedback>
                                     </CCol>
                                 </div>
+
 
                                 <div >
                                     <CCol >
@@ -579,23 +585,23 @@ export default function FishPack() {
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Fish Cut</CFormLabel>
-                                       <CFormSelect
-                                        onChange={handlefishcut}
-                                        defaultValue={params.id ? Fish_Pack_Data.fish_cut : Fish_cut}
-                                        id="validationCustomUsername"
-                                        aria-describedby="inputGroupPrepend"
-                                        required
-                                       >
-                                        <option>Select</option>
-                                        {
-                                            Fishcut.map((i)=>{
-                                                return(
-                                                    <option value={i.id}>{i.fish_cut}</option>
-                                                )
-                                            })
-                                        }
-                                       
-                                       </CFormSelect>
+                                        <CFormSelect
+                                            onChange={handlefishcut}
+                                            value={Fish_cut}
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                        >
+                                            <option>Select</option>
+                                            {
+                                                Fishcut.map((i) => {
+                                                    return (
+                                                        <option key={i.id} value={i.id}>{i.fish_cut}</option>
+                                                    )
+                                                })
+                                            }
+
+                                        </CFormSelect>
                                         <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
                                     </CCol>
                                 </div>
@@ -620,14 +626,14 @@ export default function FishPack() {
                                         <CFormLabel htmlFor="validationCustomUsername">Head Removed</CFormLabel>
                                         <CFormSelect
                                             onChange={handleheadremoved}
-                                            defaultValue={params.id ? Fish_Pack_Data.head_removed : Head_removed}
+                                            value={Head_removed}
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                         >
                                             <option >Select</option>
-                                            <option value='1'>Yes</option>
-                                            <option value='0'>No</option>
+                                            <option key='1' value='1'>Yes</option>
+                                            <option key='0' value='0'>No</option>
                                         </CFormSelect>
                                         <CFormFeedback invalid>Please choose a Head Removed.</CFormFeedback>
                                     </CCol>
@@ -638,14 +644,14 @@ export default function FishPack() {
                                         <CFormLabel htmlFor="validationCustomUsername">Skin Removed</CFormLabel>
                                         <CFormSelect
                                             onChange={handleskinremoved}
-                                            defaultValue={params.id ? Fish_Pack_Data.skin_removed : Skin_removed}
+                                            value={Skin_removed}
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                         >
                                             <option >Select</option>
-                                            <option value='1'>Yes</option>
-                                            <option value='0'>No</option>
+                                            <option key='1' value='1'>Yes</option>
+                                            <option key='0' value='0'>No</option>
                                         </CFormSelect>
                                         <CFormFeedback invalid>Please choose a Skin Removed.</CFormFeedback>
                                     </CCol>

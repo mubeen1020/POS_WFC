@@ -5,7 +5,6 @@ class FishpackService {
     getfishpackbyId = (id) => apiClient().get("api/fishpack/" + id);
     deletefishpack = (id) => apiClient().delete("api/fishpack/" + id);
     updatefishpack = (id, data) => apiClient().put("api/fishpack/" + id, data);
-
 }
 
 export default FishpackService;

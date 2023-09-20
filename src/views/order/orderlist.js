@@ -25,22 +25,27 @@ import { globalEventAtom } from "src/_state/globalEventAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { fishAtom } from "src/_state/fishAtom";
 import FishService from "src/services/fish_services";
+import OrdersService from "src/services/order_services";
+import { orderAtom } from "src/_state/orderAtom";
+import PaymentmodeService from "src/services/paymentmode_services";
+import PaymentstatusService from "src/services/paymentstatus_services";
+import OrderStatusService from "src/services/orderstatus_services";
 
-function Fish_List() {
+function Order_List() {
     const navigate = useNavigate();
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const fish = useRecoilValue(fishAtom)
+    const order = useRecoilValue(orderAtom)
 
     const renderHeader = () => {
         return (
             <div className="flex justify-content-between">
                 <span className="mb-3">
-                    <h4><strong>Fish</strong><span className="" style={{ float: "right" }}>
+                    <h4><strong>Orders</strong><span className="" style={{ float: "right" }}>
                         <>
-                            <Link to="/Fish/FishList/Fish">
+                            <Link to="/Order/OrderList/Order">
                                 <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
                                     <CIcon icon={cilPlus} className="mr-1" />  Add
                                 </CButton>
@@ -70,16 +75,16 @@ function Fish_List() {
     const handleClick = (event) => {
         const clickedRowData = event.data;
         const clickedRowId = clickedRowData.id;
-        navigate(`/Fish/FishList/Fish/fishupdate/${clickedRowId}/`);
+        navigate(`/Order/OrderList/Order/Orderupdate/${clickedRowId}/`);
     }
 
 
     let delete_record = () => {
         let _data = selectedRows.map(i => i.id);
-        let api = new FishService();
+        let api = new OrdersService();
         _data.forEach((id) => {
 
-            api.deletefish(id)
+            api.deleteorders(id)
                 .then((res) => {
                     get_data();
                     toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
@@ -105,10 +110,16 @@ function Fish_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshfish', search })
+        setGlobatEvent({ eventName: 'refreshorder', search })
     }
 
-
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr.order_date || dateStr.delivery_deadline );
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
 
     useEffect(() => { get_data(); }, [])
@@ -126,7 +137,7 @@ function Fish_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={fish}
+                            value={order}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"
@@ -135,17 +146,15 @@ function Fish_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="local_name" header="Local Name" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="english_name" header="English Name" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="minimum_size" header="Minimum Size" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="maximum_size" header="Maximum Size" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_steaks" header="Net Steaks" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_boneless" header="Net Boneless" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones" header="Bones" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="min_rate" header="Min Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="max_rate" header="Max Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_rate" header="Average Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="overall_purchase_quantity" header="Overall Purchase Quantity" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="customer" header="Customer" body={CustomerService.Customername} ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_date" header="Order Date" body={formatDate} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_deadline" header="Delivery Deadline" body={formatDate} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_status" header="Order Status" body={OrderStatusService.orderStatusname}></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="urgent_delivery_charges" header="Urgent Delivery Charges" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_total" header="Order Total" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_status" header="Payment Status" body={PaymentstatusService.paymentStatusname} ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_mode" header="Payment Mode" body={PaymentmodeService.paymentmodename} ></Column>
                         </DataTable>
                     </CCardBody>
                 </CCard>
@@ -153,4 +162,4 @@ function Fish_List() {
         </>
     )
 }
-export default Fish_List;
+export default Order_List;
