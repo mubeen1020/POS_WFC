@@ -113,13 +113,13 @@ function Order_List() {
         setGlobatEvent({ eventName: 'refreshorder', search })
     }
 
-    const formatDate = (dateStr) => {
-        const date = new Date(dateStr.order_date || dateStr.delivery_deadline );
+    const formatDate = (dateStr, field) => {
+        const date = new Date(dateStr[field]);
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
-    };
+      };
 
 
     useEffect(() => { get_data(); }, [])
@@ -147,8 +147,8 @@ function Order_List() {
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="customer" header="Customer" body={CustomerService.Customername} ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_date" header="Order Date" body={formatDate} sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_deadline" header="Delivery Deadline" body={formatDate} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_date" header="Order Date"  body={(dateStr) => formatDate(dateStr, 'order_date')} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_deadline" header="Delivery Deadline"  body={(dateStr) => formatDate(dateStr, 'delivery_deadline')} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_status" header="Order Status" body={OrderStatusService.orderStatusname}></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="urgent_delivery_charges" header="Urgent Delivery Charges" ></Column>

@@ -5,6 +5,7 @@ import {
   cilRestaurant,
   cilSpeedometer,
   cilStar,
+  cilStorage,
   cilTask,
   cilUser,
   
@@ -58,6 +59,12 @@ const _nav = [
     name: 'Orders',
     to: '/Order/OrderList',
     icon: <CIcon icon={cilTask} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Order Stock Item ',
+    to: '/Order/OrderList',
+    icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
   },
 
 
