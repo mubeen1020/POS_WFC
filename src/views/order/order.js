@@ -43,7 +43,7 @@ export default function Orders() {
         const value = e.target.value;
         setCustomer(value)
         const selectedCustomer = CustomerData.find((customer) =>
-            customer.name.toLowerCase() === value.toLowerCase()
+            customer.full_name.toLowerCase() === value.toLowerCase()
         );
         if (selectedCustomer) {
 
@@ -57,7 +57,7 @@ export default function Orders() {
             setDelivery_charges(0);
         }
         const filtered = CustomerData.filter((customer) =>
-            customer.name.toLowerCase().includes(value.toLowerCase())
+            customer.full_name.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredCustomers(filtered);
         if (params.id) {
@@ -103,7 +103,7 @@ export default function Orders() {
         }).catch((err) => { });
     }
 
-    const fishDataSubmit = (event) => {
+    const orderDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
@@ -145,7 +145,7 @@ export default function Orders() {
             });
     }
 
-    const fishDataupdateSubmit = (event) => {
+    const orderDataupdateSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
@@ -265,7 +265,7 @@ export default function Orders() {
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    params.id ? fishDataupdateSubmit(event) : fishDataSubmit(event);
+                                    params.id ? orderDataupdateSubmit(event) : orderDataSubmit(event);
                                 }}
                             >
 
@@ -293,7 +293,7 @@ export default function Orders() {
 
                                 <datalist id="customerSuggestions" >
                                     {filteredCustomers.map((customer) => (
-                                        <option key={customer.id} value={customer.name} />
+                                        <option key={customer.id} value={customer.full_name} />
                                     ))}
                                 </datalist>
 

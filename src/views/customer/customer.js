@@ -42,7 +42,7 @@ export default function Customer() {
                 const value = e.target.value;
                 setCare_Of_Ref(value)
                 const selectedCustomer = Customer_ref.find((customer) =>
-                        customer.name.toLowerCase() === value.toLowerCase()
+                        customer.full_name.toLowerCase() === value.toLowerCase()
                 );
                 if (selectedCustomer) {
                         setCare_Of_Ref_id(selectedCustomer.id);
@@ -52,7 +52,7 @@ export default function Customer() {
                         setCustomerNotFound(true);
                 }
                 const filtered = Customer_ref.filter((customer) =>
-                        customer.name.toLowerCase().includes(value.toLowerCase())
+                        customer.full_name.toLowerCase().includes(value.toLowerCase())
                 );
                 setFilteredCustomers(filtered);
 
@@ -81,9 +81,9 @@ export default function Customer() {
                 handleSubmit(event)
                 event.preventDefault();
                 let formData = {
-                        username: UserName,
-                        password: Password,
-                        name: Name,
+                        // username: UserName,
+                        // password: Password,
+                        full_name: Name,
                         care_of_ref: Care_Of_Ref_id,
                         care_of_name: Care_Of_Name,
                         phone_1: Phone1,
@@ -129,7 +129,7 @@ export default function Customer() {
                 let formData = {
                         username: UserName || Customer_Data.username,
                         password: Password || Customer_Data.password,
-                        name: Name || Customer_Data.name,
+                        full_name: Name || Customer_Data.full_name,
                         care_of_ref: Care_Of_Ref_id || Customer_Data.care_of_ref,
                         care_of_name: Care_Of_Name || Customer_Data.care_of_name,
                         phone_1: Phone1 || Customer_Data.phone_1,
@@ -213,7 +213,9 @@ export default function Customer() {
                                                                 validated={validated}
                                                                 onSubmit={(event) => { params.id ? customerDataupdateSubmit(event) : customerDataSubmit(event) }}
                                                         >
-
+                                                       {
+                                                        params.id &&
+                                                       <>
                                                                 <div >
                                                                         <CCol >
                                                                                 <CFormLabel htmlFor="validationCustomUsername">Username</CFormLabel>
@@ -240,18 +242,19 @@ export default function Customer() {
                                                                                         id="validationCustomUsername"
                                                                                         aria-describedby="inputGroupPrepend"
                                                                                         required
-                                                                                        disabled={params.id ? params.id : ''}
+                                                                                        // disabled={params.id ? params.id : ''}
                                                                                 />
                                                                                 <CFormFeedback invalid>Please choose a Password.</CFormFeedback>
                                                                         </CCol>
                                                                 </div>
-
+                                                                </>
+                                                        }
                                                                 <div >
                                                                         <CCol >
                                                                                 <CFormLabel htmlFor="validationCustomUsername">Name</CFormLabel>
                                                                                 <CFormInput
                                                                                         onChange={handlename}
-                                                                                        defaultValue={params.id ? Customer_Data.name : Name}
+                                                                                        defaultValue={params.id ? Customer_Data.full_name : Name}
                                                                                         type="text"
                                                                                         id="validationCustomUsername"
                                                                                         aria-describedby="inputGroupPrepend"
@@ -267,7 +270,7 @@ export default function Customer() {
                                                                                 <CFormInput
                                                                                         onChange={handlecare_of_ref}
                                                                                         defaultValue={
-                                                                                                params.id && filter_name.length > 0 ? filter_name[0].name : Care_Of_Ref
+                                                                                                params.id && filter_name.length > 0 ? filter_name[0].full_name : Care_Of_Ref
                                                                                         }
                                                                                         list="customerSuggestions"
                                                                                         type="text"
@@ -286,7 +289,7 @@ export default function Customer() {
 
                                                                 <datalist id="customerSuggestions" >
                                                                         {filteredCustomers.map((customer) => (
-                                                                                <option key={customer.id} value={customer.name} />
+                                                                                <option key={customer.id} value={customer.full_name} />
                                                                         ))}
                                                                 </datalist>
 

@@ -10,7 +10,7 @@ class CustomerService {
     static Customername(row){
         const customerData = useRecoilValue(customerAtom)
         const filteredcustomer = customerData.filter(item => row.customer == item.id);
-        const customerNames = filteredcustomer.map(item => item.name);
+        const customerNames = filteredcustomer.map(item => item.full_name);
         return customerNames;
     }
 

@@ -110,7 +110,7 @@ function Customer_List() {
 
   const getcutomer = (customerIds) => {
     const filteredCustomers = DataTableList.filter(item => customerIds.care_of_ref == item.id);
-    const customerNames = filteredCustomers.map(item => item.name);
+    const customerNames = filteredCustomers.map(item => item.full_name);
     return customerNames;
   }
 
@@ -146,7 +146,7 @@ function Customer_List() {
               rows={10}
               rowsPerPageOptions={[10, 20, 50]}>
               <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="name" header="Name" ></Column>
+              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="full_name" header="Full Name" ></Column>
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="care_of_ref" header="Care of Refrence" body={getcutomer} sortable></Column>
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="care_of_name" header="Care of Name" sortable></Column>
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="phone_1" header="Phone 1" ></Column>

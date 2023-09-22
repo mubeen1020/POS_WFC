@@ -61,9 +61,9 @@ export default function Fish() {
             net_steaks: Net_steaks,
             net_boneless: Net_boneless,
             bones: Bones,
-            min_rate: Min_rate,
-            max_rate: Max_rate,
-            average_rate: Average_rate,
+            min_purchase_rate: Min_rate,
+            max_purchase_rate: Max_rate,
+            average_purchase_rate: Average_rate,
             overall_purchase_quantity: Overall_purchace_quantity
         };
 
@@ -105,9 +105,9 @@ export default function Fish() {
             net_steaks: Net_steaks || Fish_Data.net_steaks,
             net_boneless: Net_boneless || Fish_Data.net_boneless,
             bones: Bones || Fish_Data.bones,
-            min_rate: Min_rate || Fish_Data.min_rate,
-            max_rate: Max_rate || Fish_Data.max_rate,
-            average_rate: Average_rate || Fish_Data.average_rate,
+            min_purchase_rate: Min_rate || Fish_Data.min_purchase_rate,
+            max_purchase_rate: Max_rate || Fish_Data.max_purchase_rate,
+            average_purchase_rate: Average_rate || Fish_Data.average_purchase_rate,
             overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity
         };
 
@@ -290,49 +290,49 @@ export default function Fish() {
 
                                 <div >
                                     <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Min Rate</CFormLabel>
+                                        <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
                                         <CFormInput
                                             onChange={handleminrate}
-                                            defaultValue={params.id ? Fish_Data.min_rate : Min_rate}
+                                            defaultValue={params.id ? Fish_Data.min_purchase_rate : Min_rate}
                                             type="number"
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                             disabled={params.id ? params.id : ''}
                                         />
-                                        <CFormFeedback invalid>Please choose a Min Rate.</CFormFeedback>
+                                        <CFormFeedback invalid>Please choose a Min Purchase Rate.</CFormFeedback>
                                     </CCol>
                                 </div>
 
                                 <div >
                                     <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Max Rate</CFormLabel>
+                                        <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
                                         <CFormInput
                                             onChange={handlemaxrate}
-                                            defaultValue={params.id ? Fish_Data.max_rate : Max_rate}
+                                            defaultValue={params.id ? Fish_Data.max_purchase_rate : Max_rate}
                                             type="number"
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                             disabled={params.id ? params.id : ''}
                                         />
-                                        <CFormFeedback invalid>Please choose a Max Rate.</CFormFeedback>
+                                        <CFormFeedback invalid>Please choose a Max Purchase Rate.</CFormFeedback>
                                     </CCol>
                                 </div>
 
                                 <div >
                                     <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Average Rate</CFormLabel>
+                                        <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
                                         <CFormInput
                                             onChange={handleaveragerate}
-                                            defaultValue={params.id ? Fish_Data.average_rate : Average_rate}
+                                            defaultValue={params.id ? Fish_Data.average_purchase_rate : Average_rate}
                                             type="number"
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                             disabled={params.id ? params.id : ''}
                                         />
-                                        <CFormFeedback invalid>Please choose a Average Rate.</CFormFeedback>
+                                        <CFormFeedback invalid>Please choose a Average Purchase Rate.</CFormFeedback>
                                     </CCol>
                                 </div>
 

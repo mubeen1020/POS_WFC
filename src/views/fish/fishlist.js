@@ -142,9 +142,9 @@ function Fish_List() {
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_steaks" header="Net Steaks" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_boneless" header="Net Boneless" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones" header="Bones" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="min_rate" header="Min Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="max_rate" header="Max Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_rate" header="Average Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="min_purchase_rate" header="Min Purchase Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="max_purchase_rate" header="Max Purchase Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_purchase_rate" header="Average Purchase Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="overall_purchase_quantity" header="Overall Purchase Quantity" ></Column>
                         </DataTable>
                     </CCardBody>

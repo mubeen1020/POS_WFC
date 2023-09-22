@@ -40,6 +40,10 @@ export default function FishPack() {
     const [Skin_removed, setSkin_removed] = useState('')
     const [Kante, setKante] = useState('')
     const [Available_packs, setAvailable_packs] = useState('')
+    const [Whole_fish_pack_price,setWhole_fish_pack_price] = useState('')
+    const [Bones_pack_price,setBones_pack_price] = useState('')
+    const [Available_meat_packs,setAvailable_meat_packs] = useState('')
+    const [Available_bones_packs,setAvailable_bones_packs] = useState('')
 
     const [Fish_Pack_Data, setFish_Pack_Data] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
@@ -87,6 +91,10 @@ export default function FishPack() {
     const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
     const handlekante = (e) => { setKante(e.target.value) }
     const handleavailablepacks = (e) => { setAvailable_packs(e.target.value) }
+    const handlewholefishpackprice = (e) => {setWhole_fish_pack_price(e.target.value)}
+    const handlebonespackprice = (e) => {setBones_pack_price(e.target.value)}
+    const handleavailablemeatpacks = (e) => {setAvailable_meat_packs(e.target.value)}
+    const handleavailablebonepacks = (e) => {setAvailable_bones_packs(e.target.value)}
 
     let get_fish_pack_data = () => {
         let api = new FishpackService();
@@ -119,6 +127,7 @@ export default function FishPack() {
             whole_fish_total_weight: Whole_fish_total_weight,
             fish_packs: Fish_packs,
             whole_fish_pack_weight: Whole_fish_pack_weight,
+            whole_fish_pack_price: Whole_fish_pack_price,
             whole_fish_purchase_rate: Whole_fish_purchase_rate,
             whole_fish_sale_rate: Whole_fish_sale_rate,
             net_meat_pack_weight: Net_meat_Pack_weight,
@@ -129,6 +138,9 @@ export default function FishPack() {
             bones_packs: Bones_packs,
             bones_total_weight: Bones_total_weight,
             bones_pack_rate: Bones_pack_rate,
+            bones_pack_price: Bones_pack_price,
+            available_meat_packs: Available_meat_packs,
+            available_bones_packs: Available_bones_packs,
             fish_cut: Fish_cut || 7,
             average_fish_piece_size: Average_fish_piece_size,
             head_removed: Head_removed || 0,
@@ -174,6 +186,7 @@ export default function FishPack() {
             whole_fish_total_weight: Whole_fish_total_weight || Fish_Pack_Data.whole_fish_total_weight,
             fish_packs: Fish_packs || Fish_Pack_Data.fish_packs,
             whole_fish_pack_weight: Whole_fish_pack_weight || Fish_Pack_Data.whole_fish_pack_weight,
+            whole_fish_pack_price: Whole_fish_pack_price || Fish_Pack_Data.whole_fish_pack_price,
             whole_fish_purchase_rate: Whole_fish_purchase_rate || Fish_Pack_Data.whole_fish_purchase_rate,
             whole_fish_sale_rate: Whole_fish_sale_rate || Fish_Pack_Data.whole_fish_sale_rate,
             net_meat_pack_weight: Net_meat_Pack_weight || Fish_Pack_Data.net_meat_pack_weight,
@@ -184,6 +197,9 @@ export default function FishPack() {
             bones_pack_weight: Bones_pack_weight || Fish_Pack_Data.bones_pack_weight,
             bones_total_weight: Bones_total_weight || Fish_Pack_Data.bones_total_weight,
             bones_pack_rate: Bones_pack_rate || Fish_Pack_Data.bones_pack_rate,
+            bones_pack_price: Bones_pack_price || Fish_Pack_Data.bones_pack_price,
+            available_meat_packs: Available_meat_packs || Fish_Pack_Data.available_meat_packs,
+            available_bones_packs: Available_bones_packs || Fish_Pack_Data.available_bones_packs,
             fish_cut: Fish_cut || Fish_Pack_Data.fish_cut,
             average_fish_piece_size: Average_fish_piece_size || Fish_Pack_Data.average_fish_piece_size,
             head_removed: Head_removed || Fish_Pack_Data.head_removed,
@@ -252,7 +268,6 @@ export default function FishPack() {
         Fish_Data_Get();
         Fish_Cut_Data_Get();
         const currentDate = new Date().toISOString().split('T')[0];
-
         params.id ? get_fish_pack_data() : setPacking_date(currentDate)
     }, [])
 
@@ -458,6 +473,22 @@ export default function FishPack() {
                                         <CFormFeedback invalid>Please choose a Whole Fish Pack Weight.</CFormFeedback>
                                     </CCol>
                                 </div>
+                               
+                                <div >
+                                    <CCol >
+                                        <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
+                                        <CFormInput
+                                            onChange={handlewholefishpackprice}
+                                            defaultValue={params.id ? Fish_Pack_Data. whole_fish_pack_price :  Whole_fish_pack_price}
+                                            type="number"
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                            disabled={params.id ? params.id : ''}
+                                        />
+                                        <CFormFeedback invalid>Please choose a  Whole Fish Pack Price</CFormFeedback>
+                                    </CCol>
+                                </div>
 
                                 <div >
                                     <CCol >
@@ -580,7 +611,54 @@ export default function FishPack() {
                                         <CFormFeedback invalid>Please choose a Bone Pack Rate.</CFormFeedback>
                                     </CCol>
                                 </div>
-
+                                
+                                <div >
+                                    <CCol >
+                                        <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price</CFormLabel>
+                                        <CFormInput
+                                            onChange={handlebonespackprice}
+                                            defaultValue={params.id ? Fish_Pack_Data.bones_pack_price : Bones_pack_price}
+                                            type="number"
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                            disabled={params.id ? params.id : ''}
+                                        />
+                                        <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
+                                    </CCol>
+                                </div>
+                                
+                                <div >
+                                    <CCol >
+                                        <CFormLabel htmlFor="validationCustomUsername">Available Meat Packs</CFormLabel>
+                                        <CFormInput
+                                            onChange={handleavailablemeatpacks}
+                                            defaultValue={params.id ? Fish_Pack_Data.available_meat_packs : Available_meat_packs}
+                                            type="number"
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                            disabled={params.id ? params.id : ''}
+                                        />
+                                        <CFormFeedback invalid>Please choose a Available Meat Packs.</CFormFeedback>
+                                    </CCol>
+                                </div>
+                               
+                                <div >
+                                    <CCol >
+                                        <CFormLabel htmlFor="validationCustomUsername"> Available Bone Packs</CFormLabel>
+                                        <CFormInput
+                                            onChange={handleavailablebonepacks}
+                                            defaultValue={params.id ? Fish_Pack_Data. available_bones_packs :  Available_bones_packs}
+                                            type="number"
+                                            id="validationCustomUsername"
+                                            aria-describedby="inputGroupPrepend"
+                                            required
+                                            disabled={params.id ? params.id : ''}
+                                        />
+                                        <CFormFeedback invalid>Please choose a  Available Bone Packs.</CFormFeedback>
+                                    </CCol>
+                                </div>
 
                                 <div >
                                     <CCol >

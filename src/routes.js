@@ -9,6 +9,8 @@ import FishPack_List from './views/fishpack/fishpacklist'
 import FishPack from './views/fishpack/fishpack'
 import Orders from './views/order/order'
 import Order_List from './views/order/orderlist'
+import Order_Stock_Item_List from './views/orderstockitem/orderstockitemlist'
+import OrderStockItem from './views/orderstockitem/orderstockitem'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -85,7 +87,9 @@ const routes = [
   { path: '/Order/OrderList', name: 'Order List', element: Order_List },
   { path: '/Order/OrderList/Order/Orderupdate/:id', name: 'update Order', element: Orders },
 
-
+  { path: '/Order/OrderStockItemsList/OrderItems', name: 'Add Order Stock Items', element: OrderStockItem },
+  { path: '/Order/OrderStockItemsList', name: 'Order Stock Items List', element: Order_Stock_Item_List },
+  { path: '/Order/OrderStockItemsList/OrderStockItems/OrderStockItemsupdate/:id', name: 'update  Order Stock Items ', element: OrderStockItem },
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   

@@ -18,6 +18,10 @@ import { paymentmethodAtom } from 'src/_state/paymentmethodAtom'
 import PaymentmethodService from 'src/services/paymentmethod_services'
 import { orderstatusAtom } from 'src/_state/orderstatusAtom'
 import OrderStatusService from 'src/services/orderstatus_services'
+import { orderitemsAtom } from 'src/_state/orderitemsAtom'
+import OrderitemsService from 'src/services/orderstockitem_services'
+import { fishcutAtom } from 'src/_state/fishcutAtom'
+import FishCutsService from 'src/services/fishcut_services'
 
 const DefaultLayout = () => {
   const setCustomer = useSetRecoilState(customerAtom);
@@ -28,6 +32,8 @@ const DefaultLayout = () => {
   const setPaymentstatus = useSetRecoilState(paymentstatusAtom);
   const setPaymentmethod = useSetRecoilState(paymentmethodAtom);
   const setOrderstatus = useSetRecoilState(orderstatusAtom);
+  const setOrderitem = useSetRecoilState(orderitemsAtom);
+  const setFishcut = useSetRecoilState(fishcutAtom);
   const globatEvent = useRecoilValue(globalEventAtom);
 
   const refreshCustomer = (search = "") => {
@@ -127,7 +133,7 @@ const DefaultLayout = () => {
     }).catch((err) => { });
   }
 
-  const refreshpaymentmethod= (search = "") => {
+  const refreshpaymentmethod = (search = "") => {
     const api = new PaymentmethodService;
     api.getpaymentmethods(search).then((res) => {
       if (Array.isArray(res.data)) {
@@ -143,7 +149,7 @@ const DefaultLayout = () => {
     }).catch((err) => { });
   }
 
-  const refreshorderstatus= (search = "") => {
+  const refreshorderstatus = (search = "") => {
     const api = new OrderStatusService;
     api.getorderStatus(search).then((res) => {
       if (Array.isArray(res.data)) {
@@ -159,6 +165,38 @@ const DefaultLayout = () => {
     }).catch((err) => { });
   }
 
+  const refreshorderitems = (search = "") => {
+    const api = new OrderitemsService;
+    api.getorderitems(search).then((res) => {
+      if (Array.isArray(res.data)) {
+        setOrderitem(res.data);
+      } else {
+        if (res.data && res.data.message === "orderItems not found.") {
+          setOrderitem([]);
+        } else {
+          setOrderitem(res.data.orderItems);
+        }
+      }
+
+    }).catch((err) => { });
+  }
+
+  const refreshfishcut = (search = "") => {
+    const api = new FishCutsService;
+    api.getfishCuts(search).then((res) => {
+      if (Array.isArray(res.data)) {
+        setFishcut(res.data);
+      } else {
+        if (res.data && res.data.message === "fishCuts not found.") {
+          setFishcut([]);
+        } else {
+          setFishcut(res.data.fishCuts);
+        }
+      }
+
+    }).catch((err) => { });
+  }
+
   useEffect(() => {
     refreshCustomer();
     refreshfish();
@@ -168,6 +206,8 @@ const DefaultLayout = () => {
     refreshpaymentstatus();
     refreshpaymentmethod();
     refreshorderstatus();
+    refreshorderitems();
+    refreshfishcut()
   }, [])
 
   useEffect(() => {
@@ -183,6 +223,12 @@ const DefaultLayout = () => {
         break;
       case 'refreshorder':
         refreshorder(globatEvent.search);
+        break;
+      case 'refreshorderitems':
+        refreshorderitems(globatEvent.search);
+        break;
+        case 'refreshfishcut':
+          refreshfishcut(globatEvent.search);
         break;
       default:
     }
