@@ -5,6 +5,7 @@ class OrderpurchaseitemService {
     getorderpurchaseitembyId = (id) => apiClient().get("api/order-purchase-item/" + id);
     deleteorderpurchaseitem = (id) => apiClient().delete("api/order-purchase-item/" + id);
     updateorderpurchaseitem = (id, data) => apiClient().put("api/order-purchase-item/" + id, data);
+    getfishrefandfishcut = (id) => apiClient().get("api/fishrefandfishcut");
 
 }
 

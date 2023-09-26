@@ -52,9 +52,9 @@ const CommonHome = () => {
             <CContainer style={{ minHeight: "50vh", "marginLeft": '0px' }}>
 
                 <CRow >
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'red', minHeight: '30vh' }} color="success">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'red', minHeight: '25vh' }} color="success">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -67,7 +67,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}> View Home</CCardText>
                                             <Link to="/home">
-                                                <CButton style={{ 'float': 'right' }} color="success" variant="outline"> Home <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="success" variant="outline"> Home <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -75,9 +75,9 @@ const CommonHome = () => {
                             </span>
                         </CCard>
                     </CCol>
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'green', minHeight: '30vh' }} color="danger">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'green', minHeight: '25vh' }} color="danger">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -90,7 +90,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}>View Fish</CCardText>
                                             <Link to="/Fish/FishList">
-                                                <CButton style={{ 'float': 'right' }} color="danger" variant="outline"> Fish <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="danger" variant="outline"> Fish <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -100,9 +100,9 @@ const CommonHome = () => {
                     </CCol>
 
 
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ minHeight: '30vh' }} color="primary">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ minHeight: '25vh' }} color="primary">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -115,7 +115,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}>View Fish Pack  </CCardText>
                                             <Link to="/Fish/FishPackList">
-                                                <CButton style={{ 'float': 'right' }} color="primary" variant="outline"> Fish Pack <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="primary" variant="outline"> Fish Pack <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -124,15 +124,9 @@ const CommonHome = () => {
                         </CCard>
 
                     </CCol>
-
-
-
-                </CRow>
-
-                <CRow >
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'yellow', minHeight: '30vh' }} color="warning">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'yellow', minHeight: '25vh' }} color="warning">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -145,7 +139,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}> View Customer</CCardText>
                                             <Link to="/Customer/customerList">
-                                                <CButton style={{ 'float': 'right' }} color="warning" variant="outline"> Customer <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="warning" variant="outline"> Customer <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -153,9 +147,15 @@ const CommonHome = () => {
                             </span>
                         </CCard>
                     </CCol>
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'pink', minHeight: '30vh' }} color="info">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+
+
+                </CRow>
+
+                <CRow >
+                   
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'pink', minHeight: '25vh' }} color="info">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -168,7 +168,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}>View Order</CCardText>
                                             <Link to="/Order/OrderList">
-                                                <CButton style={{ 'float': 'right' }} color="info" variant="outline"> Order <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="info" variant="outline"> Order <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -178,9 +178,9 @@ const CommonHome = () => {
                     </CCol>
 
 
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ minHeight: '30vh' }} color="dark">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ minHeight: '25vh' }} color="dark">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -191,9 +191,9 @@ const CommonHome = () => {
                                                 Order Stock Item
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px' }}>View Order Stock Item  </CCardText>
+                                            <CCardText style={{ 'minHeight': '20px' ,width:'200px' }}>View Order Stock Item  </CCardText>
                                             <Link to="/Order/OrderStockItemsList">
-                                                <CButton style={{ 'float': 'right' }} color="dark" variant="outline"> Order Stock Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left'  ,width:'170px'}} color="dark" variant="outline"> Order Stock Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -203,14 +203,9 @@ const CommonHome = () => {
 
                     </CCol>
 
-
-
-                </CRow>
-
-                <CRow >
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'yellow', minHeight: '30vh' }} color="success">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'yellow', minHeight: '25vh' }} color="success">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -221,9 +216,9 @@ const CommonHome = () => {
                                                 &nbsp; Order Purchase Item
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px' }}> View Order Purchase Item</CCardText>
+                                            <CCardText style={{ 'minHeight': '20px',width:'200px' }}> View Order Purchase Item</CCardText>
                                             <Link to="/Order/OrderPurchaseItemsList">
-                                                <CButton style={{ 'float': 'right' }} color="success" variant="outline"> Order Purchase Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' ,width:'200px'}} color="success" variant="outline"> Order Purchase Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -231,9 +226,9 @@ const CommonHome = () => {
                             </span>
                         </CCard>
                     </CCol>
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'pink', minHeight: '30vh' }} color="danger">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ 'background': 'pink', minHeight: '25vh' }} color="danger">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -246,7 +241,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}>View Payment</CCardText>
                                             <Link to="/Payment/PaymentList">
-                                                <CButton style={{ 'float': 'right' }} color="danger" variant="outline"> Payment <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="danger" variant="outline"> Payment <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -255,23 +250,28 @@ const CommonHome = () => {
                         </CCard>
                     </CCol>
 
+                </CRow>
 
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ minHeight: '30vh' }} color="primary">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                <CRow >
+                   
+
+
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ minHeight: '25vh' }} color="primary">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
                                         <CCardBody>
-                                            <CCardTitle style={{ width: 316 }}>
+                                            <CCardTitle style={{ width: 250 }}>
                                                 <CIcon style={{ height: '30px', width: '30px' }} icon={cilBug} customClassName="nav-icon" />
                                                 &nbsp;
                                                 Purchase Requirement
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px' }}>View Purchase Requirement  </CCardText>
-                                            <Link to="/policydashboard">
-                                                <CButton style={{ 'float': 'right' }} color="primary" variant="outline"> Purchase Requirement <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                            <CCardText style={{ 'minHeight': '20px',width:'250px' }}>View Purchase Requirement  </CCardText>
+                                            <Link to="/Purchaserequirement">
+                                                <CButton style={{ 'float': 'left',width:'220px' }} color="primary" variant="outline"> Purchase Requirement <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -280,15 +280,9 @@ const CommonHome = () => {
                         </CCard>
 
                     </CCol>
-
-
-
-                </CRow>
-
-                <CRow>
-                    <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ minHeight: '30vh' }} color="dark">
-                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
+                    <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
+                        <CCard style={{ minHeight: '25vh' }} color="dark">
+                            <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -301,7 +295,7 @@ const CommonHome = () => {
                                             <hr></hr>
                                             <CCardText style={{ 'minHeight': '20px' }}>View Settings  </CCardText>
                                             <Link to="/Settings">
-                                                <CButton style={{ 'float': 'right' }} color="dark" variant="outline"> Settings <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left' }} color="dark" variant="outline"> Settings <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -310,7 +304,11 @@ const CommonHome = () => {
                         </CCard>
 
                     </CCol>
+
+
                 </CRow>
+
+               
 
             </CContainer>
 

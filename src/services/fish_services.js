@@ -8,10 +8,14 @@ class FishService {
     deletefish = (id) => apiClient().delete("api/fish/" + id);
     updatefish = (id, data) => apiClient().put("api/fish/" + id, data);
     static Fishname(row){
-        const fishData = useRecoilValue(fishAtom)
+        const fishData = useRecoilValue(fishAtom) || []
+        if (fishData && Array.isArray(fishData)) {
         const filteredfish = fishData.filter(item => row.fish_ref == item.id);
         const fishNames = filteredfish.map(item => item.local_name);
         return fishNames;
+    } else {
+        return [];
+    }
     }
 
 }

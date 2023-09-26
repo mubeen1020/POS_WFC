@@ -15,7 +15,6 @@ import {
   
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
   {
@@ -92,7 +91,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Purchase Requirement',
-    to: '/Order/OrderList',
+    to: '/Purchaserequirement',
     icon: <CIcon icon={cilBug} customClassName="nav-icon" />,
   },
   {

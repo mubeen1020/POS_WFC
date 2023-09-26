@@ -75,7 +75,6 @@ export default function Customer() {
         };
 
         const openMapModal = () => {
-                console.log("ggggggg")
                 setModalVisible(true);
         };
 

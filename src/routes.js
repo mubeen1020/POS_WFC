@@ -17,6 +17,8 @@ import Payments from './views/payment/payment'
 import Payments_List from './views/payment/paymentlist'
 import Settings from './views/settings/settings'
 import CommonHome from './views/home/home'
+import Purchase_Requirement from './views/purchaserequirements/purchaserequirement'
+import PurchaseRequirement from './views/purchaserequirements/purchaserequirement'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -72,8 +74,6 @@ const routes = [
   { path: '/home', exact: true, name: 'Home',element:CommonHome },
   { path: '/', name: 'Login Page', element: Login },
   
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  
   { path: '/Customer', name: 'Customer', element: CustomerList, exact: true },
   { path: '/Customer/customerList/customer', name: 'Add Customer', element: Customer },
   { path: '/Customer/customerList', name: 'Customer List', element: Customer_List },
@@ -106,7 +106,8 @@ const routes = [
   { path: '/Payment/PaymentList', name: 'Payment List', element: Payments_List },
   { path: '/Payment/PaymentList/Payment/Paymentupdate/:id', name: 'update Payment', element: Payments },
 
-  { path: '/Settings', name: 'Settings', element: Settings}
+  { path: '/Settings', name: 'Settings', element: Settings},
+  { path: '/Purchaserequirement', name: 'Purchase Requirement', element: PurchaseRequirement}
 ]
 
 export default routes
