@@ -4,14 +4,11 @@ import {
   cilAsteriskCircle,
   cilBug,
   cilCart,
-  cilCash,
   cilColumns,
   cilCreditCard,
-  cilFire,
-  cilRestaurant,
+  cilHome,
   cilSettings,
   cilSpeedometer,
-  cilStar,
   cilStorage,
   cilTask,
   cilUser,
@@ -23,12 +20,12 @@ import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
 const _nav = [
   {
     component: CNavItem,
-    name: 'Dashboard',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    name: 'Home',
+    to: '/home',
+    icon: <CIcon icon={cilHome} customClassName="nav-icon" />,
     badge: {
       color: 'info',
-      text: 'NEW',
+      text: 'Home',
     },
   },
   {
@@ -81,6 +78,7 @@ const _nav = [
     icon: <CIcon icon={cilCart} customClassName="nav-icon" />,
   },
 
+  
   {
     component: CNavTitle,
     name: 'Payment',

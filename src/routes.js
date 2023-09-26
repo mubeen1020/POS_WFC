@@ -16,6 +16,7 @@ import Order_Purchase_Item from './views/orderpurchaseitem/orderpurchaseitem'
 import Payments from './views/payment/payment'
 import Payments_List from './views/payment/paymentlist'
 import Settings from './views/settings/settings'
+import CommonHome from './views/home/home'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -68,7 +69,7 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
-  { path: '/home', exact: true, name: 'Home' },
+  { path: '/home', exact: true, name: 'Home',element:CommonHome },
   { path: '/', name: 'Login Page', element: Login },
   
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },

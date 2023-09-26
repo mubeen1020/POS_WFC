@@ -147,5 +147,14 @@ $enable-rtl: true;
     }
   }
 
+  .divcorner {
+    /* width: 200px; */
+    /* min-height: 200px; */
+    -webkit-clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 25%, 75% 0);
+    background: white;
+    
+  }
+
 
   
