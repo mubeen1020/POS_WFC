@@ -19,6 +19,19 @@ import { cilAsteriskCircle, cilBug, cilCart, cilColumns, cilCreditCard, cilHome,
 
 const CommonHome = () => {
     const navigate = useNavigate();
+    useEffect(()=>{
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
+    },[])
 
     return (
         <>
@@ -36,12 +49,12 @@ const CommonHome = () => {
       </CRow>
     </CContainer> */}
 
-            <CContainer style={{ "min-height": "50vh", "marginLeft": '0px' }}>
+            <CContainer style={{ minHeight: "50vh", "marginLeft": '0px' }}>
 
                 <CRow >
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'red', 'min-height': '30vh' }} color="success">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'red', minHeight: '30vh' }} color="success">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -63,8 +76,8 @@ const CommonHome = () => {
                         </CCard>
                     </CCol>
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'green', 'min-height': '30vh' }} color="danger">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'green', minHeight: '30vh' }} color="danger">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -88,8 +101,8 @@ const CommonHome = () => {
 
 
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'min-height': '30vh' }} color="primary">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ minHeight: '30vh' }} color="primary">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -118,8 +131,8 @@ const CommonHome = () => {
 
                 <CRow >
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'yellow', 'min-height': '30vh' }} color="warning">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'yellow', minHeight: '30vh' }} color="warning">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -141,8 +154,8 @@ const CommonHome = () => {
                         </CCard>
                     </CCol>
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'pink', 'min-height': '30vh' }} color="info">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'pink', minHeight: '30vh' }} color="info">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -166,8 +179,8 @@ const CommonHome = () => {
 
 
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'min-height': '30vh' }} color="dark">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ minHeight: '30vh' }} color="dark">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -196,8 +209,8 @@ const CommonHome = () => {
 
                 <CRow >
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'yellow', 'min-height': '30vh' }} color="success">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'yellow', minHeight: '30vh' }} color="success">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -219,8 +232,8 @@ const CommonHome = () => {
                         </CCard>
                     </CCol>
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'background': 'pink', 'min-height': '30vh' }} color="danger">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ 'background': 'pink', minHeight: '30vh' }} color="danger">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -244,8 +257,8 @@ const CommonHome = () => {
 
 
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'min-height': '30vh' }} color="primary">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ minHeight: '30vh' }} color="primary">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -274,8 +287,8 @@ const CommonHome = () => {
 
                 <CRow>
                     <CCol style={{ 'padding': '10px' }} sm={4} lg={4}>
-                        <CCard style={{ 'min-height': '30vh' }} color="dark">
-                            <span className='divcorner' style={{ 'min-height': '30vh', 'margin': '-2px' }}>
+                        <CCard style={{ minHeight: '30vh' }} color="dark">
+                            <span className='divcorner' style={{ minHeight: '30vh', 'margin': '-2px' }}>
                                 <CRow className="g-0">
 
                                     <CCol md={8}>
@@ -301,7 +314,7 @@ const CommonHome = () => {
 
             </CContainer>
 
-            <CContainer style={{ "min-height": "50vh" }} xxl>
+            <CContainer style={{ minHeight: "50vh" }} xxl>
             </CContainer>
 
         </>
