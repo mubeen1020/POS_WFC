@@ -39,10 +39,10 @@ export default function FishPack() {
     const [Skin_removed, setSkin_removed] = useState('')
     const [Kante, setKante] = useState('')
     const [Available_packs, setAvailable_packs] = useState('')
-    const [Whole_fish_pack_price,setWhole_fish_pack_price] = useState('')
-    const [Bones_pack_price,setBones_pack_price] = useState('')
-    const [Available_meat_packs,setAvailable_meat_packs] = useState('')
-    const [Available_bones_packs,setAvailable_bones_packs] = useState('')
+    const [Whole_fish_pack_price, setWhole_fish_pack_price] = useState('')
+    const [Bones_pack_price, setBones_pack_price] = useState('')
+    const [Available_meat_packs, setAvailable_meat_packs] = useState('')
+    const [Available_bones_packs, setAvailable_bones_packs] = useState('')
 
     const [Fish_Pack_Data, setFish_Pack_Data] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
@@ -90,31 +90,31 @@ export default function FishPack() {
     const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
     const handlekante = (e) => { setKante(e.target.value) }
     const handleavailablepacks = (e) => { setAvailable_packs(e.target.value) }
-    const handlewholefishpackprice = (e) => {setWhole_fish_pack_price(e.target.value)}
-    const handlebonespackprice = (e) => {setBones_pack_price(e.target.value)}
-    const handleavailablemeatpacks = (e) => {setAvailable_meat_packs(e.target.value)}
-    const handleavailablebonepacks = (e) => {setAvailable_bones_packs(e.target.value)}
+    const handlewholefishpackprice = (e) => { setWhole_fish_pack_price(e.target.value) }
+    const handlebonespackprice = (e) => { setBones_pack_price(e.target.value) }
+    const handleavailablemeatpacks = (e) => { setAvailable_meat_packs(e.target.value) }
+    const handleavailablebonepacks = (e) => { setAvailable_bones_packs(e.target.value) }
 
     let get_fish_pack_data = () => {
         let api = new FishpackService();
         api.getfishpackbyId(params.id).then((res) => {
-          setFish_Pack_Data(res.data.fishPack);
-          setHead_removed(res.data.fishPack.head_removed)
-          setSkin_removed(res.data.fishPack.skin_removed)
-          setFish_cut(res.data.fishPack.fish_cut)
-          const isoDate = res.data.fishPack.packing_date;
+            setFish_Pack_Data(res.data.fishPack);
+            setHead_removed(res.data.fishPack.head_removed)
+            setSkin_removed(res.data.fishPack.skin_removed)
+            setFish_cut(res.data.fishPack.fish_cut)
+            const isoDate = res.data.fishPack.packing_date;
 
-          if (isoDate) {
-            const parsedDate = new Date(isoDate);
-            parsedDate.setHours(parsedDate.getHours() + 5);
-            const formattedDate = parsedDate.toISOString().split('T')[0];
-            setPacking_date(formattedDate);
-          } else {
-          }
-          
+            if (isoDate) {
+                const parsedDate = new Date(isoDate);
+                parsedDate.setHours(parsedDate.getHours() + 5);
+                const formattedDate = parsedDate.toISOString().split('T')[0];
+                setPacking_date(formattedDate);
+            } else {
+            }
+
         }).catch((err) => { });
-      }
-      
+    }
+
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
@@ -264,6 +264,17 @@ export default function FishPack() {
 
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
         Fish_Data_Get();
         Fish_Cut_Data_Get();
         const currentDate = new Date().toISOString().split('T')[0];
@@ -336,14 +347,14 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Whole Fish Payment</CFormLabel>
                                         <CTooltip content="Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishpayment}
-                                            defaultValue={params.id ? Fish_Pack_Data.whole_fish_payment : Whole_fish_payment}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                            <CFormInput
+                                                onChange={handlewholefishpayment}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_payment : Whole_fish_payment}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Whole Fish Payment.</CFormFeedback>
                                     </CCol>
@@ -353,25 +364,25 @@ export default function FishPack() {
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Whole Fish Total Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishtotalweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.whole_fish_total_weight : Whole_fish_total_weight}
-                                            list="customerSuggestions"
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                            <CFormInput
+                                                onChange={handlewholefishtotalweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_total_weight : Whole_fish_total_weight}
+                                                list="customerSuggestions"
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
 
-                                        />
-                                       </CTooltip>
+                                            />
+                                        </CTooltip>
                                         <CFormFeedback invalid>Please choose a valid Whole Fish Total Weight.</CFormFeedback>
 
                                     </CCol>
@@ -381,14 +392,14 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Fish Packs</CFormLabel>
                                         <CTooltip content="1,2,3..." placement="left">
-                                        <CFormInput
-                                            onChange={handlefishpack}
-                                            defaultValue={params.id ? Fish_Pack_Data.fish_packs : Fish_packs}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                            <CFormInput
+                                                onChange={handlefishpack}
+                                                defaultValue={params.id ? Fish_Pack_Data.fish_packs : Fish_packs}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Fish Packs.</CFormFeedback>
                                     </CCol>
@@ -398,22 +409,22 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Net Meat Total Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlenetmeattotalweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.net_meat_total_weight : Net_meat_total_weight}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                            <CFormInput
+                                                onChange={handlenetmeattotalweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.net_meat_total_weight : Net_meat_total_weight}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a  Net Meat Total Weight.</CFormFeedback>
                                     </CCol>
@@ -423,22 +434,22 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Bones Total Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlebonetotalweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.bones_total_weight : Bones_total_weight}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                            <CFormInput
+                                                onChange={handlebonetotalweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.bones_total_weight : Bones_total_weight}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Bones Total Weight.</CFormFeedback>
                                     </CCol>
@@ -448,14 +459,14 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Bones Packs</CFormLabel>
                                         <CTooltip content="1,2,3..." placement="left">
-                                        <CFormInput
-                                            onChange={handlebonepacks}
-                                            defaultValue={params.id ? Fish_Pack_Data.bones_packs : Bones_packs}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                            <CFormInput
+                                                onChange={handlebonepacks}
+                                                defaultValue={params.id ? Fish_Pack_Data.bones_packs : Bones_packs}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Bone Packs.</CFormFeedback>
                                     </CCol>
@@ -465,40 +476,40 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishpackweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_weight : Whole_fish_pack_weight}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                            <CFormInput
+                                                onChange={handlewholefishpackweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_weight : Whole_fish_pack_weight}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Whole Fish Pack Weight.</CFormFeedback>
                                     </CCol>
                                 </div>
-                               
+
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
                                         <CTooltip content="Kg/Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishpackprice}
-                                            defaultValue={params.id ? Fish_Pack_Data. whole_fish_pack_price :  Whole_fish_pack_price}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlewholefishpackprice}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_price : Whole_fish_pack_price}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a  Whole Fish Pack Price</CFormFeedback>
                                     </CCol>
@@ -508,15 +519,15 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate</CFormLabel>
                                         <CTooltip content="Kg/Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishpurchaserate}
-                                            defaultValue={params.id ? Fish_Pack_Data.whole_fish_purchase_rate : Whole_fish_purchase_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlewholefishpurchaserate}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_purchase_rate : Whole_fish_purchase_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Whole Fish Purchase Rate</CFormFeedback>
                                     </CCol>
@@ -526,15 +537,15 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
                                         <CTooltip content="Kg/Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlewholefishsalerate}
-                                            defaultValue={params.id ? Fish_Pack_Data.whole_fish_sale_rate : Whole_fish_sale_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlewholefishsalerate}
+                                                defaultValue={params.id ? Fish_Pack_Data.whole_fish_sale_rate : Whole_fish_sale_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Whole Fish Sale Rate.</CFormFeedback>
                                     </CCol>
@@ -546,23 +557,23 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Net Meat Pack Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlenetmeatpackweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.net_meat_pack_weight : Net_meat_Pack_weight}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                            <CFormInput
+                                                onChange={handlenetmeatpackweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.net_meat_pack_weight : Net_meat_Pack_weight}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Net Meat Pack Weight.</CFormFeedback>
                                     </CCol>
@@ -572,15 +583,15 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Net Meat Weight Per Kg</CFormLabel>
                                         <CTooltip content="Gram" placement="left">
-                                        <CFormInput
-                                            onChange={handlenetmeatweightperkg}
-                                            defaultValue={params.id ? Fish_Pack_Data.net_meat_weight_per_kg : Net_meat_weight_per_kg}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlenetmeatweightperkg}
+                                                defaultValue={params.id ? Fish_Pack_Data.net_meat_weight_per_kg : Net_meat_weight_per_kg}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Net Meat Weight Per Kg.</CFormFeedback>
                                     </CCol>
@@ -590,15 +601,15 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Net Meat Sale Rate</CFormLabel>
                                         <CTooltip content="Kg/Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlenetmeatsalerate}
-                                            defaultValue={params.id ? Fish_Pack_Data.net_meat_sale_rate : Net_meat_sale_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlenetmeatsalerate}
+                                                defaultValue={params.id ? Fish_Pack_Data.net_meat_sale_rate : Net_meat_sale_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Net Meat Sale Rate.</CFormFeedback>
                                     </CCol>
@@ -608,15 +619,15 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Bones Pack Weight</CFormLabel>
                                         <CTooltip content="Kg" placement="left">
-                                        <CFormInput
-                                            onChange={handlebonepackweight}
-                                            defaultValue={params.id ? Fish_Pack_Data.bones_pack_weight : Bones_pack_weight}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlebonepackweight}
+                                                defaultValue={params.id ? Fish_Pack_Data.bones_pack_weight : Bones_pack_weight}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Bones Pack Weight.</CFormFeedback>
                                     </CCol>
@@ -626,38 +637,38 @@ export default function FishPack() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Bone Pack Rate</CFormLabel>
                                         <CTooltip content="Kg/Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlebonespackrate}
-                                            defaultValue={params.id ? Fish_Pack_Data.bones_pack_rate : Bones_pack_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlebonespackrate}
+                                                defaultValue={params.id ? Fish_Pack_Data.bones_pack_rate : Bones_pack_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Bone Pack Rate.</CFormFeedback>
                                     </CCol>
                                 </div>
-                                
+
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price</CFormLabel>
                                         <CTooltip content="Rs" placement="left">
-                                        <CFormInput
-                                            onChange={handlebonespackprice}
-                                            defaultValue={params.id ? Fish_Pack_Data.bones_pack_price : Bones_pack_price}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
+                                            <CFormInput
+                                                onChange={handlebonespackprice}
+                                                defaultValue={params.id ? Fish_Pack_Data.bones_pack_price : Bones_pack_price}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
                                         </CTooltip>
                                         <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
                                     </CCol>
                                 </div>
-                                
+
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Available Meat Packs</CFormLabel>
@@ -673,13 +684,13 @@ export default function FishPack() {
                                         <CFormFeedback invalid>Please choose a Available Meat Packs.</CFormFeedback>
                                     </CCol>
                                 </div>
-                               
+
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername"> Available Bone Packs</CFormLabel>
                                         <CFormInput
                                             onChange={handleavailablebonepacks}
-                                            defaultValue={params.id ? Fish_Pack_Data. available_bones_packs :  Available_bones_packs}
+                                            defaultValue={params.id ? Fish_Pack_Data.available_bones_packs : Available_bones_packs}
                                             type="number"
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"

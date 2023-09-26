@@ -209,6 +209,17 @@ export default function Order_Purchase_Item() {
     });
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
         params.id ? get_Order_Purchase_Item_data() : ''
     }, [])
 

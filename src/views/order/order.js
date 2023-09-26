@@ -229,6 +229,17 @@ export default function Orders() {
 
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
         Customer_Data_Get();
         orderstatus_Data_Get();
         paymentmode_Data_Get();

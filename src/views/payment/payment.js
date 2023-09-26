@@ -28,8 +28,8 @@ export default function Payments() {
     const [Payment_balance, setPayment_balance] = useState('')
     const [Customer_data, setCustomer_data] = useState('')
     const [Tip_for_rider, setTip_for_rider] = useState('')
-    const [Payment_tip,setPayment_tip] = useState('')
-    const [Customer_id,setCustomer_id] = useState('')
+    const [Payment_tip, setPayment_tip] = useState('')
+    const [Customer_id, setCustomer_id] = useState('')
 
     const [Payment_Data, setPayment_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
@@ -44,21 +44,21 @@ export default function Payments() {
         const value = e.target.value;
         setCustomer(value);
         const selectedCustomer = customerData.find((customer) =>
-                        customer.full_name.toLowerCase() === value.toLowerCase()
-                );
-                if (selectedCustomer) {
-                        setCustomer_id(selectedCustomer.id);
-                        setCustomerNotFound(false);
-                } else {
-                       setCustomer_id(null);
-                        setCustomerNotFound(true);
-                }
-                const filtered = customerData.filter((customer) =>
-                        customer.full_name.toLowerCase().includes(value.toLowerCase())
-                );
-                setFilteredCustomers(filtered);
+            customer.full_name.toLowerCase() === value.toLowerCase()
+        );
+        if (selectedCustomer) {
+            setCustomer_id(selectedCustomer.id);
+            setCustomerNotFound(false);
+        } else {
+            setCustomer_id(null);
+            setCustomerNotFound(true);
+        }
+        const filtered = customerData.filter((customer) =>
+            customer.full_name.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredCustomers(filtered);
     }
-    const handlepayment = (e) => {setPayment_date(e.target.value)}
+    const handlepayment = (e) => { setPayment_date(e.target.value) }
     const handlepaymentamount = (e) => { setPayment_amount(e.target.value) }
     const handlepaymentmethod = (e) => { setPayment_method(e.target.value) }
     const handlerecievingstaff = (e) => { setRecieving_staff(e.target.value) }
@@ -66,7 +66,7 @@ export default function Payments() {
     const handlepaymentbalance = (e) => { setPayment_balance(e.target.value) }
     const handletipforrider = (e) => { setTip_for_rider(e.target.value) }
     const handlepaymenttip = (e) => { setPayment_tip(e.target.value) }
-    
+
 
     let get_Payment_data = () => {
         let api = new PaymentsService;
@@ -75,10 +75,10 @@ export default function Payments() {
             setPayment_method(res.data.payment.payment_method)
             const isoDate = res.data.payment.payment_date;
             if (isoDate) {
-              const parsedDate = new Date(isoDate);
-              parsedDate.setHours(parsedDate.getHours() + 5);
-              const formattedDate = parsedDate.toISOString().split('T')[0];
-              setPayment_date(formattedDate);
+                const parsedDate = new Date(isoDate);
+                parsedDate.setHours(parsedDate.getHours() + 5);
+                const formattedDate = parsedDate.toISOString().split('T')[0];
+                setPayment_date(formattedDate);
             } else {
             }
         }).catch((err) => { });
@@ -137,8 +137,8 @@ export default function Payments() {
             recieving_staff: Recieving_staff || Payment_Data.recieving_staff,
             recieving_account: Recieving_account || Payment_Data.recieving_account,
             payment_balance: Payment_balance || Payment_Data.payment_balance,
-            payment_tip: Payment_tip|| Payment_Data.payment_tip,
-            tip_for_rider: Tip_for_rider|| Payment_Data.tip_for_rider
+            payment_tip: Payment_tip || Payment_Data.payment_tip,
+            tip_for_rider: Tip_for_rider || Payment_Data.tip_for_rider
         };
 
         const api = new PaymentsService();
@@ -187,9 +187,20 @@ export default function Payments() {
         });
     });
 
-  
+
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
         params.id ? get_Payment_data() : ''
     }, [])
 
@@ -241,7 +252,7 @@ export default function Payments() {
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername">Payment Date</CFormLabel>
                                         <CFormInput
-                                            onChange={(e)=>{setPayment_date(e.target.value)}}
+                                            onChange={(e) => { setPayment_date(e.target.value) }}
                                             value={Payment_date}
                                             type="date"
                                             id="validationCustomUsername"
@@ -249,8 +260,8 @@ export default function Payments() {
                                             required
 
                                         />
-                                            <CFormFeedback invalid>Please choose a Payment Date.</CFormFeedback>
-                                       
+                                        <CFormFeedback invalid>Please choose a Payment Date.</CFormFeedback>
+
                                     </CCol>
                                 </div>
 
@@ -268,12 +279,12 @@ export default function Payments() {
                                                 }
                                             }}
                                             type="text"
-                                            defaultValue={params.id ? Payment_Data.payment_amount:Payment_amount}
+                                            defaultValue={params.id ? Payment_Data.payment_amount : Payment_amount}
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                         />
-                                 
+
                                         <CFormFeedback invalid>Please choose a Payment Amount.</CFormFeedback>
                                     </CCol>
                                 </div>
@@ -290,7 +301,7 @@ export default function Payments() {
                                             required
 
                                         >
-                                                                                        <option>Select</option>
+                                            <option>Select</option>
                                             {
                                                 paymentmethods.map((i) => {
                                                     return (
@@ -298,7 +309,7 @@ export default function Payments() {
                                                     )
                                                 })
                                             }
-                                            </CFormSelect>
+                                        </CFormSelect>
 
                                         <CFormFeedback invalid>Please choose a valid Payment Method.</CFormFeedback>
 
@@ -326,12 +337,12 @@ export default function Payments() {
                                         <CFormInput
                                             onChange={handlerecievingaccount}
                                             type="number"
-                                            defaultValue={params.id ? Payment_Data.recieving_account:Recieving_account}
+                                            defaultValue={params.id ? Payment_Data.recieving_account : Recieving_account}
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
                                         />
-                                           
+
                                         <CFormFeedback invalid>Please choose a Recieving Account.</CFormFeedback>
                                     </CCol>
                                 </div>

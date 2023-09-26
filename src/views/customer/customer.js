@@ -79,7 +79,7 @@ export default function Customer() {
                 setModalVisible(true);
         };
 
-       
+
 
         const handledistance = (e) => { setDistance(e.target.value) }
         const handledeliverycharges = (e) => { setDeliveryCharges(e.target.value) }
@@ -204,6 +204,17 @@ export default function Customer() {
         });
 
         useEffect(() => {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                        navigate("/");
+                } else {
+                        const tokenData = JSON.parse(atob(token.split('.')[1]));
+                        const tokenExpirationTimestamp = tokenData.exp * 1000;
+                        if (Date.now() >= tokenExpirationTimestamp) {
+                                localStorage.removeItem('token')
+                                navigate("/");
+                        }
+                }
                 Customer_Data_Get();
                 params.id ? get_customer_data() : ''
 
@@ -212,11 +223,11 @@ export default function Customer() {
         const AnyReactComponent = ({ text }) => <div>{text}</div>;
         const defaultProps = {
                 center: {
-                  lat: 10.99835602,
-                  lng: 77.01502627
+                        lat: 10.99835602,
+                        lng: 77.01502627
                 },
                 zoom: 11
-              };
+        };
 
         return (
                 <>

@@ -339,6 +339,17 @@ export default function OrderStockItem() {
 
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
         if (params.id) {
             get_order_stock_item_data();
         }
@@ -425,8 +436,8 @@ export default function OrderStockItem() {
                                             disabled={Fish_pack_ref === ''}
                                         />
                                         <CFormFeedback invalid>Please choose an Total Pack Ordered.</CFormFeedback>
-                                        
-                                        {error &&<><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></> }
+
+                                        {error && <><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></>}
                                     </CCol>
                                 </div>
 

@@ -1,4 +1,4 @@
-import {React,useEffect} from 'react'
+import { React, useEffect } from 'react'
 
 import {
   CAvatar,
@@ -53,14 +53,24 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
+import { useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   useEffect(() => {
-    if(!localStorage.getItem('token')){
-      navigate("/")
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate("/");
+    } else {
+      const tokenData = JSON.parse(atob(token.split('.')[1]));
+      const tokenExpirationTimestamp = tokenData.exp * 1000;
+      if (Date.now() >= tokenExpirationTimestamp) {
+        localStorage.removeItem('token')
+        navigate("/");
+      }
     }
-  
-   }, [])
+
+  }, [])
   const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
 
   const progressExample = [
@@ -448,7 +458,7 @@ const Dashboard = () => {
                       <CTableDataCell className="text-center">
                         <CIcon size="xl" icon={item.payment.icon} />
                       </CTableDataCell>
-                          <CTableDataCell>
+                      <CTableDataCell>
                         <div className="small text-medium-emphasis">Last login</div>
                         <strong>{item.activity}</strong>
                       </CTableDataCell>

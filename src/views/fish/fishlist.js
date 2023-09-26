@@ -110,7 +110,20 @@ function Fish_List() {
 
 
 
-    useEffect(() => { get_data(); }, [])
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate("/");
+        } else {
+            const tokenData = JSON.parse(atob(token.split('.')[1]));
+            const tokenExpirationTimestamp = tokenData.exp * 1000;
+            if (Date.now() >= tokenExpirationTimestamp) {
+                localStorage.removeItem('token')
+                navigate("/");
+            }
+        }
+        get_data();
+    }, [])
 
     return (
         <>
