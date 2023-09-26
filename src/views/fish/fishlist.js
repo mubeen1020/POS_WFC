@@ -16,7 +16,6 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
-import CustomerService from "src/services/customer_services";
 import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";

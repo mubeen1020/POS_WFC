@@ -22,26 +22,30 @@ import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
 import { globalEventAtom } from "src/_state/globalEventAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import OrdersService from "src/services/order_services";
-import { orderitemsAtom } from "src/_state/orderitemsAtom";
-import OrderitemsService from "src/services/orderstockitem_services";
-import FishpackService from "src/services/fishpack_services";
+import FishService from "src/services/fish_services";
+import { orderpurchaseitemAtom } from "src/_state/orderpurchaseitemAtom";
+import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
+import FishCutsService from "src/services/fishcut_services";
+import { paymentAtom } from "src/_state/paymentAtom";
+import PaymentsService from "src/services/payment_services";
+import CustomerService from "src/services/customer_services";
+import PaymentmethodService from "src/services/paymentmethod_services";
 
-function Order_Stock_Item_List() {
+function Payments_List() {
     const navigate = useNavigate();
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const orderitems = useRecoilValue(orderitemsAtom)
+    const payment = useRecoilValue(paymentAtom)
 
     const renderHeader = () => {
         return (
             <div className="flex justify-content-between">
                 <span className="mb-3">
-                    <h4><strong>Order Stock Item</strong><span className="" style={{ float: "right" }}>
+                    <h4><strong>Payment</strong><span className="" style={{ float: "right" }}>
                         <>
-                            <Link to="/Order/OrderStockItemsList/OrderItems">
+                            <Link to="/Payment/PaymentList/Payment">
                                 <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
                                     <CIcon icon={cilPlus} className="mr-1" />  Add
                                 </CButton>
@@ -61,7 +65,6 @@ function Order_Stock_Item_List() {
             </div>
         )
     }
-
     const onGlobalFilterChange = (e) => {
         const value = e.target.value;
         setGlobalFilterValue(value);
@@ -71,16 +74,16 @@ function Order_Stock_Item_List() {
     const handleClick = (event) => {
         const clickedRowData = event.data;
         const clickedRowId = clickedRowData.id;
-        navigate(`/Order/OrderStockItemsList/OrderStockItems/OrderStockItemsupdate/${clickedRowId}/`);
+        navigate(`/Payment/PaymentList/Payment/Paymentupdate/${clickedRowId}/`);
     }
 
 
     let delete_record = () => {
         let _data = selectedRows.map(i => i.id);
-        let api = new OrderitemsService();
+        let api = new PaymentsService();
         _data.forEach((id) => {
 
-            api.deleteorderitems(id)
+            api.deletepayments(id)
                 .then((res) => {
                     get_data();
                     toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
@@ -106,8 +109,17 @@ function Order_Stock_Item_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorderitems', search })
+        setGlobatEvent({ eventName: 'refreshpayment', search })
     }
+
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr.payment_date);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
 
     useEffect(() => { get_data(); }, [])
 
@@ -124,7 +136,7 @@ function Order_Stock_Item_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={orderitems}
+                            value={payment}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"
@@ -133,18 +145,15 @@ function Order_Stock_Item_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_id" header="Order" body={OrdersService.ordername} ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_pack_ref" header="Fish Pack Refrence" body={FishpackService.fishpackname} sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="total_packs_ordered" header="Total Packs Ordered" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin"  ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="customer" header="Customer" body={CustomerService.Customername} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_date" header="Payment Date" body={formatDate} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_amount" header="Payment Amount" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_method" body={PaymentmethodService.paymentmethodsname} header="Payment Method" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="recieving_staff" header="Recieving Staff" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="recieving_account" header="Recieving Account" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_balance" header="Payment Balance" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_tip" header="Payment Tip" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="tip_for_rider" header="Tip For Rider" ></Column>
                         </DataTable>
                     </CCardBody>
                 </CCard>
@@ -152,4 +161,4 @@ function Order_Stock_Item_List() {
         </>
     )
 }
-export default Order_Stock_Item_List;
+export default Payments_List;

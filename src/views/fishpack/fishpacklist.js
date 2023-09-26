@@ -25,6 +25,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { fishpackAtom } from "src/_state/fishpackAtom";
 import FishpackService from "src/services/fishpack_services";
 import FishService from "src/services/fish_services";
+import FishCutsService from "src/services/fishcut_services";
 
 function FishPack_List() {
     const navigate = useNavigate();
@@ -141,18 +142,17 @@ function FishPack_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="packing_date" header="Packing Date " body={formatDate}></Column>
+                            {/* <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="packing_date" header="Packing Date " body={formatDate}></Column> */}
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_payment" header="Whole Fish Payment" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_total_weight" header="Whole Fish Total Weight" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_packs" header="Fish Packs" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_pack_weight" header="Whole Fish Pack Weight" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_purchase_rate" header="Whole Fish Purchase Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_sale_rate" header="Whole Fish Sale Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_sale_rate" header="Net Meat Sale Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_weight_per_kg" header="Net Meat Weight Per Kg" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_total_weight" header="Bones Total Weight" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_packs" header="Bones Packs" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_sale_rate" header="Whole Fish Rate" sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_total_weight" header="Whole Fish Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_total_weight" header="Net Meat Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_total_weight" header="Bone Weight" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_meat_sale_rate" header="Meat Pack Price" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones_pack_price" header="Bones Pack Price" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="available_meat_packs" header="Available Meat Packs" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="available_bones_packs" header="Available Bone Packs" ></Column>
                         </DataTable>
                     </CCardBody>
                 </CCard>

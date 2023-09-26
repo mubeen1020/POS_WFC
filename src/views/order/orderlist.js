@@ -23,8 +23,6 @@ import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
 import { globalEventAtom } from "src/_state/globalEventAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { fishAtom } from "src/_state/fishAtom";
-import FishService from "src/services/fish_services";
 import OrdersService from "src/services/order_services";
 import { orderAtom } from "src/_state/orderAtom";
 import PaymentmodeService from "src/services/paymentmode_services";

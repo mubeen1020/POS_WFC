@@ -131,7 +131,7 @@ export default function Orders() {
                 });
                 setTimeout(() => {
                     navigate('/Order/OrderList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {
@@ -173,7 +173,7 @@ export default function Orders() {
                 });
                 setTimeout(() => {
                     navigate('/Order/OrderList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {

@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CInputGroupText, CInputGroup, CModalHeader, CModalBody, CModal } from "@coreui/react";
 import { Toast } from 'primereact/toast';
 import CustomerService from "src/services/customer_services";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
-import { cilCheck } from "@coreui/icons";
+import { cilCheck, cilMap, cilUser } from "@coreui/icons";
+import { Dialog } from "primereact/dialog";
+import GoogleMapReact from 'google-map-react';
+
+
 
 
 export default function Customer() {
@@ -34,6 +38,7 @@ export default function Customer() {
         const [Customer_Data, setCustomer_Data] = useState([])
 
         const [customerNotFound, setCustomerNotFound] = useState(false)
+        const [modalVisible, setModalVisible] = useState(false);
 
         const handleusername = (e) => { setUserName(e.target.value) }
         const handlepassword = (e) => { setPassword(e.target.value) }
@@ -65,7 +70,17 @@ export default function Customer() {
         const handlephone3 = (e) => { setPhone3(e.target.value) }
         const handleaddress = (e) => { setAddress(e.target.value) }
         const handlearea = (e) => { setArea(e.target.value) }
-        const handlepinlocation = (e) => { setPinLocation(e.target.value) }
+        const handlepinlocation = (e) => {
+                setPinLocation(e.target.value);
+        };
+
+        const openMapModal = () => {
+                console.log("ggggggg")
+                setModalVisible(true);
+        };
+
+       
+
         const handledistance = (e) => { setDistance(e.target.value) }
         const handledeliverycharges = (e) => { setDeliveryCharges(e.target.value) }
 
@@ -81,8 +96,6 @@ export default function Customer() {
                 handleSubmit(event)
                 event.preventDefault();
                 let formData = {
-                        // username: UserName,
-                        // password: Password,
                         full_name: Name,
                         care_of_ref: Care_Of_Ref_id,
                         care_of_name: Care_Of_Name,
@@ -109,7 +122,7 @@ export default function Customer() {
                                 });
                                 setTimeout(() => {
                                         navigate('/Customer/customerList');
-                                }, [3000])
+                                }, [2000])
 
                         })
                         .catch((error) => {
@@ -155,7 +168,7 @@ export default function Customer() {
                                 });
                                 setTimeout(() => {
                                         navigate('/Customer/customerList');
-                                }, [3000])
+                                }, [2000])
 
                         })
                         .catch((error) => {
@@ -196,6 +209,15 @@ export default function Customer() {
 
         }, [])
 
+        const AnyReactComponent = ({ text }) => <div>{text}</div>;
+        const defaultProps = {
+                center: {
+                  lat: 10.99835602,
+                  lng: 77.01502627
+                },
+                zoom: 11
+              };
+
         return (
                 <>
 
@@ -213,42 +235,41 @@ export default function Customer() {
                                                                 validated={validated}
                                                                 onSubmit={(event) => { params.id ? customerDataupdateSubmit(event) : customerDataSubmit(event) }}
                                                         >
-                                                       {
-                                                        params.id &&
-                                                       <>
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Username</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handleusername}
-                                                                                        defaultValue={params.id ? Customer_Data.username : UserName}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                        disabled={params.id ? params.id : ''}
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Username.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
+                                                                {
+                                                                        params.id &&
+                                                                        <>
+                                                                                <div >
+                                                                                        <CCol >
+                                                                                                <CFormLabel htmlFor="validationCustomUsername">Username</CFormLabel>
+                                                                                                <CFormInput
+                                                                                                        onChange={handleusername}
+                                                                                                        defaultValue={params.id ? Customer_Data.username : UserName}
+                                                                                                        type="text"
+                                                                                                        id="validationCustomUsername"
+                                                                                                        aria-describedby="inputGroupPrepend"
+                                                                                                        required
+                                                                                                        disabled={params.id ? params.id : ''}
+                                                                                                />
+                                                                                                <CFormFeedback invalid>Please choose a Username.</CFormFeedback>
+                                                                                        </CCol>
+                                                                                </div>
 
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Password</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlepassword}
-                                                                                        defaultValue={params.id ? Customer_Data.password : Password}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                        // disabled={params.id ? params.id : ''}
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Password.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-                                                                </>
-                                                        }
+                                                                                <div >
+                                                                                        <CCol >
+                                                                                                <CFormLabel htmlFor="validationCustomUsername">Password</CFormLabel>
+                                                                                                <CFormInput
+                                                                                                        onChange={handlepassword}
+                                                                                                        defaultValue={params.id ? Customer_Data.password : Password}
+                                                                                                        type="text"
+                                                                                                        id="validationCustomUsername"
+                                                                                                        aria-describedby="inputGroupPrepend"
+                                                                                                        required
+                                                                                                />
+                                                                                                <CFormFeedback invalid>Please choose a Password.</CFormFeedback>
+                                                                                        </CCol>
+                                                                                </div>
+                                                                        </>
+                                                                }
                                                                 <div >
                                                                         <CCol >
                                                                                 <CFormLabel htmlFor="validationCustomUsername">Name</CFormLabel>
@@ -388,17 +409,40 @@ export default function Customer() {
                                                                 <div >
                                                                         <CCol >
                                                                                 <CFormLabel htmlFor="validationCustomUsername">Pin Location</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlepinlocation}
-                                                                                        defaultValue={params.id ? Customer_Data.pin_location : PinLocation}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
+                                                                                <CInputGroup>
+                                                                                        <CFormInput
+                                                                                                onChange={handlepinlocation}
+                                                                                                defaultValue={params.id ? Customer_Data.pin_location : PinLocation}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+
+                                                                                        <CInputGroupText onClick={openMapModal} style={{ cursor: 'pointer' }}>
+                                                                                                <CIcon icon={cilMap} />
+                                                                                        </CInputGroupText>
+                                                                                </CInputGroup>
                                                                                 <CFormFeedback invalid>Please choose a Pin Location.</CFormFeedback>
                                                                         </CCol>
                                                                 </div>
+
+
+                                                                <Dialog header="Map" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
+                                                                        <div style={{ height: '100vh', width: '100%' }}>
+                                                                                <GoogleMapReact
+                                                                                        bootstrapURLKeys={{ key: "" }}
+                                                                                        defaultCenter={defaultProps.center}
+                                                                                        defaultZoom={defaultProps.zoom}
+                                                                                >
+                                                                                        <AnyReactComponent
+                                                                                                lat={59.955413}
+                                                                                                lng={30.337844}
+                                                                                                text="pakistan"
+                                                                                        />
+                                                                                </GoogleMapReact>
+                                                                        </div>
+                                                                </Dialog>
 
                                                                 <div>
                                                                         <CCol>

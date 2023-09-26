@@ -9,9 +9,13 @@ class PaymentmethodService {
     updatepaymentmethods = (id, data) => apiClient().put("api/payment-methods/" + id, data);
     static paymentmethodsname(row) {
         const paymentmethodsData = useRecoilValue(paymentmethodAtom)
+        if (paymentmethodsData && Array.isArray(paymentmethodsData)) {
         const filteredpaymentmethods = paymentmethodsData.filter(item => row.payment_method == item.id);
         const paymentmethodsNames = filteredpaymentmethods.map(item => item.name);
         return paymentmethodsNames;
+    } else {
+        return [];
+    }
     }
 
 }

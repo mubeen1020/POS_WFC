@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 import { customerAtom } from 'src/_state/customerAtom'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import CustomerService from 'src/services/customer_services'
 import { globalEventAtom } from 'src/_state/globalEventAtom'
 import { fishAtom } from 'src/_state/fishAtom'
@@ -22,6 +22,10 @@ import { orderitemsAtom } from 'src/_state/orderitemsAtom'
 import OrderitemsService from 'src/services/orderstockitem_services'
 import { fishcutAtom } from 'src/_state/fishcutAtom'
 import FishCutsService from 'src/services/fishcut_services'
+import { orderpurchaseitemAtom } from 'src/_state/orderpurchaseitemAtom'
+import OrderpurchaseitemService from 'src/services/orderpurchaseitem_services'
+import { paymentAtom } from 'src/_state/paymentAtom'
+import PaymentsService from 'src/services/payment_services'
 
 const DefaultLayout = () => {
   const setCustomer = useSetRecoilState(customerAtom);
@@ -34,6 +38,8 @@ const DefaultLayout = () => {
   const setOrderstatus = useSetRecoilState(orderstatusAtom);
   const setOrderitem = useSetRecoilState(orderitemsAtom);
   const setFishcut = useSetRecoilState(fishcutAtom);
+  const setOrderpurchaseitem = useSetRecoilState(orderpurchaseitemAtom);
+  const setPayment = useSetRecoilState(paymentAtom);
   const globatEvent = useRecoilValue(globalEventAtom);
 
   const refreshCustomer = (search = "") => {
@@ -197,6 +203,38 @@ const DefaultLayout = () => {
     }).catch((err) => { });
   }
 
+  const refreshorderpurchaseitem = (search = "") => {
+    const api = new OrderpurchaseitemService;
+    api.getorderpurchaseitem(search).then((res) => {
+      if (Array.isArray(res.data)) {
+        setOrderpurchaseitem(res.data);
+      } else {
+        if (res.data && res.data.message === "order purchase item not found.") {
+          setOrderpurchaseitem([]);
+        } else {
+          setOrderpurchaseitem(res.data);
+        }
+      }
+
+    }).catch((err) => { });
+  }
+
+  const refreshpayment = (search = "") => {
+    const api = new PaymentsService;
+    api.getpayments(search).then((res) => {
+      if (Array.isArray(res.data)) {
+        setPayment(res.data);
+      } else {
+        if (res.data && res.data.message === "payment not found.") {
+          setPayment([]);
+        } else {
+          setPayment(res.data.payments);
+        }
+      }
+
+    }).catch((err) => { });
+  }
+
   useEffect(() => {
     refreshCustomer();
     refreshfish();
@@ -208,6 +246,8 @@ const DefaultLayout = () => {
     refreshorderstatus();
     refreshorderitems();
     refreshfishcut()
+    refreshorderpurchaseitem()
+    refreshpayment()
   }, [])
 
   useEffect(() => {
@@ -229,6 +269,12 @@ const DefaultLayout = () => {
         break;
         case 'refreshfishcut':
           refreshfishcut(globatEvent.search);
+        break;
+        case 'refreshorderpurchaseitem':
+          refreshorderpurchaseitem(globatEvent.search);
+        break;
+        case 'refreshpayment':
+          refreshpayment(globatEvent.search);
         break;
       default:
     }

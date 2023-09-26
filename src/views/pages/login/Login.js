@@ -84,11 +84,7 @@ const Login = () => {
               >
                 <CCardBody className="text-center">
                   <div>
-                    <img 
-                      src="https://smartpossoftware.com/assets/images/logo/smart-pos-software-logo.png"
-                      width="371px"
-                      alt="Logo"
-                    />
+                    <h1>POINT OF SALE</h1>
                     <p>
                       Streamline your business operations with our cutting-edge
                       Point of Sale software. Boost efficiency, enhance customer

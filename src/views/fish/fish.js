@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton } from "@coreui/react";
 import { Toast } from 'primereact/toast';
-import CustomerService from "src/services/customer_services";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
@@ -80,7 +79,7 @@ export default function Fish() {
                 });
                 setTimeout(() => {
                     navigate('/Fish/FishList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {
@@ -124,7 +123,7 @@ export default function Fish() {
                 });
                 setTimeout(() => {
                     navigate('/Fish/FishList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {

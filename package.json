@@ -36,6 +36,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.1",
     "core-js": "^3.24.1",
+    "google-map-react": "^2.2.1",
     "primeicons": "^6.0.1",
     "primereact": "^9.6.0",
     "prop-types": "^15.8.1",

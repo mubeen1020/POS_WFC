@@ -25,7 +25,8 @@ const AppSidebar = () => {
       onClick={() => { toggleSidebar}}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
+        <h2 className="sidebar-brand-full" style={{padding:'10px'}}>POINT OF SALE</h2>
+        {/* <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} /> */}
         <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
       </CSidebarBrand>
       <CSidebarNav>

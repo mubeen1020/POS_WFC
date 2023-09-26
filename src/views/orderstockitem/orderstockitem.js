@@ -36,6 +36,7 @@ export default function OrderStockItem() {
     const [Fishname, setFishname] = useState('')
     const [Fish_cut, setFish_cut] = useState('')
     const [Packingdate, setPackingdate] = useState('')
+    const [Avaiablepack, setAvaiablepack] = useState('')
 
 
     const [fishpack_id_data, setfishpack_id_data] = useState([])
@@ -44,6 +45,7 @@ export default function OrderStockItem() {
     const [Fishpackfilterdata, setFishpackfilterdata] = useState([])
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
+    const [error, setError] = useState(false);
 
     const orderData = useRecoilValue(orderAtom)
     const customerData = useRecoilValue(customerAtom)
@@ -84,7 +86,6 @@ export default function OrderStockItem() {
     const handlefishpackref = (e) => {
         const value = e.target.value;
         setFish_pack_ref(value)
-        console.log(value)
         const fishpackArray = [];
         const selectedfish = fishData.filter((fish) => {
             return fishpackData.some((fishpack) => {
@@ -106,6 +107,8 @@ export default function OrderStockItem() {
                                 setPack_price(fishpack.fish_packs)
                                 setFishname(fish.local_name)
                                 setFish_cut(fishcut.fish_cut)
+                                setTotal_packs_ordered(fishpack.available_packs)
+                                setAvaiablepack(fishpack.available_packs)
                                 const isoDate = fishpack.packing_date;
 
                                 if (isoDate) {
@@ -115,7 +118,7 @@ export default function OrderStockItem() {
                                     setPackingdate(formattedDate);
                                 } else {
                                 }
-                                console.log(fish.local_name)
+
                             }
                             return result;
                         }
@@ -148,7 +151,17 @@ export default function OrderStockItem() {
         setFishpackfilterdata(searchStringArray)
 
     }
-    const handletotalpackorder = (e) => { setTotal_packs_ordered(e.target.value); }
+    const handletotalpackorder = (e) => {
+        const value = e.target.value;
+
+        if (value >= Avaiablepack) {
+            setError(true);
+            setTotal_packs_ordered('');
+        } else {
+            setError(false);
+            setTotal_packs_ordered(value);
+        }
+    }
     const handlefishweight = (e) => { setFish_weight(e.target.value) }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
     const handlefishrate = (e) => { setFish_rate(e.target.value) }
@@ -199,7 +212,7 @@ export default function OrderStockItem() {
                 });
                 setTimeout(() => {
                     navigate('/Order/OrderStockItemsList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {
@@ -244,7 +257,7 @@ export default function OrderStockItem() {
                 });
                 setTimeout(() => {
                     navigate('/Order/OrderStockItemsList');
-                }, [3000])
+                }, [2000])
 
             })
             .catch((error) => {
@@ -409,8 +422,11 @@ export default function OrderStockItem() {
                                             id="validationCustomUsername"
                                             aria-describedby="inputGroupPrepend"
                                             required
+                                            disabled={Fish_pack_ref === ''}
                                         />
-                                        <CFormFeedback invalid>Please choose a Total Pack Ordered .</CFormFeedback>
+                                        <CFormFeedback invalid>Please choose an Total Pack Ordered.</CFormFeedback>
+                                        
+                                        {error &&<><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></> }
                                     </CCol>
                                 </div>
 
@@ -425,7 +441,7 @@ export default function OrderStockItem() {
                                             required
                                             disabled
                                         />
-                                        <CFormFeedback invalid>Please choose an Fish.</CFormFeedback>
+
                                     </CCol>
                                 </div>
 
