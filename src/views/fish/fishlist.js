@@ -20,9 +20,6 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { fishAtom } from "src/_state/fishAtom";
 import FishService from "src/services/fish_services";
 
 function Fish_List() {
@@ -30,8 +27,7 @@ function Fish_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const fish = useRecoilValue(fishAtom)
+    const [TableData, setTableData] = useState([])
 
     const renderHeader = () => {
         return (
@@ -103,8 +99,21 @@ function Fish_List() {
     const header = renderHeader();
 
 
-    const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshfish', search })
+    const get_data = (search='') => {
+        const api = new FishService();
+        api.getfish(search)
+          .then((res) => {
+            if (Array.isArray(res.data)) {
+              setTableData(res.data);
+            } else {
+              if (res.data && res.data.message === "fish item not found.") {
+                setTableData([]);
+              } else {
+                setTableData(res.data.fishList);
+              }
+            }
+          })
+          .catch((err) => { });
     }
 
 
@@ -138,7 +147,7 @@ function Fish_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={fish}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"

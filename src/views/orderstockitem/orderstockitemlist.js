@@ -20,10 +20,7 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import OrdersService from "src/services/order_services";
-import { orderitemsAtom } from "src/_state/orderitemsAtom";
 import OrderitemsService from "src/services/orderstockitem_services";
 import FishpackService from "src/services/fishpack_services";
 
@@ -32,8 +29,7 @@ function Order_Stock_Item_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const orderitems = useRecoilValue(orderitemsAtom)
+    const [TableData,setTableData] = useState([])
 
     const renderHeader = () => {
         return (
@@ -106,7 +102,19 @@ function Order_Stock_Item_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorderitems', search })
+        const api = new OrderitemsService;
+        api.getorderitems(search).then((res) => {
+          if (Array.isArray(res.data)) {
+            setTableData(res.data);
+          } else {
+            if (res.data && res.data.message === "orderItems not found.") {
+              setTableData([]);
+            } else {
+              setTableData(res.data.orderItems);
+            }
+          }
+    
+        }).catch((err) => { });
     }
 
     useEffect(() => {
@@ -137,7 +145,7 @@ function Order_Stock_Item_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={orderitems}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"

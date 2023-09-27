@@ -20,13 +20,6 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import FishService from "src/services/fish_services";
-import { orderpurchaseitemAtom } from "src/_state/orderpurchaseitemAtom";
-import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
-import FishCutsService from "src/services/fishcut_services";
-import { paymentAtom } from "src/_state/paymentAtom";
 import PaymentsService from "src/services/payment_services";
 import CustomerService from "src/services/customer_services";
 import PaymentmethodService from "src/services/paymentmethod_services";
@@ -36,8 +29,7 @@ function Payments_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const payment = useRecoilValue(paymentAtom)
+    const [TableData,setTableData] = useState([])
 
     const renderHeader = () => {
         return (
@@ -109,7 +101,19 @@ function Payments_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshpayment', search })
+        const api = new PaymentsService;
+    api.getpayments(search).then((res) => {
+      if (Array.isArray(res.data)) {
+        setTableData(res.data);
+      } else {
+        if (res.data && res.data.message === "payment not found.") {
+          setTableData([]);
+        } else {
+          setTableData(res.data.payments);
+        }
+      }
+
+    }).catch((err) => { });
     }
 
     const formatDate = (dateStr) => {
@@ -149,7 +153,7 @@ function Payments_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={payment}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"

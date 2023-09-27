@@ -20,10 +20,7 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import FishService from "src/services/fish_services";
-import { orderpurchaseitemAtom } from "src/_state/orderpurchaseitemAtom";
 import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import FishCutsService from "src/services/fishcut_services";
 
@@ -32,8 +29,8 @@ function Order_purchase_item_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const orderpurchaseitem = useRecoilValue(orderpurchaseitemAtom)
+    const [TableData, setTableData] = useState([])
+
 
     const renderHeader = () => {
         return (
@@ -105,7 +102,19 @@ function Order_purchase_item_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorderpurchaseitem', search })
+        const api = new OrderpurchaseitemService;
+        api.getorderpurchaseitem(search).then((res) => {
+            if (Array.isArray(res.data)) {
+                setTableData(res.data);
+            } else {
+                if (res.data && res.data.message === "order purchase item not found.") {
+                    setTableData([]);
+                } else {
+                    setTableData(res.data);
+                }
+            }
+
+        }).catch((err) => { });
     }
 
 
@@ -139,7 +148,7 @@ function Order_purchase_item_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={orderpurchaseitem}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"

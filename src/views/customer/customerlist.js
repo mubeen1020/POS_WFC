@@ -21,9 +21,6 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { customerAtom } from "src/_state/customerAtom";
 
 function Customer_List() {
   const navigate = useNavigate();
@@ -31,8 +28,7 @@ function Customer_List() {
   const [DataTableList, setDataTableList] = useState([])
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
-  const setGlobatEvent = useSetRecoilState(globalEventAtom);
-  const customer = useRecoilValue(customerAtom)
+  const [TableData, setTableData] = useState([])
 
   const renderHeader = () => {
     return (
@@ -104,8 +100,21 @@ function Customer_List() {
   const header = renderHeader();
 
 
-  const get_data = (search) => {
-    setGlobatEvent({ eventName: 'refreshCustomer', search })
+  const get_data = (search = '') => {
+    const api = new CustomerService();
+    api.getCustomer(search)
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setTableData(res.data);
+        } else {
+          if (res.data && res.data.message === "customer item not found.") {
+            setTableData([]);
+          } else {
+            setTableData(res.data.customers);
+          }
+        }
+      })
+      .catch((err) => { });
   }
 
   const getcutomer = (customerIds) => {
@@ -150,7 +159,7 @@ function Customer_List() {
               selection={selectedRows}
               onSelectionChange={(e) => { setSelectedRows(e.value); }}
               onRowDoubleClick={(e) => { handleClick(e) }}
-              value={customer}
+              value={TableData}
               header={header}
               showGridlines
               responsiveLayout="scroll"

@@ -20,9 +20,6 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { fishpackAtom } from "src/_state/fishpackAtom";
 import FishpackService from "src/services/fishpack_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
@@ -32,8 +29,7 @@ function FishPack_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const fishpack = useRecoilValue(fishpackAtom)
+    const [TableData, setTableData] = useState([])
 
     const renderHeader = () => {
         return (
@@ -106,17 +102,21 @@ function FishPack_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshfishpack', search })
+        const api = new FishpackService;
+        api.getfishpack(search).then((res) => {
+            if (Array.isArray(res.data)) {
+                setTableData(res.data);
+            } else {
+                if (res.data && res.data.message === "fishpack not found.") {
+                    setTableData([]);
+                } else {
+                    setTableData(res.data.fishPacks);
+                }
+            }
+
+        }).catch((err) => { });
     }
 
-
-    const formatDate = (dateStr) => {
-        const date = new Date(dateStr.packing_date);
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -146,7 +146,7 @@ function FishPack_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={fishpack}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"
@@ -155,7 +155,6 @@ function FishPack_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            {/* <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="packing_date" header="Packing Date " body={formatDate}></Column> */}
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_sale_rate" header="Whole Fish Rate" sortable></Column>

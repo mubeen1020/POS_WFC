@@ -21,10 +21,7 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
-import { globalEventAtom } from "src/_state/globalEventAtom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
 import OrdersService from "src/services/order_services";
-import { orderAtom } from "src/_state/orderAtom";
 import PaymentmodeService from "src/services/paymentmode_services";
 import PaymentstatusService from "src/services/paymentstatus_services";
 import OrderStatusService from "src/services/orderstatus_services";
@@ -34,8 +31,8 @@ function Order_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const setGlobatEvent = useSetRecoilState(globalEventAtom);
-    const order = useRecoilValue(orderAtom)
+    const [TableData,setTableData] = useState([])
+   
 
     const renderHeader = () => {
         return (
@@ -108,7 +105,19 @@ function Order_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorder', search })
+        const api = new OrdersService;
+        api.getorders(search).then((res) => {
+          if (Array.isArray(res.data)) {
+            setTableData(res.data);
+          } else {
+            if (res.data && res.data.message === "orders not found.") {
+              setTableData([]);
+            } else {
+              setTableData(res.data.orders);
+            }
+          }
+    
+        }).catch((err) => { });
     }
 
     const formatDate = (dateStr, field) => {
@@ -148,7 +157,7 @@ function Order_List() {
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
                             onRowDoubleClick={(e) => { handleClick(e) }}
-                            value={order}
+                            value={TableData}
                             header={header}
                             showGridlines
                             responsiveLayout="scroll"
