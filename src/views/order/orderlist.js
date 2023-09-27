@@ -107,7 +107,7 @@ function Order_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorder', search });
+        setGlobatEvent({ eventName: 'refreshorder' });
         const api = new OrdersService;
         api.getorders(search).then((res) => {
           if (Array.isArray(res.data)) {

@@ -105,7 +105,7 @@ function Order_Stock_Item_List() {
 
 
     const get_data = (search='') => {
-        setGlobatEvent({ eventName: 'refreshorderitems', search });
+        setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
           if (Array.isArray(res.data)) {

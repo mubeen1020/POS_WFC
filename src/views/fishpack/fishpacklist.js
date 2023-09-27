@@ -105,7 +105,7 @@ function FishPack_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshfishpack', search });
+        setGlobatEvent({ eventName: 'refreshfishpack' });
         const api = new FishpackService;
         api.getfishpack(search).then((res) => {
             if (Array.isArray(res.data)) {

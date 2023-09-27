@@ -105,7 +105,7 @@ function Order_purchase_item_List() {
 
 
     const get_data = (search) => {
-        setGlobatEvent({ eventName: 'refreshorderpurchaseitem', search });
+        setGlobatEvent({ eventName: 'refreshorderpurchaseitem'});
         const api = new OrderpurchaseitemService;
         api.getorderpurchaseitem(search).then((res) => {
             if (Array.isArray(res.data)) {

@@ -103,7 +103,7 @@ function Fish_List() {
 
 
     const get_data = (search='') => {
-        setGlobatEvent({ eventName: 'refreshfish', search });
+        setGlobatEvent({ eventName: 'refreshfish' });
         const api = new FishService();
         api.getfish(search)
           .then((res) => {

@@ -104,7 +104,7 @@ function Customer_List() {
 
 
   const get_data = (search = '') => {
-    setGlobatEvent({ eventName: 'refreshCustomer', search });
+    setGlobatEvent({ eventName: 'refreshCustomer' });
     const api = new CustomerService();
     api.getCustomer(search)
       .then((res) => {
