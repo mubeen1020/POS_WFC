@@ -100,7 +100,7 @@ function Payments_List() {
     const header = renderHeader();
 
 
-    const get_data = (search) => {
+    const get_data = (search='') => {
         const api = new PaymentsService;
     api.getpayments(search).then((res) => {
       if (Array.isArray(res.data)) {

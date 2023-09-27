@@ -101,7 +101,7 @@ function Order_Stock_Item_List() {
     const header = renderHeader();
 
 
-    const get_data = (search) => {
+    const get_data = (search='') => {
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
           if (Array.isArray(res.data)) {
