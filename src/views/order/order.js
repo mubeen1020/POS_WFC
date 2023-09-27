@@ -282,11 +282,11 @@ export default function Orders() {
 
                                 <div>
                                     <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Care of Customer</CFormLabel>
+                                        <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
                                         <CFormInput
                                             onChange={handlecustomer}
                                             defaultValue={
-                                                params.id && filter_name.length > 0 ? filter_name[0].name : Customer
+                                                params.id && filter_name.length > 0 ? filter_name[0].full_name : Customer
                                             }
                                             list="customerSuggestions"
                                             type="text"

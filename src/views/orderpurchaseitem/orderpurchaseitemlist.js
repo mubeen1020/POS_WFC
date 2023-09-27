@@ -17,7 +17,7 @@ import { InputText } from 'primereact/inputtext';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import '../../scss/style.scss';
-import { cilPlus, cilTrash } from "@coreui/icons";
+import { cilPlus, cilSend, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
 import FishService from "src/services/fish_services";
@@ -48,6 +48,9 @@ function Order_purchase_item_List() {
                             </Link>
                             <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
                                 <CIcon icon={cilTrash} className="mr-2" />Delete
+                            </CButton>
+                            <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
+                                <CIcon icon={cilSend} className="mr-2" />Convert
                             </CButton>
 
                         </>
