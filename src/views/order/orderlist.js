@@ -25,6 +25,8 @@ import OrdersService from "src/services/order_services";
 import PaymentmodeService from "src/services/paymentmode_services";
 import PaymentstatusService from "src/services/paymentstatus_services";
 import OrderStatusService from "src/services/orderstatus_services";
+import { globalEventAtom } from "src/_state/globalEventAtom";
+import { useSetRecoilState } from "recoil";
 
 function Order_List() {
     const navigate = useNavigate();
@@ -32,7 +34,7 @@ function Order_List() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [TableData,setTableData] = useState([])
-   
+    const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
         return (
@@ -105,6 +107,7 @@ function Order_List() {
 
 
     const get_data = (search) => {
+        setGlobatEvent({ eventName: 'refreshorder', search });
         const api = new OrdersService;
         api.getorders(search).then((res) => {
           if (Array.isArray(res.data)) {

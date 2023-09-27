@@ -23,6 +23,8 @@ import { Toast } from 'primereact/toast';
 import FishService from "src/services/fish_services";
 import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import FishCutsService from "src/services/fishcut_services";
+import { useSetRecoilState } from "recoil";
+import { globalEventAtom } from "src/_state/globalEventAtom";
 
 function Order_purchase_item_List() {
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ function Order_purchase_item_List() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [TableData, setTableData] = useState([])
+    const setGlobatEvent=useSetRecoilState(globalEventAtom)
 
 
     const renderHeader = () => {
@@ -102,6 +105,7 @@ function Order_purchase_item_List() {
 
 
     const get_data = (search) => {
+        setGlobatEvent({ eventName: 'refreshorderpurchaseitem', search });
         const api = new OrderpurchaseitemService;
         api.getorderpurchaseitem(search).then((res) => {
             if (Array.isArray(res.data)) {

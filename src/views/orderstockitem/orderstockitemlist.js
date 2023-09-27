@@ -23,6 +23,8 @@ import { Toast } from 'primereact/toast';
 import OrdersService from "src/services/order_services";
 import OrderitemsService from "src/services/orderstockitem_services";
 import FishpackService from "src/services/fishpack_services";
+import { useSetRecoilState } from "recoil";
+import { globalEventAtom } from "src/_state/globalEventAtom";
 
 function Order_Stock_Item_List() {
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ function Order_Stock_Item_List() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [TableData,setTableData] = useState([])
+    const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
         return (
@@ -102,6 +105,7 @@ function Order_Stock_Item_List() {
 
 
     const get_data = (search='') => {
+        setGlobatEvent({ eventName: 'refreshorderitems', search });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
           if (Array.isArray(res.data)) {

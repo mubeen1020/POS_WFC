@@ -21,6 +21,8 @@ import '../../scss/style.scss';
 import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
+import { useSetRecoilState } from "recoil";
+import { globalEventAtom } from "src/_state/globalEventAtom";
 
 function Customer_List() {
   const navigate = useNavigate();
@@ -29,6 +31,7 @@ function Customer_List() {
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [TableData, setTableData] = useState([])
+  const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
   const renderHeader = () => {
     return (
@@ -101,6 +104,7 @@ function Customer_List() {
 
 
   const get_data = (search = '') => {
+    setGlobatEvent({ eventName: 'refreshCustomer', search });
     const api = new CustomerService();
     api.getCustomer(search)
       .then((res) => {

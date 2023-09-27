@@ -21,6 +21,8 @@ import { cilPlus, cilTrash } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { Toast } from 'primereact/toast';
 import FishService from "src/services/fish_services";
+import { globalEventAtom } from "src/_state/globalEventAtom";
+import { useSetRecoilState } from "recoil";
 
 function Fish_List() {
     const navigate = useNavigate();
@@ -28,6 +30,7 @@ function Fish_List() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [TableData, setTableData] = useState([])
+    const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
         return (
@@ -100,6 +103,7 @@ function Fish_List() {
 
 
     const get_data = (search='') => {
+        setGlobatEvent({ eventName: 'refreshfish', search });
         const api = new FishService();
         api.getfish(search)
           .then((res) => {

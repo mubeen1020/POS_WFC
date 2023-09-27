@@ -23,6 +23,8 @@ import { Toast } from 'primereact/toast';
 import FishpackService from "src/services/fishpack_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
+import { globalEventAtom } from "src/_state/globalEventAtom";
+import { useSetRecoilState } from "recoil";
 
 function FishPack_List() {
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ function FishPack_List() {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
     const [TableData, setTableData] = useState([])
+    const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
         return (
@@ -102,6 +105,7 @@ function FishPack_List() {
 
 
     const get_data = (search) => {
+        setGlobatEvent({ eventName: 'refreshfishpack', search });
         const api = new FishpackService;
         api.getfishpack(search).then((res) => {
             if (Array.isArray(res.data)) {
