@@ -6,7 +6,6 @@ import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
-import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import { orderAtom } from "src/_state/orderAtom";
 import { useRecoilValue } from "recoil";
 import { customerAtom } from "src/_state/customerAtom";

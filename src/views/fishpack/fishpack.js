@@ -500,7 +500,7 @@ export default function FishPack() {
                                 <div >
                                     <CCol >
                                         <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
-                                        <CTooltip content="Kg/Rs" placement="left">
+                                        <CTooltip content="Rs" placement="left">
                                             <CFormInput
                                                 onChange={handlewholefishpackprice}
                                                 defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_price : Whole_fish_pack_price}

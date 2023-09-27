@@ -39,17 +39,6 @@ function PurchaseRequirement() {
             <div className="flex justify-content-between">
                 <span className="mb-3">
                     <h4><strong>Purchase Requirement</strong><span className="" style={{ float: "right" }}>
-                        {/* <>
-                            <Link to="/Order/OrderPurchaseItemsList/OrderItems">
-                                <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
-                                    <CIcon icon={cilPlus} className="mr-1" />  Add
-                                </CButton>
-                            </Link>
-                            <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
-                                <CIcon icon={cilTrash} className="mr-2" />Delete
-                            </CButton>
-
-                        </> */}
                     </span></h4>
                 </span>
                 <span className="p-input-icon-left">
@@ -66,39 +55,6 @@ function PurchaseRequirement() {
         get_data(value);
     }
 
-    const handleClick = (event) => {
-        const clickedRowData = event.data;
-        const clickedRowId = clickedRowData.id;
-        navigate(`/Order/OrderPurchaseItemsList/OrderPurchaseItems/OrderPurchaseItemsupdate/${clickedRowId}/`);
-    }
-
-
-    let delete_record = () => {
-        let _data = selectedRows.map(i => i.id);
-        let api = new OrderpurchaseitemService();
-        _data.forEach((id) => {
-
-            api.deleteorderpurchaseitem(id)
-                .then((res) => {
-                    get_data();
-                    toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
-                })
-                .catch((err) => { })
-        });
-    };
-
-    const handleDelete = () => {
-        if (selectedRows.length > 0) {
-            confirmDialog({
-                message: 'Are you sure you want to proceed?',
-                header: 'Confirmation',
-                icon: 'pi pi-exclamation-triangle',
-                accept: delete_record,
-            });
-        } else {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select the row that says to Delete' });
-        }
-    };
 
     const header = renderHeader();
 
@@ -147,7 +103,6 @@ function PurchaseRequirement() {
                             selectionMode={'checkbox'}
                             selection={selectedRows}
                             onSelectionChange={(e) => { setSelectedRows(e.value); }}
-                            onRowDoubleClick={(e) => { handleClick(e) }}
                             value={Datatable}
                             header={header}
                             showGridlines
@@ -156,7 +111,6 @@ function PurchaseRequirement() {
                             rowHover
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
-                            <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>

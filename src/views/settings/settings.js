@@ -6,13 +6,13 @@ import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
-import FishService from "src/services/fish_services";
 import SettingsService from "src/services/settings_services";
 
 
 export default function Settings() {
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
+    const navigate = useNavigate()
     const params = 1;
     const [Variable_profit_percent_per_kg, setVariable_profit_percent_per_kg] = useState('')
     const [Fixed_profit_per_kg, setFixed_profit_per_kg] = useState('')
