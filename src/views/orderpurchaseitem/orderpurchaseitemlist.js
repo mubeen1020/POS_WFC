@@ -124,9 +124,6 @@ function Order_purchase_item_List() {
         }).catch((err) => { });
     }
 
-
-
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {

@@ -153,7 +153,7 @@ export default function Orders() {
             order_date: Order_date || Order_Data.order_date,
             delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
             order_status: Order_status || Order_Data.order_status,
-            delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges) || Order_Data.delivery_charges,
+            delivery_charges: Number(Delivery_charges ) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
             payment_status: Payment_status || Order_Data.payment_status,
