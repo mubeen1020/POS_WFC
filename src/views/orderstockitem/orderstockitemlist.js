@@ -25,6 +25,7 @@ import OrderitemsService from "src/services/orderstockitem_services";
 import FishpackService from "src/services/fishpack_services";
 import { useSetRecoilState } from "recoil";
 import { globalEventAtom } from "src/_state/globalEventAtom";
+import CustomerService from "src/services/customer_services";
 
 function Order_Stock_Item_List() {
     const navigate = useNavigate();
@@ -165,7 +166,7 @@ function Order_Stock_Item_List() {
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin"  ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin"  body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>

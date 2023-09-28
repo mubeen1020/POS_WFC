@@ -25,6 +25,7 @@ import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import FishCutsService from "src/services/fishcut_services";
 import { useSetRecoilState } from "recoil";
 import { globalEventAtom } from "src/_state/globalEventAtom";
+import OrderitemsService from "src/services/orderstockitem_services";
 
 function Order_purchase_item_List() {
     const navigate = useNavigate();
@@ -34,6 +35,63 @@ function Order_purchase_item_List() {
     const [TableData, setTableData] = useState([])
     const setGlobatEvent=useSetRecoilState(globalEventAtom)
 
+
+    const orderstockitemDataSubmit = (event) => {
+        const selectedData = selectedRows.map((item) => ({
+          order_id: 0,
+          fish_pack_ref: 0,
+          total_packs_ordered: 0,
+          fish_weight: item.fish_weight,
+          meat_weight: item.meat_weight,
+          fish_rate: 0,
+          meat_rate: 0,
+          skin: 0,
+          kante: 0,
+          pack_price: 0,
+          item_discount_absolute: 0,
+          item_discount_percent: 0,
+        }));
+
+        console.log(selectedData)
+        
+        if (selectedData.length === 0) {
+          toast.current.show({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Please select at least one row to convert.',
+            life: 3000,
+          });
+          return; 
+        }
+      
+        const api = new OrderitemsService();
+        api
+        .createorderitems(selectedData)
+        .then((res) => {
+          const orderItem = res.data.orderItem;
+          console.log(orderItem)
+          delete_record()
+          toast.current.show({
+            severity: 'success',
+            summary: 'Data Submitted',
+            detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+            life: 3000,
+          });
+          
+          
+        })
+        .catch((error) => {
+          toast.current.show({
+            severity: 'info',
+            summary: 'Error',
+            detail: `${error}`,
+            life: 3000,
+          });
+          console.log('error: ', error);
+        });
+      };
+      
+      
 
     const renderHeader = () => {
         return (
@@ -49,7 +107,7 @@ function Order_purchase_item_List() {
                             <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
                                 <CIcon icon={cilTrash} className="mr-2" />Delete
                             </CButton>
-                            <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
+                            <CButton onClick={orderstockitemDataSubmit} style={{ width: 100, padding: 10, marginRight: 5 }}>
                                 <CIcon icon={cilSend} className="mr-2" />Convert
                             </CButton>
 
@@ -107,6 +165,7 @@ function Order_purchase_item_List() {
     const header = renderHeader();
 
 
+
     const get_data = (search) => {
         setGlobatEvent({ eventName: 'refreshorderpurchaseitem'});
         const api = new OrderpurchaseitemService;
@@ -123,6 +182,8 @@ function Order_purchase_item_List() {
 
         }).catch((err) => { });
     }
+
+    
 
     useEffect(() => {
         const token = localStorage.getItem('token');

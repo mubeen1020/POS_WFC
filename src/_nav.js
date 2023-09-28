@@ -64,12 +64,12 @@ const _nav = [
     to: '/Order/OrderList',
     icon: <CIcon icon={cilTask} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Order Stock Item ',
-    to: '/Order/OrderStockItemsList',
-    icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Order Stock Item ',
+  //   to: '/Order/OrderStockItemsList',
+  //   icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
     name: 'Order Purchase Item ',

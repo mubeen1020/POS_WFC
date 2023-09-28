@@ -7,15 +7,17 @@ import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
 import OrderitemsService from "src/services/orderstockitem_services";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { orderAtom } from "src/_state/orderAtom";
 import { customerAtom } from "src/_state/customerAtom";
 import { fishAtom } from "src/_state/fishAtom";
 import { fishpackAtom } from "src/_state/fishpackAtom";
 import { fishcutAtom } from "src/_state/fishcutAtom";
+import { globalEventAtom } from "src/_state/globalEventAtom";
 
 
-export default function OrderStockItem() {
+export default function OrderStockItem(props) {
+   
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -52,6 +54,7 @@ export default function OrderStockItem() {
     const fishData = useRecoilValue(fishAtom)
     const fishpackData = useRecoilValue(fishpackAtom)
     const fishcutData = useRecoilValue(fishcutAtom)
+    const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
 
     const handleorderid = (e) => {
@@ -63,6 +66,7 @@ export default function OrderStockItem() {
         if (selectedCustomer) {
             const selectOrder = orderData.filter((order) => order.customer === selectedCustomer.id);
             const orderIds = selectOrder.map((order) => order.id);
+            console.log(orderIds)
             setOrder_id_data(orderIds);
             customerData.filter((customer) =>
                 orderData.some((order) =>
@@ -180,12 +184,12 @@ export default function OrderStockItem() {
 
 
     }
-
+console.log(props.propName,'propName')
     const orderstockitemDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            order_id: Order_id_data,
+            order_id: props.propName,
             fish_pack_ref: fishpack_id_data,
             total_packs_ordered: Total_packs_ordered,
             fish_weight: Fish_weight,
@@ -204,15 +208,21 @@ export default function OrderStockItem() {
             .createorderitems(formData)
             .then((res) => {
 
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
-                    life: 3000,
-                });
-                setTimeout(() => {
-                    navigate('/Order/OrderStockItemsList');
-                }, [2000])
+              
+                if(!props.ispopup){
+
+                  }else{
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Data Submitted',
+                        detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                        life: 3000,
+                    });
+                    setTimeout(() => {
+                        props.setVisible(false)
+                    }, [2000])
+                  }
+             
 
             })
             .catch((error) => {
@@ -339,6 +349,7 @@ export default function OrderStockItem() {
 
 
     useEffect(() => {
+        setGlobatEvent({ eventName: 'refreshCustomer' });
         const token = localStorage.getItem('token');
         if (!token) {
             navigate("/");
@@ -350,9 +361,7 @@ export default function OrderStockItem() {
                 navigate("/");
             }
         }
-        if (params.id) {
-            get_order_stock_item_data();
-        }
+       
     }, []);
 
     return (
@@ -362,284 +371,271 @@ export default function OrderStockItem() {
                 <Toast ref={toast} />
                 <CCol xs={12}>
                     <CCard className="mb-4">
-                        <CCardHeader>
-                            <h4><Link to="/Order/OrderStockItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Stock Item</strong></h4>
-                        </CCardHeader>
                         <CCardBody>
                             <CForm
                                 className="row g-3 needs-validation"
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    params.id ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
+                                     orderstockitemDataSubmit(event);
                                 }}
                             >
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleorderid}
-                                            defaultValue={params.id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Order_id}
-                                            list="orderSuggestions"
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
-                                            style={{ borderColor: customerNotFound ? 'red' : '' }}
-                                        />
-                                        {customerNotFound && (
-                                            <CFormFeedback invalid>Please choose a valid Customer.</CFormFeedback>
-                                        )}
-                                    </CCol>
-                                </div>
-                                <datalist id="orderSuggestions" >
-                                    {filteredCustomers.map((customer) => (
-                                        <option key={customer.id} value={customer.full_name} />
-                                    ))}
-                                </datalist>
+                                    <CRow>
+                                        {/* <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleorderid}
+                                                defaultValue={params.id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Order_id}
+                                                list="orderSuggestions"
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
+                                                style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                            />
+                                            {customerNotFound && (
+                                                <CFormFeedback invalid>Please choose a valid Customer.</CFormFeedback>
+                                            )}
+                                        </CCol>
+                                        <datalist id="orderSuggestions" >
+                                            {filteredCustomers.map((customer) => (
+                                                <option key={customer.id} value={customer.full_name} />
+                                            ))}
+                                        </datalist> */}
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Pack Refrence</CFormLabel>
-                                        <CFormInput
-                                            name="order_date"
-                                            type="text"
-                                            list="fishpackSuggestions"
-                                            defaultValue={params.id ? fishpackrefStringArray : Fish_pack_ref}
-                                            onChange={handlefishpackref}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose an Fish Pack Refrence.</CFormFeedback>
-                                    </CCol>
-                                </div>
-                                <datalist id="fishpackSuggestions" >
-                                    {Fishpackfilterdata.map((item) => (
-                                        <option key={item} value={item} />
-                                    ))}
-                                </datalist>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Pack Refrence</CFormLabel>
+                                            <CFormInput
+                                                name="order_date"
+                                                type="text"
+                                                list="fishpackSuggestions"
+                                                defaultValue={params.id ? fishpackrefStringArray : Fish_pack_ref}
+                                                onChange={handlefishpackref}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose an Fish Pack Refrence.</CFormFeedback>
+                                        </CCol>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Total Pack Ordered </CFormLabel>
-                                        <CFormInput
-                                            name="delivery_deadline"
-                                            type="number"
-                                            defaultValue={params.id ? Order_Stock_Item_Data.total_packs_ordered : Total_packs_ordered}
-                                            onChange={handletotalpackorder}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={Fish_pack_ref === ''}
-                                        />
-                                        <CFormFeedback invalid>Please choose an Total Pack Ordered.</CFormFeedback>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Total Pack Ordered </CFormLabel>
+                                            <CFormInput
+                                                name="delivery_deadline"
+                                                type="number"
+                                                defaultValue={Total_packs_ordered}
+                                                onChange={handletotalpackorder}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={Fish_pack_ref === ''}
+                                            />
+                                            <CFormFeedback invalid>Please choose an Total Pack Ordered.</CFormFeedback>
 
-                                        {error && <><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></>}
-                                    </CCol>
-                                </div>
+                                            {error && <><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></>}
+                                        </CCol>
+                                        <datalist id="fishpackSuggestions" >
+                                            {Fishpackfilterdata.map((item) => (
+                                                <option key={item} value={item} />
+                                            ))}
+                                        </datalist>
+                                    </CRow>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish</CFormLabel>
-                                        <CFormInput
-                                            type="text"
-                                            defaultValue={params.id ? Fishname || paramData() : Fishname}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername"> Fish Cut</CFormLabel>
-                                        <CFormInput
-                                            type="text"
-                                            defaultValue={params.id ? Fish_cut : Fish_cut}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please choose an  Fish Cut.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername"> Packing Date</CFormLabel>
-                                        <CFormInput
-                                            type="date"
-                                            defaultValue={params.id ? Packingdate : Packingdate}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please choose an  Packing Date.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Weight</CFormLabel>
-                                        <CFormInput
-                                            name="delivery_charges"
-                                            type="number"
-                                            onChange={handlefishweight}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.fish_weight : Fish_weight}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please choose an Fish Weight.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Meat Weight</CFormLabel>
-                                        <CFormInput
-                                            name="delivery_charges"
-                                            type="number"
-                                            onChange={handlemeatweight}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.meat_weight : Meat_weight}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please enter Meat Weight.</CFormFeedback>
-                                    </CCol>
                                 </div>
 
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Rate</CFormLabel>
-                                        <CFormInput
-                                            name="urgent_delivery_charges"
-                                            type="number"
-                                            onChange={handlefishrate}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.fish_rate : Fish_rate}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please enter Fish Rate.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish</CFormLabel>
+                                            <CFormInput
+                                                type="text"
+                                                defaultValue={Fishname}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername"> Fish Cut</CFormLabel>
+                                            <CFormInput
+                                                type="text"
+                                                defaultValue={ Fish_cut}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please choose an  Fish Cut.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername"> Packing Date</CFormLabel>
+                                            <CFormInput
+                                                type="date"
+                                                defaultValue={ Packingdate}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please choose an  Packing Date.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+                                </div>
+
+
+                                <div>
+                                    <CRow>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Weight</CFormLabel>
+                                            <CFormInput
+                                                name="delivery_charges"
+                                                type="number"
+                                                onChange={handlefishweight}
+                                                defaultValue={ Fish_weight}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please choose an Fish Weight.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Meat Weight</CFormLabel>
+                                            <CFormInput
+                                                name="delivery_charges"
+                                                type="number"
+                                                onChange={handlemeatweight}
+                                                defaultValue={ Meat_weight}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please enter Meat Weight.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Rate</CFormLabel>
+                                            <CFormInput
+                                                name="urgent_delivery_charges"
+                                                type="number"
+                                                onChange={handlefishrate}
+                                                defaultValue={Fish_rate}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please enter Fish Rate.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+
                                 </div>
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Meat Rate</CFormLabel>
-                                        <CFormInput
-                                            name="order_total"
-                                            type="number"
-                                            onChange={handlemeatrate}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.meat_rate : Meat_rate}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please enter Meat Rate.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Meat Rate</CFormLabel>
+                                            <CFormInput
+                                                name="order_total"
+                                                type="number"
+                                                onChange={handlemeatrate}
+                                                defaultValue={ Meat_rate}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please enter Meat Rate.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Skin</CFormLabel>
+                                            <CFormSelect
+                                                name="payment_status"
+                                                onChange={handleskin}
+                                                value={Skin}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            >
+                                                <option>Select</option>
+                                                <option value='1'>Yes</option>
+                                                <option value='0'>No</option>
+                                            </CFormSelect>
+                                            <CFormFeedback invalid>Please choose a Skin.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Kante</CFormLabel>
+                                            <CFormInput
+                                                name="order_total"
+                                                type="text"
+                                                onChange={handlekante}
+                                                defaultValue={ Kante}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please enter Kante.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+
                                 </div>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Skin</CFormLabel>
-                                        <CFormSelect
-                                            name="payment_status"
-                                            onChange={handleskin}
-                                            value={params.id ? Order_Stock_Item_Data.skin : Skin}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        >
-                                            <option>Select</option>
-                                            <option value='1'>Yes</option>
-                                            <option value='0'>No</option>
-                                        </CFormSelect>
-                                        <CFormFeedback invalid>Please choose a Skin.</CFormFeedback>
-                                    </CCol>
-                                </div>
+
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Kante</CFormLabel>
-                                        <CFormInput
-                                            name="order_total"
-                                            type="text"
-                                            onChange={handlekante}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.kante : Kante}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please enter Kante.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Pack Price</CFormLabel>
+                                            <CFormInput
+                                                name="order_total"
+                                                type="number"
+                                                onChange={handlepackprice}
+                                                defaultValue={Pack_price}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled
+                                            />
+                                            <CFormFeedback invalid>Please enter Pack Price.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Item Discount Absolute</CFormLabel>
+                                            <CFormInput
+                                                name="order_total"
+                                                type="number"
+                                                onChange={handleitemdiscountabsolute}
+                                                defaultValue={ Item_discount_absolute}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please enter Item Discount Absolute.</CFormFeedback>
+                                        </CCol>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Item Discount Percent</CFormLabel>
+                                            <CFormInput
+                                                name="order_total"
+                                                type="number"
+                                                onChange={handleitemdiscountpercent}
+                                                defaultValue={ Item_discount_percent}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please enter Item Discount Percent.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+
                                 </div>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Pack Price</CFormLabel>
-                                        <CFormInput
-                                            name="order_total"
-                                            type="number"
-                                            onChange={handlepackprice}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.pack_price : Pack_price}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled
-                                        />
-                                        <CFormFeedback invalid>Please enter Pack Price.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Item Discount Absolute</CFormLabel>
-                                        <CFormInput
-                                            name="order_total"
-                                            type="number"
-                                            onChange={handleitemdiscountabsolute}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.item_discount_absolute : Item_discount_absolute}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please enter Item Discount Absolute.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Item Discount Percent</CFormLabel>
-                                        <CFormInput
-                                            name="order_total"
-                                            type="number"
-                                            onChange={handleitemdiscountpercent}
-                                            defaultValue={params.id ? Order_Stock_Item_Data.item_discount_percent : Item_discount_percent}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please enter Item Discount Percent.</CFormFeedback>
-                                    </CCol>
-                                </div>
 
                                 <CCol xs={12}>
                                     <CButton style={{ float: 'right' }} color="primary" type="submit">
