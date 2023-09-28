@@ -17,7 +17,7 @@ import { globalEventAtom } from "src/_state/globalEventAtom";
 
 
 export default function OrderStockItem(props) {
-   
+
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -184,7 +184,7 @@ export default function OrderStockItem(props) {
 
 
     }
-console.log(props.propName,'propName')
+    console.log(props.propName, 'propName')
     const orderstockitemDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
@@ -208,10 +208,10 @@ console.log(props.propName,'propName')
             .createorderitems(formData)
             .then((res) => {
 
-              
-                if(!props.ispopup){
 
-                  }else{
+                if (!props.ispopup) {
+
+                } else {
                     toast.current.show({
                         severity: 'success',
                         summary: 'Data Submitted',
@@ -221,8 +221,8 @@ console.log(props.propName,'propName')
                     setTimeout(() => {
                         props.setVisible(false)
                     }, [2000])
-                  }
-             
+                }
+
 
             })
             .catch((error) => {
@@ -361,7 +361,7 @@ console.log(props.propName,'propName')
                 navigate("/");
             }
         }
-       
+
     }, []);
 
     return (
@@ -377,7 +377,7 @@ console.log(props.propName,'propName')
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                     orderstockitemDataSubmit(event);
+                                    orderstockitemDataSubmit(event);
                                 }}
                             >
 
@@ -465,7 +465,7 @@ console.log(props.propName,'propName')
                                             <CFormLabel htmlFor="validationCustomUsername"> Fish Cut</CFormLabel>
                                             <CFormInput
                                                 type="text"
-                                                defaultValue={ Fish_cut}
+                                                defaultValue={Fish_cut}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -477,7 +477,7 @@ console.log(props.propName,'propName')
                                             <CFormLabel htmlFor="validationCustomUsername"> Packing Date</CFormLabel>
                                             <CFormInput
                                                 type="date"
-                                                defaultValue={ Packingdate}
+                                                defaultValue={Packingdate}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -497,7 +497,7 @@ console.log(props.propName,'propName')
                                                 name="delivery_charges"
                                                 type="number"
                                                 onChange={handlefishweight}
-                                                defaultValue={ Fish_weight}
+                                                defaultValue={Fish_weight}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -511,7 +511,7 @@ console.log(props.propName,'propName')
                                                 name="delivery_charges"
                                                 type="number"
                                                 onChange={handlemeatweight}
-                                                defaultValue={ Meat_weight}
+                                                defaultValue={Meat_weight}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -545,7 +545,7 @@ console.log(props.propName,'propName')
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handlemeatrate}
-                                                defaultValue={ Meat_rate}
+                                                defaultValue={Meat_rate}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -576,7 +576,7 @@ console.log(props.propName,'propName')
                                                 name="order_total"
                                                 type="text"
                                                 onChange={handlekante}
-                                                defaultValue={ Kante}
+                                                defaultValue={Kante}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -612,7 +612,7 @@ console.log(props.propName,'propName')
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handleitemdiscountabsolute}
-                                                defaultValue={ Item_discount_absolute}
+                                                defaultValue={Item_discount_absolute}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -625,7 +625,7 @@ console.log(props.propName,'propName')
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handleitemdiscountpercent}
-                                                defaultValue={ Item_discount_percent}
+                                                defaultValue={Item_discount_percent}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required

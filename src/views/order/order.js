@@ -43,7 +43,7 @@ export default function Orders() {
     const [OrderID, setOrderID] = useState([])
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [Popup,setPopup] = useState(false)
+    const [Popup, setPopup] = useState(false)
 
     const [Order_Data, setOrder_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
@@ -143,7 +143,7 @@ export default function Orders() {
             .createorders(formData)
             .then((res) => {
                 setOrderID(res.data.newOrder.id)
-                setModalVisible(true);setPopup(true)
+                setModalVisible(true); setPopup(true)
                 // toast.current.show({
                 //     severity: 'success',
                 //     summary: 'Data Submitted',
@@ -157,7 +157,7 @@ export default function Orders() {
                     summary: 'Error',
                     detail: `${error}`,
                     life: 3000,
-                }); 
+                });
                 console.log('error: ', error);
             });
     }
@@ -240,7 +240,7 @@ export default function Orders() {
 
     });
 
- 
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -258,7 +258,7 @@ export default function Orders() {
         paymentmode_Data_Get();
         paymentstatus_Data_Get();
         const currentDate = new Date().toISOString().split('T')[0];
-        params.id ? get_order_data(): setOrder_date(currentDate)
+        params.id ? get_order_data() : setOrder_date(currentDate)
 
     }, [])
 
@@ -279,7 +279,7 @@ export default function Orders() {
                 <span className="p-input-icon-left">
                     <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
                         <CIcon icon={cilTrash} className="mr-2" />Delete
-                    </CButton> 
+                    </CButton>
                 </span>
 
             </div>
@@ -322,28 +322,28 @@ export default function Orders() {
 
     const header = renderHeader();
 
- 
+
     const get_data = (search = '') => {
         console.log(OrderID)
         setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
-            const propID =Order_Data.id === undefined ? OrderID :  Order_Data.id;
-            const filteredData = res.data.orderItems.filter((item) => item.order_id === propID );
-            console.log(params.id );
+            const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
+            const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
+            console.log(params.id);
             console.log(res.data.orderItems)
-            
+
             if (Array.isArray(filteredData) && filteredData.length > 0) {
-              setTableData(filteredData);
-            } else {
-              if (res.data && res.data.message === "orderItems not found.") {
-                setTableData([]);
-              } else {
-                console.log('3333333333')
                 setTableData(filteredData);
-              }
+            } else {
+                if (res.data && res.data.message === "orderItems not found.") {
+                    setTableData([]);
+                } else {
+                    console.log('3333333333')
+                    setTableData(filteredData);
+                }
             }
-            
+
 
         }).catch((err) => { });
     }
@@ -363,12 +363,12 @@ export default function Orders() {
         get_data();
     }, [])
 
-    useEffect(()=>{
-        if(!modalVisible || !OrderID){
-            get_data(); 
+    useEffect(() => {
+        if (!modalVisible || !OrderID) {
+            get_data();
         }
-    },[modalVisible,OrderID,Order_Data])
-    const propID = Order_Data.id === undefined ? OrderID :  Order_Data.id;
+    }, [modalVisible, OrderID, Order_Data])
+    const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
     return (
         <>
 
@@ -573,42 +573,42 @@ export default function Orders() {
                             <br />
                             <div>
                                 <Dialog header="Order Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
-                                    <OrderStockItem propName={propID} setVisible={setModalVisible} ispopup={true}  />
+                                    <OrderStockItem propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
-                             </div>
-                             {Popup || params.id&&
-                            <div>
-                                <ConfirmDialog />
-                                <DataTable
-                                    className="responsive-table"
-                                    selectionMode={'checkbox'}
-                                    selection={selectedRows}
-                                    onSelectionChange={(e) => { setSelectedRows(e.value); }}
-                                    onRowDoubleClick={(e) => { handleClick(e) }}
-                                    value={TableData}
-                                    header={header}
-                                    showGridlines
-                                    responsiveLayout="scroll"
-                                    size="small" paginator
-                                    rowHover
-                                    rows={10}
-                                    rowsPerPageOptions={[10, 20, 50]}>
-                                    <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                                    {/* <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_id" header="Order" body={OrdersService.ordername} ></Column> */}
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_pack_ref" header="Fish Pack Refrence" body={FishpackService.fishpackname} sortable></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="total_packs_ordered" header="Total Packs Ordered" sortable></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin" body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
-                                    <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
-                                </DataTable>
                             </div>
-}
+                            {Popup || params.id &&
+                                <div>
+                                    <ConfirmDialog />
+                                    <DataTable
+                                        className="responsive-table"
+                                        selectionMode={'checkbox'}
+                                        selection={selectedRows}
+                                        onSelectionChange={(e) => { setSelectedRows(e.value); }}
+                                        onRowDoubleClick={(e) => { handleClick(e) }}
+                                        value={TableData}
+                                        header={header}
+                                        showGridlines
+                                        responsiveLayout="scroll"
+                                        size="small" paginator
+                                        rowHover
+                                        rows={10}
+                                        rowsPerPageOptions={[10, 20, 50]}>
+                                        <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+                                        {/* <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_id" header="Order" body={OrdersService.ordername} ></Column> */}
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_pack_ref" header="Fish Pack Refrence" body={FishpackService.fishpackname} sortable></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="total_packs_ordered" header="Total Packs Ordered" sortable></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin" body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
+                                    </DataTable>
+                                </div>
+                            }
 
                         </CCardBody>
                     </CCard>
