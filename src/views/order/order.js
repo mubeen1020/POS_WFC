@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
-import { cilCheck, cilPlus, cilTrash } from "@coreui/icons";
+import { cilCheck, cilDollar, cilPlus, cilTrash, cilWarning } from "@coreui/icons";
 import OrdersService from "src/services/order_services";
 import CustomerService from "src/services/customer_services";
 import OrderStatusService from "src/services/orderstatus_services";
@@ -86,18 +86,16 @@ export default function Orders() {
             }
         }
     }
+
     const handleorderstatus = (e) => { setOrder_status(e.target.value) }
     const handledeliverycharges = (e) => { setDelivery_charges(e.target.value); }
     const handlenurgentdeliverycharges = (e) => {
         const urgentDeliveryCharge = Number(e.target.value);
         const newDeliveryCharge = Number(Delivery_charges) + urgentDeliveryCharge;
         setUrgent_delivery_charges(urgentDeliveryCharge);
-        // setDelivery_charges(newDeliveryCharge);
     };
 
-
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
-    const handlepaymentstatus = (e) => { setPayment_status(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
     let get_order_data = () => {
@@ -106,6 +104,8 @@ export default function Orders() {
             setOrder_Data(res.data.order);
             setDelivery_charges(res.data.order.delivery_charges)
             setOrder_date(res.data.order.order_date)
+            setOrder_status(res.data.order.order_status)
+            setPayment_mode(res.data.order.payment_mode)
             const orderDate = res.data.order.order_date;
             const deliverydeadlineDate = res.data.order.delivery_deadline
             if (orderDate) {
@@ -123,9 +123,14 @@ export default function Orders() {
         }).catch((err) => { });
     }
 
+    
+
     const orderDataSubmit = (event) => {
+
         handleSubmit(event)
         event.preventDefault();
+
+
         let formData = {
             customer: Customer_id,
             order_date: Order_date,
@@ -134,32 +139,31 @@ export default function Orders() {
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges),
             urgent_delivery_charges: Urgent_delivery_charges,
             order_total: Order_total,
-            payment_status: Payment_status,
+            payment_status: Paymentstatusunpaid[0].id,
             payment_mode: Payment_mode
         };
-
-        const api = new OrdersService();
-        api
-            .createorders(formData)
-            .then((res) => {
-                setOrderID(res.data.newOrder.id)
-                setModalVisible(true); setPopup(true)
-                // toast.current.show({
-                //     severity: 'success',
-                //     summary: 'Data Submitted',
-                //     detail: 'Your order information has been successfully submitted and recorded.',
-                //     life: 3000,
-                // });
-            })
-            .catch((error) => {
-                toast.current.show({
-                    severity: 'info',
-                    summary: 'Error',
-                    detail: `${error}`,
-                    life: 3000,
-                });
-                console.log('error: ', error);
-            });
+        if (Popup) {
+            setPopup(true)
+            setModalVisible(true)
+        }
+        if (Popup == false) {
+            const api = new OrdersService();
+            api
+                .createorders(formData)
+                .then((res) => {
+                    setOrderID(res.data.newOrder.id)
+                    setModalVisible(true); setPopup(true)
+                })
+                .catch((error) => {
+                    toast.current.show({
+                        severity: 'info',
+                        summary: 'Error',
+                        detail: `${error}`,
+                        life: 3000,
+                    });
+                    console.log('error: ', error);
+                })
+        }
     }
 
     const orderDataupdateSubmit = (event) => {
@@ -173,7 +177,7 @@ export default function Orders() {
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
-            payment_status: Payment_status || Order_Data.payment_status,
+            payment_status:Order_Data.payment_status,
             payment_mode: Payment_mode || Order_Data.payment_mode
         };
 
@@ -182,12 +186,6 @@ export default function Orders() {
             .updateorders(params.id, formData)
             .then((res) => {
                 setModalVisible(true)
-                // toast.current.show({
-                //     severity: 'success',
-                //     summary: 'Data Submitted',
-                //     detail: 'Your order information has been successfully update and recorded.',
-                //     life: 3000,
-                // });
             })
             .catch((error) => {
                 toast.current.show({
@@ -200,6 +198,46 @@ export default function Orders() {
             });
     }
 
+    const Paymentstatusunpaid = Paymentstatusdata.filter((item) => item.id==Order_Data.payment_status);
+    const status = Paymentstatusunpaid.map(i=>i.payment_status)
+    const orderDataunpaidSubmit = (event) => {
+        handleSubmit(event);
+        event.preventDefault();
+      
+        let formData = {
+          customer: Customer_id || Order_Data.customer,
+          order_date: Order_date || Order_Data.order_date,
+          delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
+          order_status: Order_status || Order_Data.order_status,
+          delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
+          urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
+          order_total: Order_total || Order_Data.order_total,
+          payment_status: status == 'paid'?2:1, // Set the new payment status
+          payment_mode: Payment_mode || Order_Data.payment_mode
+        };
+      
+        const api = new OrdersService();
+        api
+          .updateorders(params.id, formData)
+          .then((res) => {
+            get_order_data()
+            status == 'paid'?
+            toast.current.show({ severity: 'success', summary: 'Success', detail: 'Successfully Unpaid' }): toast.current.show({ severity: 'success', summary: 'Success', detail: 'Successfully Paid' })
+            // setTimeout(() => {
+            //   navigate('/Order/OrderList');
+            // }, 2000);
+          })
+          .catch((error) => {
+            toast.current.show({
+              severity: 'info',
+              summary: 'Error',
+              detail: `${error}`,
+              life: 3000,
+            });
+            console.log('error: ', error);
+          });
+      };
+      
 
     const handleSubmit = (event) => {
         const form = event.currentTarget
@@ -209,7 +247,6 @@ export default function Orders() {
         }
         setValidated(true)
     }
-
 
     const Customer_Data_Get = (search = "") => {
         let api = new CustomerService;
@@ -240,7 +277,6 @@ export default function Orders() {
 
     });
 
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -262,7 +298,6 @@ export default function Orders() {
 
     }, [])
 
-
     useEffect(() => {
         if (Order_date) {
             const orderDate = new Date(Order_date);
@@ -271,7 +306,6 @@ export default function Orders() {
             setDelivery_deadline(deliveryDeadline);
         }
     }, [Order_date]);
-
 
     const renderHeader = () => {
         return (
@@ -286,12 +320,10 @@ export default function Orders() {
         )
     }
 
-
     const handleClick = (event) => {
         const clickedRowData = event.data;
         const clickedRowId = clickedRowData.id;
     }
-
 
     let delete_record = () => {
         let _data = selectedRows.map(i => i.id);
@@ -321,17 +353,13 @@ export default function Orders() {
     };
 
     const header = renderHeader();
-
+    const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
 
     const get_data = (search = '') => {
-        console.log(OrderID)
         setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
-            const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
             const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
-            console.log(params.id);
-            console.log(res.data.orderItems)
 
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setTableData(filteredData);
@@ -339,7 +367,6 @@ export default function Orders() {
                 if (res.data && res.data.message === "orderItems not found.") {
                     setTableData([]);
                 } else {
-                    console.log('3333333333')
                     setTableData(filteredData);
                 }
             }
@@ -368,16 +395,28 @@ export default function Orders() {
             get_data();
         }
     }, [modalVisible, OrderID, Order_Data])
-    const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
+
     return (
         <>
-
             <CRow>
                 <Toast ref={toast} />
                 <CCol xs={12}>
                     <CCard className="mb-4">
                         <CCardHeader>
-                            <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong></h4>
+                            <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
+  <span style={{ float: 'right' }}>
+    <CButton style={{marginRight:5}}>New</CButton>
+    <CButton style={{marginRight:5}}>Quotation</CButton>
+    <CButton style={{marginRight:5}}>Confirm</CButton>
+  </span>
+                            </h4>
+                            <h4>&nbsp;
+                            {params.id &&
+                            <span className="" >
+                                 <CButton  onClick={(event)=>orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
+                                 <CIcon icon={cilWarning} className="mr-1"  /> {status}</CButton>
+                            </span>}
+                            </h4>
                         </CCardHeader>
                         <CCardBody>
                             <CForm
@@ -417,6 +456,7 @@ export default function Orders() {
                                                 <option key={customer.id} value={customer.full_name} />
                                             ))}
                                         </datalist>
+
                                         <CCol>
                                             <CFormLabel htmlFor="validationCustomUsername">Order Date</CFormLabel>
                                             <CFormInput
@@ -430,6 +470,7 @@ export default function Orders() {
                                             />
                                             <CFormFeedback invalid>Please choose an Order Date.</CFormFeedback>
                                         </CCol>
+
                                         <CCol>
                                             <CFormLabel htmlFor="validationCustomUsername">Delivery Deadline</CFormLabel>
                                             <CFormInput
@@ -445,6 +486,7 @@ export default function Orders() {
                                         </CCol>
                                     </CRow>
                                 </div>
+
                                 <div>
                                     <CRow>
 
@@ -453,7 +495,7 @@ export default function Orders() {
                                             <CFormSelect
                                                 name="order_status"
                                                 onChange={handleorderstatus}
-                                                value={params.id ? Order_Data.order_status : Order_status}
+                                                value={Order_status}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -502,7 +544,6 @@ export default function Orders() {
                                     </CRow>
                                 </div>
 
-
                                 <div>
                                     <CRow>
                                         <CCol>
@@ -520,32 +561,11 @@ export default function Orders() {
                                         </CCol>
 
                                         <CCol>
-                                            <CFormLabel htmlFor="validationCustomUsername">Payment Status</CFormLabel>
-                                            <CFormSelect
-                                                name="payment_status"
-                                                onChange={handlepaymentstatus}
-                                                value={params.id ? Order_Data.payment_status : Payment_status}
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            >
-                                                <option>Select</option>
-                                                {
-                                                    Paymentstatusdata.map((i) => {
-                                                        return (
-                                                            <option key={i.id} value={i.id}>{i.payment_status}</option>
-                                                        )
-                                                    })
-                                                }
-                                            </CFormSelect>
-                                            <CFormFeedback invalid>Please choose a Payment Status.</CFormFeedback>
-                                        </CCol>
-                                        <CCol>
                                             <CFormLabel htmlFor="validationCustomUsername">Payment Mode</CFormLabel>
                                             <CFormSelect
                                                 name="payment_mode"
                                                 onChange={handlepaymentmode}
-                                                value={params.id ? Order_Data.payment_mode : Payment_mode}
+                                                value={ Payment_mode}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -576,7 +596,7 @@ export default function Orders() {
                                     <OrderStockItem propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
-                            {Popup || params.id &&
+                            {Popup || params.id ? (
                                 <div>
                                     <ConfirmDialog />
                                     <DataTable
@@ -607,7 +627,7 @@ export default function Orders() {
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
                                     </DataTable>
-                                </div>
+                                </div>) : null
                             }
 
                         </CCardBody>
