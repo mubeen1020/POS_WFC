@@ -276,6 +276,9 @@ const DefaultLayout = () => {
         case 'refreshpayment':
           refreshpayment(globatEvent.search);
         break;
+        case 'refreshorderstatus':
+          refreshorderstatus(globatEvent.search);
+        break;
       default:
     }
   }, [globatEvent]);

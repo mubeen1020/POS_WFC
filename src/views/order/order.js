@@ -23,6 +23,7 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { Dialog } from "primereact/dialog";
 import OrderStockItem from "../orderstockitem/orderstockitem";
 import { orderAtom } from "src/_state/orderAtom";
+import { orderstatusAtom } from "src/_state/orderstatusAtom";
 
 
 export default function Orders() {
@@ -49,6 +50,7 @@ export default function Orders() {
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [CustomerData, setCustomerData] = useState([])
     const [Orderstatusdata, setOrderstatusdata] = useState([])
+    const [OrderstatusID,setOrderstatusID] = useState([])
     const [Paymentmodedata, setPaymentmodedata] = useState([])
     const [Paymentstatusdata, setPaymentstatusdata] = useState([])
 
@@ -58,6 +60,7 @@ export default function Orders() {
     const [TableData, setTableData] = useState([])
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
     const orederData = useRecoilValue(orderAtom)
+    const orderStatus = useRecoilValue(orderstatusAtom)
 
 
     const handlecustomer = (e) => {
@@ -87,7 +90,6 @@ export default function Orders() {
         }
     }
 
-    const handleorderstatus = (e) => { setOrder_status(e.target.value) }
     const handledeliverycharges = (e) => { setDelivery_charges(e.target.value); }
     const handlenurgentdeliverycharges = (e) => {
         const urgentDeliveryCharge = Number(e.target.value);
@@ -98,14 +100,14 @@ export default function Orders() {
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
+   
+
     let get_order_data = () => {
         let api = new OrdersService;
         api.getordersbyId(params.id).then((res) => {
             setOrder_Data(res.data.order);
             setDelivery_charges(res.data.order.delivery_charges)
             setOrder_date(res.data.order.order_date)
-            setOrder_status(res.data.order.order_status)
-            setPayment_mode(res.data.order.payment_mode)
             const orderDate = res.data.order.order_date;
             const deliverydeadlineDate = res.data.order.delivery_deadline
             if (orderDate) {
@@ -120,26 +122,29 @@ export default function Orders() {
                 const formattedDate = parsedDate.toISOString().split('T')[0];
                 setDelivery_deadline(formattedDate);
             }
+            setPayment_mode(res.data.order.payment_mode)
+            const orderStatusId = parseInt(res.data.order.order_status, 10);
+            orderstatus_Data_Get(orderStatusId)
+
         }).catch((err) => { });
     }
 
-    
+    const statusId = Paymentstatusdata.map(i => i.id)
 
     const orderDataSubmit = (event) => {
 
         handleSubmit(event)
         event.preventDefault();
 
-
         let formData = {
             customer: Customer_id,
             order_date: Order_date,
             delivery_deadline: Delivery_deadline,
-            order_status: Order_status,
+            order_status: 8,
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges),
             urgent_delivery_charges: Urgent_delivery_charges,
             order_total: Order_total,
-            payment_status: Paymentstatusunpaid[0].id,
+            payment_status: statusId[1],
             payment_mode: Payment_mode
         };
         if (Popup) {
@@ -151,6 +156,7 @@ export default function Orders() {
             api
                 .createorders(formData)
                 .then((res) => {
+                    get_order_data()
                     setOrderID(res.data.newOrder.id)
                     setModalVisible(true); setPopup(true)
                 })
@@ -173,11 +179,11 @@ export default function Orders() {
             customer: Customer_id || Order_Data.customer,
             order_date: Order_date || Order_Data.order_date,
             delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
-            order_status: Order_status || Order_Data.order_status,
+            order_status:Order_Data.order_status,
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
-            payment_status:Order_Data.payment_status,
+            payment_status: Order_Data.payment_status,
             payment_mode: Payment_mode || Order_Data.payment_mode
         };
 
@@ -185,6 +191,7 @@ export default function Orders() {
         api
             .updateorders(params.id, formData)
             .then((res) => {
+                get_order_data()
                 setModalVisible(true)
             })
             .catch((error) => {
@@ -198,46 +205,77 @@ export default function Orders() {
             });
     }
 
-    const Paymentstatusunpaid = Paymentstatusdata.filter((item) => item.id==Order_Data.payment_status);
-    const status = Paymentstatusunpaid.map(i=>i.payment_status)
+    const Paymentstatusunpaid = Paymentstatusdata.filter((item) => item.id == Order_Data.payment_status);
+    const status = Paymentstatusunpaid.map(i => i.payment_status)
     const orderDataunpaidSubmit = (event) => {
         handleSubmit(event);
         event.preventDefault();
-      
+
         let formData = {
-          customer: Customer_id || Order_Data.customer,
-          order_date: Order_date || Order_Data.order_date,
-          delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
-          order_status: Order_status || Order_Data.order_status,
-          delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
-          urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
-          order_total: Order_total || Order_Data.order_total,
-          payment_status: status == 'paid'?2:1, // Set the new payment status
-          payment_mode: Payment_mode || Order_Data.payment_mode
+            customer: Customer_id || Order_Data.customer,
+            order_date: Order_date || Order_Data.order_date,
+            delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
+            order_status: Order_Data.order_status,
+            delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
+            urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
+            order_total: Order_total || Order_Data.order_total,
+            payment_status: status == 'paid' ? statusId[0] : statusId[0], 
+            payment_mode: Payment_mode || Order_Data.payment_mode
         };
-      
+
         const api = new OrdersService();
         api
-          .updateorders(params.id, formData)
-          .then((res) => {
-            get_order_data()
-            status == 'paid'?
-            toast.current.show({ severity: 'success', summary: 'Success', detail: 'Successfully Unpaid' }): toast.current.show({ severity: 'success', summary: 'Success', detail: 'Successfully Paid' })
-            // setTimeout(() => {
-            //   navigate('/Order/OrderList');
-            // }, 2000);
-          })
-          .catch((error) => {
-            toast.current.show({
-              severity: 'info',
-              summary: 'Error',
-              detail: `${error}`,
-              life: 3000,
+            .updateorders(params.id, formData)
+            .then((res) => {
+                get_order_data()
+                status == 'unpaid' ?
+                    toast.current.show({ severity: 'success', summary: 'Success', detail: 'Successfully Paid' }) : toast.current.show({ severity: 'warn', summary: 'warning', detail: 'Already Paid' })
+            })
+            .catch((error) => {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Error',
+                    detail: `${error}`,
+                    life: 3000,
+                });
+                console.log('error: ', error);
             });
-            console.log('error: ', error);
-          });
-      };
-      
+    };
+
+    const orderDataorderstatusSubmit = (event,orderdata) => {
+        handleSubmit(event);
+        event.preventDefault();
+        const data = OrderstatusID.filter((i) => i.order_status === orderdata);
+        let formData = {
+            customer: Customer_id || Order_Data.customer,
+            order_date: Order_date || Order_Data.order_date,
+            delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
+            order_status: data[0].id || Order_Data.order_status,
+            delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
+            urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
+            order_total: Order_total || Order_Data.order_total,
+            payment_status: Order_Data.payment_status, 
+            payment_mode: Payment_mode || Order_Data.payment_mode
+        };
+
+        const api = new OrdersService();
+        api
+            .updateorders(params.id, formData)
+            .then((res) => {
+                get_order_data()
+                
+                    toast.current.show({ severity: 'success', summary: 'Success', detail: `Successfully ${data[0].order_status}` })})
+            .catch((error) => {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Error',
+                    detail: `${error}`,
+                    life: 3000,
+                });
+                console.log('error: ', error);
+            });
+    };
+
 
     const handleSubmit = (event) => {
         const form = event.currentTarget
@@ -254,9 +292,14 @@ export default function Orders() {
             .catch((err) => { });
     }
 
-    const orderstatus_Data_Get = (search = "") => {
+    const orderstatus_Data_Get = (orderStatusId) => {
         let api = new OrderStatusService;
-        api.getorderStatus(search).then((res) => { setOrderstatusdata(res.data.orderStatuses); })
+        api.getorderStatus().then((res) => {
+            const data = res.data.orderStatuses.filter((i) => i.id === orderStatusId);
+            setOrder_status(data[0].order_status)
+            setOrderstatusdata(data[0].order_status);
+            setOrderstatusID(res.data.orderStatuses)
+        })
             .catch((err) => { });
     }
 
@@ -278,23 +321,7 @@ export default function Orders() {
     });
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate("/");
-        } else {
-            const tokenData = JSON.parse(atob(token.split('.')[1]));
-            const tokenExpirationTimestamp = tokenData.exp * 1000;
-            if (Date.now() >= tokenExpirationTimestamp) {
-                localStorage.removeItem('token')
-                navigate("/");
-            }
-        }
-        Customer_Data_Get();
-        orderstatus_Data_Get();
-        paymentmode_Data_Get();
-        paymentstatus_Data_Get();
-        const currentDate = new Date().toISOString().split('T')[0];
-        params.id ? get_order_data() : setOrder_date(currentDate)
+      
 
     }, [])
 
@@ -360,7 +387,6 @@ export default function Orders() {
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
             const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
-
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setTableData(filteredData);
             } else {
@@ -370,7 +396,6 @@ export default function Orders() {
                     setTableData(filteredData);
                 }
             }
-
 
         }).catch((err) => { });
     }
@@ -388,6 +413,12 @@ export default function Orders() {
             }
         }
         get_data();
+        Customer_Data_Get();
+        orderstatus_Data_Get();
+        paymentmode_Data_Get();
+        paymentstatus_Data_Get();
+        const currentDate = new Date().toISOString().split('T')[0];
+        params.id ? get_order_data() : setOrder_date(currentDate)
     }, [])
 
     useEffect(() => {
@@ -404,18 +435,85 @@ export default function Orders() {
                     <CCard className="mb-4">
                         <CCardHeader>
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
-  <span style={{ float: 'right' }}>
-    <CButton style={{marginRight:5}}>New</CButton>
-    <CButton style={{marginRight:5}}>Quotation</CButton>
-    <CButton style={{marginRight:5}}>Confirm</CButton>
-  </span>
+                               {params.id&&
+                                <span style={{ float: 'right' }}>
+                                    <p className="bg-primary" style={{
+                                        fontSize: 18,
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        width: 130,
+                                        padding: '10px',
+                                        textAlign: 'center',
+                                        position: 'relative',
+                                    }}>
+                                        {Order_status}
+                                        <span
+                                            style={{
+                                                content: '',
+                                                position: 'absolute',
+                                                left: '50%',
+                                                bottom: '-15px',
+                                                border: 'solid transparent',
+                                                borderWidth: '8px',
+                                                borderColor: 'transparent',
+                                                borderTopColor: '#007bff',
+                                                transform: 'translateX(-50%)',
+                                            }}
+                                        ></span>
+                                    </p>
+                                </span>
+                                 }
                             </h4>
                             <h4>&nbsp;
-                            {params.id &&
-                            <span className="" >
-                                 <CButton  onClick={(event)=>orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
-                                 <CIcon icon={cilWarning} className="mr-1"  /> {status}</CButton>
-                            </span>}
+                                {params.id &&
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
+                                            <CIcon icon={status == 'paid' ? cilDollar : cilWarning} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
+                                    </span>}&nbsp;
+                                {Orderstatusdata === 'new' ?(
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'quotation')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Quotation</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'pending')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event)} style={{ width: 150, padding: 10 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
+                                    </span>):null}
+
+                                    {Orderstatusdata === 'quotation' ?(
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'pending')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'confirm')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'delivered')} style={{ width: 150, padding: 10 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
+                                    </span>):null}
+
+                                    {Orderstatusdata === 'pending' ?(
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'delivered')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'cancelled')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'returned')} style={{ width: 150, padding: 10 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
+                                    </span>):null}
+
+                                    {Orderstatusdata === 'delivered' ?(
+                                    <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'cancelled')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
+
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'returned')} style={{ width: 150, padding: 10 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
+                                    </span>):null}
                             </h4>
                         </CCardHeader>
                         <CCardBody>
@@ -490,28 +588,11 @@ export default function Orders() {
                                 <div>
                                     <CRow>
 
-                                        <CCol>
+                                        {/* <CCol>
                                             <CFormLabel htmlFor="validationCustomUsername">Order Status</CFormLabel>
-                                            <CFormSelect
-                                                name="order_status"
-                                                onChange={handleorderstatus}
-                                                value={Order_status}
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            >
-                                                <option>Select</option>
-                                                {
-                                                    Orderstatusdata.map((i) => {
-                                                        return (
-                                                            <option key={i.id} value={i.id}>{i.order_status}</option>
-                                                        )
-                                                    })
-                                                }
-
-                                            </CFormSelect>
+                                           
                                             <CFormFeedback invalid>Please choose an Order Status.</CFormFeedback>
-                                        </CCol>
+                                        </CCol> */}
 
                                         <CCol>
                                             <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
@@ -565,7 +646,7 @@ export default function Orders() {
                                             <CFormSelect
                                                 name="payment_mode"
                                                 onChange={handlepaymentmode}
-                                                value={ Payment_mode}
+                                                value={Payment_mode}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
