@@ -121,7 +121,7 @@ export default function Payments() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 
@@ -163,7 +163,7 @@ export default function Payments() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+              ;
             });
     }
 

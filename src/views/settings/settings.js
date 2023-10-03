@@ -84,7 +84,7 @@ export default function Settings() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 
@@ -123,7 +123,7 @@ export default function Settings() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 

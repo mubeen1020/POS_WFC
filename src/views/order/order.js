@@ -24,6 +24,10 @@ import { Dialog } from "primereact/dialog";
 import OrderStockItem from "../orderstockitem/orderstockitem";
 import { orderAtom } from "src/_state/orderAtom";
 import { orderstatusAtom } from "src/_state/orderstatusAtom";
+import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
+import FishService from "src/services/fish_services";
+import FishCutsService from "src/services/fishcut_services";
+import Order_Purchase_Item from "../orderpurchaseitem/orderpurchaseitem";
 
 
 export default function Orders() {
@@ -44,20 +48,24 @@ export default function Orders() {
     const [OrderID, setOrderID] = useState([])
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [ItemPurchaseModal, setItemPurchaseModal] = useState(false);
     const [Popup, setPopup] = useState(false)
 
     const [Order_Data, setOrder_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [CustomerData, setCustomerData] = useState([])
     const [Orderstatusdata, setOrderstatusdata] = useState([])
-    const [OrderstatusID,setOrderstatusID] = useState([])
+    const [OrderstatusID, setOrderstatusID] = useState([])
     const [Paymentmodedata, setPaymentmodedata] = useState([])
     const [Paymentstatusdata, setPaymentstatusdata] = useState([])
+    const [OrderstockID, setOrderstockID] = useState([])
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
 
     const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedItemPurchaseRows,setselectedItemPurchaseRows] = useState([])
     const [TableData, setTableData] = useState([])
+    const [ItemPurchaseTableData, setItemPurchaseTableData] = useState([])
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
     const orederData = useRecoilValue(orderAtom)
     const orderStatus = useRecoilValue(orderstatusAtom)
@@ -100,7 +108,7 @@ export default function Orders() {
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
-   
+
 
     let get_order_data = () => {
         let api = new OrdersService;
@@ -167,7 +175,7 @@ export default function Orders() {
                         detail: `${error}`,
                         life: 3000,
                     });
-                    console.log('error: ', error);
+
                 })
         }
     }
@@ -179,7 +187,7 @@ export default function Orders() {
             customer: Customer_id || Order_Data.customer,
             order_date: Order_date || Order_Data.order_date,
             delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
-            order_status:Order_Data.order_status,
+            order_status: Order_Data.order_status,
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
@@ -201,7 +209,7 @@ export default function Orders() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+
             });
     }
 
@@ -219,7 +227,7 @@ export default function Orders() {
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
-            payment_status: status == 'paid' ? statusId[0] : statusId[0], 
+            payment_status: status == 'paid' ? statusId[0] : statusId[0],
             payment_mode: Payment_mode || Order_Data.payment_mode
         };
 
@@ -238,11 +246,11 @@ export default function Orders() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+
             });
     };
 
-    const orderDataorderstatusSubmit = (event,orderdata) => {
+    const orderDataorderstatusSubmit = (event, orderdata) => {
         handleSubmit(event);
         event.preventDefault();
         const data = OrderstatusID.filter((i) => i.order_status === orderdata);
@@ -254,7 +262,7 @@ export default function Orders() {
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
             urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
             order_total: Order_total || Order_Data.order_total,
-            payment_status: Order_Data.payment_status, 
+            payment_status: Order_Data.payment_status,
             payment_mode: Payment_mode || Order_Data.payment_mode
         };
 
@@ -263,8 +271,9 @@ export default function Orders() {
             .updateorders(params.id, formData)
             .then((res) => {
                 get_order_data()
-                
-                    toast.current.show({ severity: 'success', summary: 'Success', detail: `Successfully ${data[0].order_status}` })})
+
+                toast.current.show({ severity: 'success', summary: 'Success', detail: `Successfully ${data[0].order_status}` })
+            })
             .catch((error) => {
                 toast.current.show({
                     severity: 'info',
@@ -272,7 +281,7 @@ export default function Orders() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+
             });
     };
 
@@ -321,7 +330,7 @@ export default function Orders() {
     });
 
     useEffect(() => {
-      
+
 
     }, [])
 
@@ -338,8 +347,26 @@ export default function Orders() {
         return (
             <div className="flex justify-content-between">
                 <span className="p-input-icon-left">
-                    <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
-                        <CIcon icon={cilTrash} className="mr-2" />Delete
+                    <CButton onClick={handleDelete} style={{ marginRight: 5 }}>
+                        <CIcon icon={cilTrash} className="mr-2" />Delete stock item
+                    </CButton>
+                </span>
+
+            </div>
+        )
+    }
+
+    const renderItemPurchaseHeader = () => {
+        return (
+            <div className="flex justify-content-between">
+                <span className="p-input-icon-left">
+                    <CButton onClick={handleDeleteItemPurchase} style={{ marginRight: 5 }}>
+                        <CIcon icon={cilTrash} className="mr-2" />Delete purchase item
+                    </CButton>
+                </span>
+                <span className="p-input-icon-left" style={{ float: 'right' }}>
+                    <CButton color="primary" onClick={()=>{setItemPurchaseModal(true)}}>
+                        <CIcon icon={cilCheck} className="mr-2" />Add a purchase item
                     </CButton>
                 </span>
 
@@ -350,6 +377,8 @@ export default function Orders() {
     const handleClick = (event) => {
         const clickedRowData = event.data;
         const clickedRowId = clickedRowData.id;
+        setOrderstockID(clickedRowId)
+        setModalVisible(true)
     }
 
     let delete_record = () => {
@@ -372,7 +401,7 @@ export default function Orders() {
                 message: 'Are you sure you want to proceed?',
                 header: 'Confirmation',
                 icon: 'pi pi-exclamation-triangle',
-                accept: delete_record,
+                accept: delete_record || delete_record_item_purchase,
             });
         } else {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select the row that says to Delete' });
@@ -380,6 +409,43 @@ export default function Orders() {
     };
 
     const header = renderHeader();
+
+
+    const handleItemPurchaseClick = (event) => {
+        const clickedRowData = event.data;
+        const clickedRowId = clickedRowData.id;
+    }
+
+
+    let delete_record_item_purchase = () => {
+        let _data = selectedItemPurchaseRows.map(i => i.id);
+        let api = new OrderpurchaseitemService();
+        _data.forEach((id) => {
+
+            api.deleteorderpurchaseitem(id)
+                .then((res) => {
+                    get_data();
+                    toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
+                })
+                .catch((err) => { })
+        });
+    };
+
+    const handleDeleteItemPurchase = () => {
+        if (selectedItemPurchaseRows.length > 0) {
+            confirmDialog({
+                message: 'Are you sure you want to proceed?',
+                header: 'Confirmation',
+                icon: 'pi pi-exclamation-triangle',
+                accept: delete_record_item_purchase,
+            });
+        } else {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please select the row that says to Delete' });
+        }
+    };
+
+
+    const ItemPurchaseHeader = renderItemPurchaseHeader()
     const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
 
     const get_data = (search = '') => {
@@ -398,6 +464,23 @@ export default function Orders() {
             }
 
         }).catch((err) => { });
+
+        setGlobatEvent({ eventName: 'refreshorderpurchaseitem' });
+        const apipurchase = new OrderpurchaseitemService;
+        apipurchase.getorderpurchaseitem(search).then((res) => {
+            if (Array.isArray(res.data)) {
+                setItemPurchaseTableData(res.data);
+            } else {
+                if (res.data && res.data.message === "order purchase item not found.") {
+                    setItemPurchaseTableData([]);
+                } else {
+                    setItemPurchaseTableData(res.data);
+                }
+            }
+
+        }).catch((err) => { });
+
+
     }
 
     useEffect(() => {
@@ -435,85 +518,85 @@ export default function Orders() {
                     <CCard className="mb-4">
                         <CCardHeader>
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
-                               {params.id&&
-                                <span style={{ float: 'right' }}>
-                                    <p className="bg-primary" style={{
-                                        fontSize: 18,
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        width: 130,
-                                        padding: '10px',
-                                        textAlign: 'center',
-                                        position: 'relative',
-                                    }}>
-                                        {Order_status}
-                                        <span
-                                            style={{
-                                                content: '',
-                                                position: 'absolute',
-                                                left: '50%',
-                                                bottom: '-15px',
-                                                border: 'solid transparent',
-                                                borderWidth: '8px',
-                                                borderColor: 'transparent',
-                                                borderTopColor: '#007bff',
-                                                transform: 'translateX(-50%)',
-                                            }}
-                                        ></span>
-                                    </p>
-                                </span>
-                                 }
+                                {params.id &&
+                                    <span style={{ float: 'right' }}>
+                                        <p className="bg-primary" style={{
+                                            fontSize: 18,
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                            width: 130,
+                                            padding: '10px',
+                                            textAlign: 'center',
+                                            position: 'relative',
+                                        }}>
+                                            {Order_status}
+                                            <span
+                                                style={{
+                                                    content: '',
+                                                    position: 'absolute',
+                                                    left: '50%',
+                                                    bottom: '-15px',
+                                                    border: 'solid transparent',
+                                                    borderWidth: '8px',
+                                                    borderColor: 'transparent',
+                                                    borderTopColor: '#007bff',
+                                                    transform: 'translateX(-50%)',
+                                                }}
+                                            ></span>
+                                        </p>
+                                    </span>
+                                }
                             </h4>
                             <h4>&nbsp;
                                 {params.id &&
                                     <span className="" >
                                         <CButton onClick={(event) => orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
-                                            <CIcon icon={status == 'paid' ? cilDollar : cilWarning} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
+                                            <CIcon icon={status == 'paid' ? cilCheck : cilDollar} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
                                     </span>}&nbsp;
-                                {Orderstatusdata === 'new' ?(
+                                {Orderstatusdata === 'new' ? (
                                     <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'quotation')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'quotation')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Quotation</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'pending')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'pending')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event)} style={{ width: 150, padding: 10 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event)} style={{ width: 150, padding: 10 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
-                                    </span>):null}
+                                    </span>) : null}
 
-                                    {Orderstatusdata === 'quotation' ?(
+                                {Orderstatusdata === 'quotation' ? (
                                     <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'pending')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'pending')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'confirm')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'confirm')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'delivered')} style={{ width: 150, padding: 10 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
-                                    </span>):null}
+                                    </span>) : null}
 
-                                    {Orderstatusdata === 'pending' ?(
+                                {Orderstatusdata === 'pending' ? (
                                     <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event,'delivered')} style={{ width: 150, padding: 10,marginRight:5 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'cancelled')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'cancelled')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'returned')} style={{ width: 150, padding: 10 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
-                                    </span>):null}
+                                    </span>) : null}
 
-                                    {Orderstatusdata === 'delivered' ?(
+                                {Orderstatusdata === 'delivered' ? (
                                     <span className="" >
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'cancelled')} style={{ width: 150, padding: 10,marginRight:5  }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'cancelled')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
 
-                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event,'returned')} style={{ width: 150, padding: 10 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
-                                    </span>):null}
+                                    </span>) : null}
                             </h4>
                         </CCardHeader>
                         <CCardBody>
@@ -667,14 +750,14 @@ export default function Orders() {
 
                                 <CCol xs={12}>
                                     <CButton style={{ float: 'right' }} color="primary" type="submit">
-                                        <CIcon icon={cilCheck} className="mr-1" /> Add a line
+                                        <CIcon icon={cilCheck} className="mr-1" /> Add a stock item
                                     </CButton>
                                 </CCol>
                             </CForm>
                             <br />
                             <div>
-                                <Dialog header="Order Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
-                                    <OrderStockItem propName={propID} setVisible={setModalVisible} ispopup={true} />
+                                <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
+                                    <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
@@ -710,6 +793,40 @@ export default function Orders() {
                                     </DataTable>
                                 </div>) : null
                             }
+
+<br/>
+<div>
+                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => setItemPurchaseModal(false)}>
+                                    <Order_Purchase_Item stock_id={OrderstockID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
+                                </Dialog>
+                            </div>
+                            {Popup || params.id ? (
+                                <div>
+                                    <DataTable
+                                        className="responsive-table"
+                                        selectionMode={'checkbox'}
+                                        selection={selectedItemPurchaseRows}
+                                        onSelectionChange={(e) => { setselectedItemPurchaseRows(e.value); }}
+                                        onRowDoubleClick={(e) => { handleItemPurchaseClick(e) }}
+                                        value={ItemPurchaseTableData}
+                                        header={ItemPurchaseHeader}
+                                        showGridlines
+                                        responsiveLayout="scroll"
+                                        size="small" paginator
+                                        rowHover
+                                        rows={10}
+                                        rowsPerPageOptions={[10, 20, 50]}>
+                                        <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="preferred_fish_size" header="Preferred Fish Size" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="other_instructions" header="Other Instructions" ></Column>
+                                    </DataTable>
+                                </div>) : null
+                            }
+
 
                         </CCardBody>
                     </CCard>

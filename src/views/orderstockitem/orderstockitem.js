@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
 import { Toast } from 'primereact/toast';
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
@@ -21,7 +21,6 @@ export default function OrderStockItem(props) {
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
-    const params = useParams()
     const [Order_id, setOrder_id] = useState('')
     const [Fish_pack_ref, setFish_pack_ref] = useState('')
     const [Total_packs_ordered, setTotal_packs_ordered] = useState('')
@@ -66,7 +65,6 @@ export default function OrderStockItem(props) {
         if (selectedCustomer) {
             const selectOrder = orderData.filter((order) => order.customer === selectedCustomer.id);
             const orderIds = selectOrder.map((order) => order.id);
-            console.log(orderIds)
             setOrder_id_data(orderIds);
             customerData.filter((customer) =>
                 orderData.some((order) =>
@@ -178,13 +176,58 @@ export default function OrderStockItem(props) {
 
     let get_order_stock_item_data = () => {
         let api = new OrderitemsService;
-        api.getorderitemsbyId(params.id).then((res) => {
+        api.getorderitemsbyId(props.stock_id).then((res) => {
             setOrder_Stock_Item_Data(res.data.orderItem);
+            setTotal_packs_ordered(res.data.orderItem.total_packs_ordered)
+            setFish_weight(res.data.orderItem.fish_weight)
+            setMeat_weight(res.data.orderItem.meat_weight)
+            setFish_rate(res.data.orderItem.fish_rate)
+            setMeat_rate(res.data.orderItem.meat_rate)
+            setSkin(res.data.orderItem.skin)
+            setKante(res.data.orderItem.kante)
+            setPack_price(res.data.orderItem.pack_price)
+            setItem_discount_absolute(res.data.orderItem.item_discount_absolute)
+            setItem_discount_percent(res.data.orderItem.item_discount_percent)
+            setfishpack_id_data(res.data.orderItem.fish_pack_ref)
+
+            fishData.filter((fish) => {
+                return(
+                fishpackData.some((fishpack) => {
+                    if(Number(res.data.orderItem.fish_pack_ref) === Number(fishpack.id)){
+                    if (Number(fishpack.fish_ref) === Number(fish.id)) {
+                        return fishcutData.some((fishcut) => {
+                            if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
+                                const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
+                                if (searchString) {
+                                    setFishname(fish.local_name)
+                                    setFish_cut(fishcut.fish_cut)
+                                    const isoDate = fishpack.packing_date;
+    
+                                    if (isoDate) {
+                                        const parsedDate = new Date(isoDate);
+                                        parsedDate.setHours(parsedDate.getHours() + 5);
+                                        const formattedDate = parsedDate.toISOString().split('T')[0];
+                                        setPackingdate(formattedDate);
+                                    } else {
+                                    }
+    
+                                }
+                                return result;
+                            }
+                            return false;
+                        });
+                    }
+                }
+                    return false;
+                }
+            
+                ))})
+
+
         }).catch((err) => { });
 
 
     }
-    console.log(props.propName, 'propName')
     const orderstockitemDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
@@ -232,7 +275,6 @@ export default function OrderStockItem(props) {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
             });
     }
 
@@ -240,7 +282,7 @@ export default function OrderStockItem(props) {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            order_id: Order_id_data || Order_Stock_Item_Data.order_id,
+            order_id: props.propName,
             fish_pack_ref: fishpack_id_data || Order_Stock_Item_Data.fish_pack_ref,
             total_packs_ordered: Total_packs_ordered || Order_Stock_Item_Data.total_packs_ordered,
             fish_weight: Fish_weight || Order_Stock_Item_Data.fish_weight,
@@ -256,18 +298,22 @@ export default function OrderStockItem(props) {
 
         const api = new OrderitemsService();
         api
-            .updateorderitems(params.id, formData)
+            .updateorderitems(props.stock_id, formData)
             .then((res) => {
+                if (!props.ispopup) {
 
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your Order Stock Item information has been successfully update and recorded.',
-                    life: 3000,
-                });
-                setTimeout(() => {
-                    navigate('/Order/OrderStockItemsList');
-                }, [2000])
+                } else {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Data Submitted',
+                        detail: 'Your Order Stock Item information has been successfully update and recorded.',
+                        life: 3000,
+                    });
+                    setTimeout(() => {
+                        props.setVisible(false)
+                    }, [2000])
+                }
+
 
             })
             .catch((error) => {
@@ -277,7 +323,6 @@ export default function OrderStockItem(props) {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
             });
     }
 
@@ -291,21 +336,23 @@ export default function OrderStockItem(props) {
         setValidated(true)
     }
 
-    const filter_name = customerData.filter((customer) => {
-        return orderData.some((order) => {
-            if (Number(customer.id) === Number(order.customer)) {
-                return order.id === Order_Stock_Item_Data.order_id;
-            }
-            return false;
-        });
-    });
+    // const filter_name = customerData.filter((customer) => {
+    //     return orderData.some((order) => {
+    //         if (Number(customer.id) === Number(order.customer)) {
+    //             return order.id === Order_Stock_Item_Data.order_id;
+    //         }
+    //         return false;
+    //     });
+    // });
 
 
 
     const fishpackrefStringArray = [];
+    console.log(Order_Stock_Item_Data)
     fishData.filter((fish) => {
         return fishpackData.some((fishpack) => {
             if (Number(fishpack.fish_ref) === Number(fish.id)) {
+                if(Order_Stock_Item_Data){
                 if (Order_Stock_Item_Data.fish_pack_ref === fishpack.id) {
                     return fishcutData.some((fishcut) => {
                         if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
@@ -317,6 +364,7 @@ export default function OrderStockItem(props) {
                 }
                 return false;
             }
+        }
         });
     });
 
@@ -361,6 +409,7 @@ export default function OrderStockItem(props) {
                 navigate("/");
             }
         }
+        props.stock_id ? get_order_stock_item_data() : ''
 
     }, []);
 
@@ -377,7 +426,7 @@ export default function OrderStockItem(props) {
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    orderstockitemDataSubmit(event);
+                                    Order_Stock_Item_Data ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
                                 }}
                             >
 
@@ -387,7 +436,7 @@ export default function OrderStockItem(props) {
                                             <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
                                             <CFormInput
                                                 onChange={handleorderid}
-                                                defaultValue={params.id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Order_id}
+                                                defaultValue={props.stock_id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Order_id}
                                                 list="orderSuggestions"
                                                 type="text"
                                                 id="validationCustomUsername"
@@ -412,7 +461,7 @@ export default function OrderStockItem(props) {
                                                 name="order_date"
                                                 type="text"
                                                 list="fishpackSuggestions"
-                                                defaultValue={params.id ? fishpackrefStringArray : Fish_pack_ref}
+                                                defaultValue={props.stock_id ? fishpackrefStringArray : Fish_pack_ref}
                                                 onChange={handlefishpackref}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"

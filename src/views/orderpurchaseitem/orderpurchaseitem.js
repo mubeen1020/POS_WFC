@@ -140,7 +140,7 @@ export default function Order_Purchase_Item() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 
@@ -180,7 +180,7 @@ export default function Order_Purchase_Item() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+                
             });
     }
 
@@ -230,9 +230,9 @@ export default function Order_Purchase_Item() {
                 <Toast ref={toast} />
                 <CCol xs={12}>
                     <CCard className="mb-4">
-                        <CCardHeader>
-                            <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4>
-                        </CCardHeader>
+                        {/* <CCardHeader> */}
+                            {/* <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4> */}
+                        {/* </CCardHeader> */}
                         <CCardBody>
                             <CForm
                                 className="row g-3 needs-validation"

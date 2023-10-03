@@ -171,7 +171,7 @@ export default function FishPack() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 
@@ -230,7 +230,7 @@ export default function FishPack() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
+               
             });
     }
 
