@@ -43,7 +43,7 @@ function Order_List() {
                     <h4><strong>Orders</strong><span className="" style={{ float: "right" }}>
                         <>
                             <Link to="/Order/OrderList/Order">
-                                <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
+                                <CButton style={{ float: 'right', width: 100, padding: 10}} color="primary" type="submit">
                                     <CIcon icon={cilPlus} className="mr-1" />  Add
                                 </CButton>
                             </Link>
@@ -54,10 +54,11 @@ function Order_List() {
                         </>
                     </span></h4>
                 </span>
+                
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
                     <InputText onChange={onGlobalFilterChange} value={globalFilterValue} placeholder="Keyword Search" />
-                </span>
+                </span>                
 
             </div>
         )
