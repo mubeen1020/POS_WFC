@@ -191,37 +191,38 @@ export default function OrderStockItem(props) {
             setfishpack_id_data(res.data.orderItem.fish_pack_ref)
 
             fishData.filter((fish) => {
-                return(
-                fishpackData.some((fishpack) => {
-                    if(Number(res.data.orderItem.fish_pack_ref) === Number(fishpack.id)){
-                    if (Number(fishpack.fish_ref) === Number(fish.id)) {
-                        return fishcutData.some((fishcut) => {
-                            if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                                const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
-                                if (searchString) {
-                                    setFishname(fish.local_name)
-                                    setFish_cut(fishcut.fish_cut)
-                                    const isoDate = fishpack.packing_date;
-    
-                                    if (isoDate) {
-                                        const parsedDate = new Date(isoDate);
-                                        parsedDate.setHours(parsedDate.getHours() + 5);
-                                        const formattedDate = parsedDate.toISOString().split('T')[0];
-                                        setPackingdate(formattedDate);
-                                    } else {
+                return (
+                    fishpackData.some((fishpack) => {
+                        if (Number(res.data.orderItem.fish_pack_ref) === Number(fishpack.id)) {
+                            if (Number(fishpack.fish_ref) === Number(fish.id)) {
+                                return fishcutData.some((fishcut) => {
+                                    if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
+                                        const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
+                                        if (searchString) {
+                                            setFishname(fish.local_name)
+                                            setFish_cut(fishcut.fish_cut)
+                                            const isoDate = fishpack.packing_date;
+
+                                            if (isoDate) {
+                                                const parsedDate = new Date(isoDate);
+                                                parsedDate.setHours(parsedDate.getHours() + 5);
+                                                const formattedDate = parsedDate.toISOString().split('T')[0];
+                                                setPackingdate(formattedDate);
+                                            } else {
+                                            }
+
+                                        }
+                                        return result;
                                     }
-    
-                                }
-                                return result;
+                                    return false;
+                                });
                             }
-                            return false;
-                        });
+                        }
+                        return false;
                     }
-                }
-                    return false;
-                }
-            
-                ))})
+
+                    ))
+            })
 
 
         }).catch((err) => { });
@@ -352,19 +353,19 @@ export default function OrderStockItem(props) {
     fishData.filter((fish) => {
         return fishpackData.some((fishpack) => {
             if (Number(fishpack.fish_ref) === Number(fish.id)) {
-                if(Order_Stock_Item_Data){
-                if (Order_Stock_Item_Data.fish_pack_ref === fishpack.id) {
-                    return fishcutData.some((fishcut) => {
-                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
-                            fishpackrefStringArray.push(searchString);
-                        }
-                        return false;
-                    });
+                if (Order_Stock_Item_Data) {
+                    if (Order_Stock_Item_Data.fish_pack_ref === fishpack.id) {
+                        return fishcutData.some((fishcut) => {
+                            if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
+                                const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
+                                fishpackrefStringArray.push(searchString);
+                            }
+                            return false;
+                        });
+                    }
+                    return false;
                 }
-                return false;
             }
-        }
         });
     });
 

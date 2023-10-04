@@ -33,7 +33,7 @@ function Order_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const [TableData,setTableData] = useState([])
+    const [TableData, setTableData] = useState([])
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
@@ -110,16 +110,16 @@ function Order_List() {
         setGlobatEvent({ eventName: 'refreshorder' });
         const api = new OrdersService;
         api.getorders(search).then((res) => {
-          if (Array.isArray(res.data)) {
-            setTableData(res.data);
-          } else {
-            if (res.data && res.data.message === "orders not found.") {
-              setTableData([]);
+            if (Array.isArray(res.data)) {
+                setTableData(res.data);
             } else {
-              setTableData(res.data.orders);
+                if (res.data && res.data.message === "orders not found.") {
+                    setTableData([]);
+                } else {
+                    setTableData(res.data.orders);
+                }
             }
-          }
-    
+
         }).catch((err) => { });
     }
 

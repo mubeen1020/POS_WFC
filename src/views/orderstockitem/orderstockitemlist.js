@@ -32,7 +32,7 @@ function Order_Stock_Item_List() {
     const toast = useRef(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const [TableData,setTableData] = useState([])
+    const [TableData, setTableData] = useState([])
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
     const renderHeader = () => {
@@ -105,20 +105,20 @@ function Order_Stock_Item_List() {
     const header = renderHeader();
 
 
-    const get_data = (search='') => {
+    const get_data = (search = '') => {
         setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
-          if (Array.isArray(res.data)) {
-            setTableData(res.data);
-          } else {
-            if (res.data && res.data.message === "orderItems not found.") {
-              setTableData([]);
+            if (Array.isArray(res.data)) {
+                setTableData(res.data);
             } else {
-              setTableData(res.data.orderItems);
+                if (res.data && res.data.message === "orderItems not found.") {
+                    setTableData([]);
+                } else {
+                    setTableData(res.data.orderItems);
+                }
             }
-          }
-    
+
         }).catch((err) => { });
     }
 
@@ -166,7 +166,7 @@ function Order_Stock_Item_List() {
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin"  body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin" body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>

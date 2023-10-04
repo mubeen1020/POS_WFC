@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
 import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
-import { cilCheck, cilDollar, cilPlus, cilTrash, cilWarning } from "@coreui/icons";
+import { cilCheck, cilDollar, cilPlus, cilSend, cilTrash, cilWarning } from "@coreui/icons";
 import OrdersService from "src/services/order_services";
 import CustomerService from "src/services/customer_services";
 import OrderStatusService from "src/services/orderstatus_services";
@@ -28,6 +28,9 @@ import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
 import Order_Purchase_Item from "../orderpurchaseitem/orderpurchaseitem";
+import { fishpackAtom } from "src/_state/fishpackAtom";
+import { fishcutAtom } from "src/_state/fishcutAtom";
+import { fishAtom } from "src/_state/fishAtom";
 
 
 export default function Orders() {
@@ -43,7 +46,6 @@ export default function Orders() {
     const [Delivery_charges, setDelivery_charges] = useState(0)
     const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState()
     const [Order_total, setOrder_total] = useState('')
-    const [Payment_status, setPayment_status] = useState('')
     const [Payment_mode, setPayment_mode] = useState('')
     const [OrderID, setOrderID] = useState([])
 
@@ -59,16 +61,18 @@ export default function Orders() {
     const [Paymentmodedata, setPaymentmodedata] = useState([])
     const [Paymentstatusdata, setPaymentstatusdata] = useState([])
     const [OrderstockID, setOrderstockID] = useState([])
+    const [PurchaseID, setPurchaseID] = useState([])
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
 
     const [selectedRows, setSelectedRows] = useState([]);
-    const [selectedItemPurchaseRows,setselectedItemPurchaseRows] = useState([])
+    const [selectedItemPurchaseRows, setselectedItemPurchaseRows] = useState([])
     const [TableData, setTableData] = useState([])
     const [ItemPurchaseTableData, setItemPurchaseTableData] = useState([])
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
-    const orederData = useRecoilValue(orderAtom)
-    const orderStatus = useRecoilValue(orderstatusAtom)
+    const fishData = useRecoilValue(fishAtom)
+    const fishpackData = useRecoilValue(fishpackAtom)
+    const fishcutData = useRecoilValue(fishcutAtom)
 
 
     const handlecustomer = (e) => {
@@ -346,6 +350,7 @@ export default function Orders() {
     const renderHeader = () => {
         return (
             <div className="flex justify-content-between">
+                <h4><strong style={{ fontWeight: 550 }}>Order Stock Item</strong></h4>
                 <span className="p-input-icon-left">
                     <CButton onClick={handleDelete} style={{ marginRight: 5 }}>
                         <CIcon icon={cilTrash} className="mr-2" />Delete stock item
@@ -356,18 +361,157 @@ export default function Orders() {
         )
     }
 
+    const orderstockitemDataSubmit = (event) => {
+        handleSubmit(event);
+        event.preventDefault();
+        let formdata = {};
+        let Purchasedata = {};
+        let fishpackdata = {};
+        let purcgaseid;
+        let fishpackid;
+        const selectedData = selectedItemPurchaseRows.map((item) => {
+
+
+            fishpackData.filter((fishpack) => {
+                if (Number(fishpack.fish_ref) === Number(item.fish_ref)) {
+                    return fishcutData.some((fishcut) => {
+                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
+                            fishpackid = fishpack.id
+                        }
+                        return false;
+                    });
+                }
+                return false;
+            });
+
+
+            purcgaseid = item.id
+            formdata = {
+                order_id: item.order_id,
+                fish_pack_ref: fishpackid,
+                total_packs_ordered: 0,
+                fish_weight: item.fish_weight,
+                meat_weight: item.meat_weight,
+                fish_rate: 0,
+                meat_rate: 0,
+                skin: 0,
+                kante: 0,
+                pack_price: 0,
+                item_discount_absolute: 0,
+                item_discount_percent: 0,
+            },
+                Purchasedata = {
+                    order_id: item.order_id,
+                    fish_ref: item.fish_ref,
+                    fish_cut: item.fish_cut,
+                    fish_weight: item.fish_weight || 0,
+                    meat_weight: item.meat_weight || 0,
+                    preferred_fish_size: item.preferred_fish_size,
+                    other_instructions: item.other_instructions || 'N/A',
+                    status: 1
+                }
+
+            // fishpackdata = {
+            //     packing_date: Packing_date,
+            //     fish_ref: item.fish_ref,
+            //     whole_fish_payment: Whole_fish_payment,
+            //     whole_fish_total_weight: Whole_fish_total_weight,
+            //     fish_packs: Fish_packs,
+            //     whole_fish_pack_weight: Whole_fish_pack_weight,
+            //     whole_fish_pack_price: Whole_fish_pack_price,
+            //     whole_fish_purchase_rate: Whole_fish_purchase_rate,
+            //     whole_fish_sale_rate: Whole_fish_sale_rate,
+            //     net_meat_pack_weight: Net_meat_Pack_weight,
+            //     net_meat_total_weight: Net_meat_total_weight,
+            //     net_meat_sale_rate: Net_meat_sale_rate,
+            //     net_meat_weight_per_kg: Net_meat_weight_per_kg,
+            //     bones_pack_weight: Bones_pack_weight,
+            //     bones_packs: Bones_packs,
+            //     bones_total_weight: Bones_total_weight,
+            //     bones_pack_rate: Bones_pack_rate,
+            //     bones_pack_price: Bones_pack_price,
+            //     available_meat_packs: Available_meat_packs,
+            //     available_bones_packs: Available_bones_packs,
+            //     fish_cut: Fish_cut || 7,
+            //     average_fish_piece_size: Average_fish_piece_size,
+            //     head_removed: Head_removed || 0,
+            //     skin_removed: Skin_removed || 0,
+            //     kante: Kante,
+            //     available_packs: Available_packs
+            // }
+
+        });
+
+
+        if (selectedData.length === 0) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please select at least one row to convert.',
+                life: 3000,
+            });
+            return;
+        }
+
+        const api = new OrderitemsService();
+        api
+            .createorderitems(formdata)
+            .then((res) => {
+                get_data()
+                const orderItem = res.data.orderItem;
+                toast.current.show({
+                    severity: 'success',
+                    summary: 'Data Submitted',
+                    detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                    life: 3000,
+                });
+
+                const Purchaseapi = new OrderpurchaseitemService();
+                Purchaseapi
+                    .updateorderpurchaseitem(purcgaseid, Purchasedata)
+                    .then((res) => {
+
+                        get_data()
+
+                    })
+                    .catch((error) => {
+
+
+                    });
+
+            })
+            .catch((error) => {
+                toast.current.show({
+                    severity: 'info',
+                    summary: 'Error',
+                    detail: `${error}`,
+                    life: 3000,
+                });
+                console.log('error: ', error);
+            });
+
+
+
+    };
+
     const renderItemPurchaseHeader = () => {
         return (
             <div className="flex justify-content-between">
+                <h4><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4>
+
                 <span className="p-input-icon-left">
                     <CButton onClick={handleDeleteItemPurchase} style={{ marginRight: 5 }}>
                         <CIcon icon={cilTrash} className="mr-2" />Delete purchase item
                     </CButton>
                 </span>
                 <span className="p-input-icon-left" style={{ float: 'right' }}>
-                    <CButton color="primary" onClick={()=>{setItemPurchaseModal(true)}}>
+                    <CButton onClick={(event) => { orderstockitemDataSubmit(event) }} style={{ marginRight: 5 }}>
+                        <CIcon icon={cilSend} className="mr-2" />Convert
+                    </CButton>
+                    <CButton color="primary" onClick={() => { setItemPurchaseModal(true) }}>
                         <CIcon icon={cilCheck} className="mr-2" />Add a purchase item
                     </CButton>
+
                 </span>
 
             </div>
@@ -381,19 +525,40 @@ export default function Orders() {
         setModalVisible(true)
     }
 
-    let delete_record = () => {
-        let _data = selectedRows.map(i => i.id);
-        let api = new OrderitemsService();
-        _data.forEach((id) => {
+    let isDeleteInProgress = false;
 
-            api.deleteorderitems(id)
-                .then((res) => {
+    let delete_record = () => {
+        if (!isDeleteInProgress) {
+            isDeleteInProgress = true;
+
+            let _data = selectedRows.map((i) => i.id);
+            let api = new OrderitemsService();
+
+            Promise.all(
+                _data.map((id) =>
+                    api
+                        .deleteorderitems(id)
+                        .then((res) => {
+                        })
+                        .catch((err) => {
+                        })
+                )
+            )
+                .then(() => {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Success Message',
+                        detail: 'Deleted Successfully',
+                    });
                     get_data();
-                    toast.current.show({ severity: 'success', summary: 'Success Message', detail: 'Deleted Successfully' });
+                    isDeleteInProgress = false;
                 })
-                .catch((err) => { })
-        });
+                .catch((err) => {
+                    isDeleteInProgress = false;
+                });
+        }
     };
+
 
     const handleDelete = () => {
         if (selectedRows.length > 0) {
@@ -414,6 +579,8 @@ export default function Orders() {
     const handleItemPurchaseClick = (event) => {
         const clickedRowData = event.data;
         const clickedRowId = clickedRowData.id;
+        setPurchaseID(clickedRowId)
+        setItemPurchaseModal(true)
     }
 
 
@@ -421,7 +588,6 @@ export default function Orders() {
         let _data = selectedItemPurchaseRows.map(i => i.id);
         let api = new OrderpurchaseitemService();
         _data.forEach((id) => {
-
             api.deleteorderpurchaseitem(id)
                 .then((res) => {
                     get_data();
@@ -468,13 +634,14 @@ export default function Orders() {
         setGlobatEvent({ eventName: 'refreshorderpurchaseitem' });
         const apipurchase = new OrderpurchaseitemService;
         apipurchase.getorderpurchaseitem(search).then((res) => {
-            if (Array.isArray(res.data)) {
-                setItemPurchaseTableData(res.data);
+            const filteredData = res.data.filter((item) => item.order_id === propID && item.status === 0);
+            if (Array.isArray(filteredData) && filteredData.length > 0) {
+                setItemPurchaseTableData(filteredData);
             } else {
                 if (res.data && res.data.message === "order purchase item not found.") {
                     setItemPurchaseTableData([]);
                 } else {
-                    setItemPurchaseTableData(res.data);
+                    setItemPurchaseTableData(filteredData);
                 }
             }
 
@@ -508,7 +675,8 @@ export default function Orders() {
         if (!modalVisible || !OrderID) {
             get_data();
         }
-    }, [modalVisible, OrderID, Order_Data])
+    }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
+
 
     return (
         <>
@@ -794,10 +962,10 @@ export default function Orders() {
                                 </div>) : null
                             }
 
-<br/>
-<div>
+                            <br />
+                            <div>
                                 <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => setItemPurchaseModal(false)}>
-                                    <Order_Purchase_Item stock_id={OrderstockID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
+                                    <Order_Purchase_Item purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (

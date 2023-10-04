@@ -14,7 +14,7 @@ import { fishAtom } from "src/_state/fishAtom";
 import { fishcutAtom } from "src/_state/fishcutAtom";
 
 
-export default function Order_Purchase_Item() {
+export default function Order_Purchase_Item(props) {
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
@@ -97,7 +97,9 @@ export default function Order_Purchase_Item() {
 
     let get_Order_Purchase_Item_data = () => {
         let api = new OrderpurchaseitemService;
-        api.getorderpurchaseitembyId(params.id).then((res) => {
+        api.getorderpurchaseitembyId(props.purchase_id).then((res) => {
+            console.log()
+            console.log(res.data, "res.data")
             setOrder_Purchase_Item_Data(res.data);
             setFish_cut(res.data.fish_cut)
             setPreferred_fish_size(res.data.preferred_fish_size)
@@ -108,13 +110,14 @@ export default function Order_Purchase_Item() {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            order_id: Order_id_data,
+            order_id: props.propName,
             fish_ref: Fish_id,
             fish_cut: Fish_cut,
             fish_weight: Fish_weight || 0,
             meat_weight: Meat_weight || 0,
             preferred_fish_size: Preferred_fish_size,
             other_instructions: Other_instructions || 'N/A',
+            status: 0
         };
 
         const api = new OrderpurchaseitemService();
@@ -122,15 +125,19 @@ export default function Order_Purchase_Item() {
             .createorderpurchaseitem(formData)
             .then((res) => {
 
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your order purchase item information has been successfully submitted and recorded.',
-                    life: 3000,
-                });
-                setTimeout(() => {
-                    navigate('/Order/OrderPurchaseItemsList');
-                }, [2000])
+                if (!props.ispopup) {
+
+                } else {
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Data Submitted',
+                        detail: 'Your order purchase item information has been successfully submitted and recorded.',
+                        life: 3000,
+                    });
+                    setTimeout(() => {
+                        props.setVisible(false)
+                    }, [2000])
+                }
 
             })
             .catch((error) => {
@@ -140,7 +147,7 @@ export default function Order_Purchase_Item() {
                     detail: `${error}`,
                     life: 3000,
                 });
-               
+
             });
     }
 
@@ -148,29 +155,35 @@ export default function Order_Purchase_Item() {
         handleSubmit(event)
         event.preventDefault();
         let formData = {
-            order_id: Order_id_data || Order_Purchase_Item_Data.order_id,
+            order_id: props.propName || Order_Purchase_Item_Data.order_id,
             fish_ref: Fish_id || Order_Purchase_Item_Data.fish_ref,
             fish_cut: Fish_cut || Order_Purchase_Item_Data.fish_cut,
             fish_weight: Fish_weight || Order_Purchase_Item_Data.fish_weight,
             meat_weight: Meat_weight || Order_Purchase_Item_Data.meat_weight,
             preferred_fish_size: Preferred_fish_size || Order_Purchase_Item_Data.preferred_fish_size,
             other_instructions: Other_instructions || Order_Purchase_Item_Data.other_instructions,
+            status: 0
         };
 
         const api = new OrderpurchaseitemService();
         api
-            .updateorderpurchaseitem(params.id, formData)
+            .updateorderpurchaseitem(props.purchase_id, formData)
             .then((res) => {
 
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your order purchase item information has been successfully update and recorded.',
-                    life: 3000,
-                });
-                setTimeout(() => {
-                    navigate('/Order/OrderPurchaseItemsList');
-                }, [2000])
+                if (!props.ispopup) {
+
+                } else {
+
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Data Submitted',
+                        detail: 'Your order purchase item information has been successfully update and recorded.',
+                        life: 3000,
+                    });
+                    setTimeout(() => {
+                        props.setVisible(false)
+                    }, [2000])
+                }
 
             })
             .catch((error) => {
@@ -180,7 +193,7 @@ export default function Order_Purchase_Item() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                
+
             });
     }
 
@@ -231,17 +244,17 @@ export default function Order_Purchase_Item() {
                 <CCol xs={12}>
                     <CCard className="mb-4">
                         {/* <CCardHeader> */}
-                            {/* <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4> */}
+                        {/* <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4> */}
                         {/* </CCardHeader> */}
                         <CCardBody>
                             <CForm
                                 className="row g-3 needs-validation"
                                 noValidate
                                 validated={validated}
-                                onSubmit={(event) => { params.id ? orderpurchaseitemDataupdateSubmit(event) : orderpurchaseitemDataSubmit(event) }}
+                                onSubmit={(event) => { props.purchase_id.length != 0 ? orderpurchaseitemDataupdateSubmit(event) : orderpurchaseitemDataSubmit(event) }}
                             >
 
-                                <div>
+                                {/* <div>
                                     <CCol>
                                         <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
                                         <CFormInput
@@ -264,127 +277,128 @@ export default function Order_Purchase_Item() {
                                     {filteredCustomers.map((customer) => (
                                         <option key={customer.id} value={customer.full_name} />
                                     ))}
-                                </datalist>
+                                </datalist> */}
 
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Refrence</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlefishref}
-                                            defaultValue={
-                                                params.id && filter_fish_name.length > 0 ? filter_fish_name[0].local_name : Fish_ref
-                                            }
-                                            type="text"
-                                            list="fishSuggestions"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            className={`form-control ${FishNotFound ? 'is-invalid' : ''}`}
-                                            style={{ borderColor: FishNotFound ? 'red' : '' }}
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Refrence</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlefishref}
+                                                defaultValue={
+                                                    params.id && filter_fish_name.length > 0 ? filter_fish_name[0].local_name : Fish_ref
+                                                }
+                                                type="text"
+                                                list="fishSuggestions"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                className={`form-control ${FishNotFound ? 'is-invalid' : ''}`}
+                                                style={{ borderColor: FishNotFound ? 'red' : '' }}
 
-                                        />
-                                        {FishNotFound && (
-                                            <CFormFeedback invalid>Please choose a Fish Refrence.</CFormFeedback>
-                                        )}
-                                        <datalist id="fishSuggestions" >
-                                            {filteredFishes.map((fish) => (
-                                                <option key={fish.id} value={fish.local_name} />
-                                            ))}
-                                        </datalist>
-                                    </CCol>
+                                            />
+                                            {FishNotFound && (
+                                                <CFormFeedback invalid>Please choose a Fish Refrence.</CFormFeedback>
+                                            )}
+                                            <datalist id="fishSuggestions" >
+                                                {filteredFishes.map((fish) => (
+                                                    <option key={fish.id} value={fish.local_name} />
+                                                ))}
+                                            </datalist>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Cut</CFormLabel>
+                                            <CFormSelect
+                                                onChange={handlefishcut}
+                                                value={Fish_cut}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            >
+                                                <option>Select</option>
+                                                {
+                                                    Fishcut.map((i) => {
+                                                        return (
+                                                            <option key={i.id} value={i.id}>{i.fish_cut}</option>
+                                                        )
+                                                    })
+                                                }
+
+                                            </CFormSelect>
+                                            <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Cut</CFormLabel>
-                                        <CFormSelect
-                                            onChange={handlefishcut}
-                                            value={Fish_cut}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        >
-                                            <option>Select</option>
-                                            {
-                                                Fishcut.map((i) => {
-                                                    return (
-                                                        <option key={i.id} value={i.id}>{i.fish_cut}</option>
-                                                    )
-                                                })
-                                            }
+                                    <CRow>
+                                        <CCol>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fish Weight</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlefishweight}
+                                                defaultValue={params.id ? Order_Purchase_Item_Data.fish_weight : Fish_weight}
+                                                list="customerSuggestions"
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
 
-                                        </CFormSelect>
-                                        <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
-                                    </CCol>
+                                            />
+
+                                            <CFormFeedback invalid>Please choose a valid Fish Weight.</CFormFeedback>
+
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Meat Weight</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlemeatweight}
+                                                defaultValue={params.id ? Order_Purchase_Item_Data.meat_weight : Meat_weight}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Meat Weight.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fish Weight</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlefishweight}
-                                            defaultValue={params.id ? Order_Purchase_Item_Data.fish_weight : Fish_weight}
-                                            list="customerSuggestions"
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Preferred Fish Size</CFormLabel>
+                                            <CFormSelect
+                                                onChange={handlepreferredfishsize}
+                                                value={Preferred_fish_size}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            >
+                                                <option>Select</option>
+                                                <option value="Small">Small</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="Large">Large</option>
+                                            </CFormSelect>
+                                            <CFormFeedback invalid>Please choose a Preferred Fish Size.</CFormFeedback>
+                                        </CCol>
 
-                                        />
-
-                                        <CFormFeedback invalid>Please choose a valid Fish Weight.</CFormFeedback>
-
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Meat Weight</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlemeatweight}
-                                            defaultValue={params.id ? Order_Purchase_Item_Data.meat_weight : Meat_weight}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Meat Weight.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Preferred Fish Size</CFormLabel>
-                                        <CFormSelect
-                                            onChange={handlepreferredfishsize}
-                                            value={Preferred_fish_size}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        >
-                                            <option>Select</option>
-                                            <option value="Small">Small</option>
-                                            <option value="Medium">Medium</option>
-                                            <option value="Large">Large</option>
-                                        </CFormSelect>
-                                        <CFormFeedback invalid>Please choose a Preferred Fish Size.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Other Instruction</CFormLabel>
-                                        <CFormTextarea
-                                            onChange={handleotherinstructions}
-                                            defaultValue={params.id ? Order_Purchase_Item_Data.other_instructions : Other_instructions}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            rows='4'
-                                        />
-                                        <CFormFeedback invalid>Please choose a Other Instruction.</CFormFeedback>
-                                    </CCol>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Other Instruction</CFormLabel>
+                                            <CFormTextarea
+                                                onChange={handleotherinstructions}
+                                                defaultValue={params.id ? Order_Purchase_Item_Data.other_instructions : Other_instructions}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                rows='4'
+                                            />
+                                            <CFormFeedback invalid>Please choose a Other Instruction.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <CCol xs={12}>
