@@ -172,162 +172,164 @@ export default function Settings() {
                                 onSubmit={(event) => { Data === false ? fishDataupdateSubmit(event) : fishDataSubmit(event) }}
                             >
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Variable Profit Percent Per Kg</CFormLabel>
-                                        <CTooltip content="%" placement="left">
-                                            <CFormInput
-                                                onChange={handlevariableprofitpercentperkg}
-                                                defaultValue={Settings.variable_profit_percent_per_kg || Variable_profit_percent_per_kg}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Variable Profit Percent Per Kg</CFormLabel>
+                                            <CTooltip content="%" placement="left">
+                                                <CFormInput
+                                                    onChange={handlevariableprofitpercentperkg}
+                                                    defaultValue={Settings.variable_profit_percent_per_kg || Variable_profit_percent_per_kg}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
 
 
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Variable Profit Percent Per Kg.</CFormFeedback>
-                                    </CCol>
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Variable Profit Percent Per Kg.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Profit Per Kg</CFormLabel>
+                                            <CTooltip content="Rs" placement="left">
+                                                <CFormInput
+                                                    onChange={handlefixedprofitperkg}
+                                                    defaultValue={Settings.fixed_profit_per_kg || Fixed_profit_per_kg}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Fixed Profit Per Kg.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Fixed Profit Per Kg</CFormLabel>
-                                        <CTooltip content="Rs" placement="left">
-                                            <CFormInput
-                                                onChange={handlefixedprofitperkg}
-                                                defaultValue={Settings.fixed_profit_per_kg || Fixed_profit_per_kg}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Expense Per Kg</CFormLabel>
+                                            <CTooltip content="Rs" placement="left">
+                                                <CFormInput
+                                                    onChange={handleexpenseperkg}
+                                                    defaultValue={Settings.expense_per_kg || Expense_per_kg}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Expense Per Kg.</CFormFeedback>
+                                        </CCol>
 
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Fixed Profit Per Kg.</CFormFeedback>
-                                    </CCol>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fuel Rate</CFormLabel>
+                                            <CTooltip content="Rs / Ltr" placement="left">
+                                                <CFormInput
+                                                    onChange={handlefuelrate}
+                                                    defaultValue={Settings.fuel_rate || Fuel_rate} list="customerSuggestions"
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+
+                                                />
+                                            </CTooltip>
+
+                                            <CFormFeedback invalid>Please choose a valid Fuel Rate.</CFormFeedback>
+
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Expense Per Kg</CFormLabel>
-                                        <CTooltip content="Rs" placement="left">
-                                            <CFormInput
-                                                onChange={handleexpenseperkg}
-                                                defaultValue={Settings.expense_per_kg || Expense_per_kg}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Expense Per Kg.</CFormFeedback>
-                                    </CCol>
-                                </div>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Bike Fuel Average</CFormLabel>
+                                            <CTooltip content="Km / Ltr" placement="left">
+                                                <CFormInput
+                                                    onChange={handlebikefuelaverage}
+                                                    defaultValue={Settings.bike_fuel_average || Bike_fuel_average}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Bike Fuel Average.</CFormFeedback>
+                                        </CCol>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Fuel Rate</CFormLabel>
-                                        <CTooltip content="Rs / Ltr" placement="left">
-                                            <CFormInput
-                                                onChange={handlefuelrate}
-                                                defaultValue={Settings.fuel_rate || Fuel_rate} list="customerSuggestions"
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-
-                                            />
-                                        </CTooltip>
-
-                                        <CFormFeedback invalid>Please choose a valid Fuel Rate.</CFormFeedback>
-
-                                    </CCol>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Delivery Charges</CFormLabel>
+                                            <CTooltip content="Rs" placement="left">
+                                                <CFormInput
+                                                    onChange={handlenetfixeddeliverycharges}
+                                                    defaultValue={Settings.fixed_delivery_charges || Fixed_delivery_charges}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Fixed Delivery Charges.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Bike Fuel Average</CFormLabel>
-                                        <CTooltip content="Km / Ltr" placement="left">
-                                            <CFormInput
-                                                onChange={handlebikefuelaverage}
-                                                defaultValue={Settings.bike_fuel_average || Bike_fuel_average}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Bike Fuel Average.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Half Service Charges</CFormLabel>
+                                            <CTooltip content="Rs / Kg" placement="left">
+                                                <CFormInput
+                                                    onChange={handlehalfservicecharges}
+                                                    defaultValue={Settings.half_service_charges || Half_service_charges}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Half Service Charges.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Full Service Charges</CFormLabel>
+                                            <CTooltip content="Rs / Kg" placement="left">
+                                                <CFormInput
+                                                    onChange={handlefullservicecharges}
+                                                    defaultValue={Settings.full_service_charges || Full_service_charges}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Full Service Charges.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Fixed Delivery Charges</CFormLabel>
-                                        <CTooltip content="Rs" placement="left">
-                                            <CFormInput
-                                                onChange={handlenetfixeddeliverycharges}
-                                                defaultValue={Settings.fixed_delivery_charges || Fixed_delivery_charges}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Fixed Delivery Charges.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Half Service Charges</CFormLabel>
-                                        <CTooltip content="Rs / Kg" placement="left">
-                                            <CFormInput
-                                                onChange={handlehalfservicecharges}
-                                                defaultValue={Settings.half_service_charges || Half_service_charges}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Half Service Charges.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Full Service Charges</CFormLabel>
-                                        <CTooltip content="Rs / Kg" placement="left">
-                                            <CFormInput
-                                                onChange={handlefullservicecharges}
-                                                defaultValue={Settings.full_service_charges || Full_service_charges}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Full Service Charges.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Miniumum Order Weight</CFormLabel>
-                                        <CTooltip content="Kg" placement="left">
-                                            <CFormInput
-                                                onChange={handleminiumumorderweight}
-                                                defaultValue={Settings.miniumum_order_weight || Miniumum_order_weight}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                        </CTooltip>
-                                        <CFormFeedback invalid>Please choose a Miniumum Order Weight.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Miniumum Order Weight</CFormLabel>
+                                            <CTooltip content="Kg" placement="left">
+                                                <CFormInput
+                                                    onChange={handleminiumumorderweight}
+                                                    defaultValue={Settings.miniumum_order_weight || Miniumum_order_weight}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Miniumum Order Weight.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <CCol xs={12}>

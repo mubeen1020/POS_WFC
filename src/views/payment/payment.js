@@ -222,197 +222,201 @@ export default function Payments() {
                             >
 
                                 <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlecustomer}
-                                            defaultValue={params.id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Customer}
-                                            list="orderSuggestions"
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
-                                            style={{ borderColor: customerNotFound ? 'red' : '' }}
-                                        />
-                                        {customerNotFound && (
-                                            <CFormFeedback invalid>Please choose a valid Customer.</CFormFeedback>
-                                        )}
-                                    </CCol>
-                                </div>
-                                <datalist id="orderSuggestions" >
-                                    {filteredCustomers.map((customer) => (
-                                        <option key={customer.id} value={customer.full_name} />
-                                    ))}
-                                </datalist>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlecustomer}
+                                                defaultValue={params.id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Customer}
+                                                list="orderSuggestions"
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
+                                                style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                            />
+                                            {customerNotFound && (
+                                                <CFormFeedback invalid>Please choose a valid Customer.</CFormFeedback>
+                                            )}
+                                        </CCol>
 
+                                        <datalist id="orderSuggestions" >
+                                            {filteredCustomers.map((customer) => (
+                                                <option key={customer.id} value={customer.full_name} />
+                                            ))}
+                                        </datalist>
+
+
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Date</CFormLabel>
+                                            <CFormInput
+                                                onChange={(e) => { setPayment_date(e.target.value) }}
+                                                value={Payment_date}
+                                                type="date"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+
+                                            />
+                                            <CFormFeedback invalid>Please choose a Payment Date.</CFormFeedback>
+
+                                        </CCol>
+                                    </CRow>
+                                </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Payment Date</CFormLabel>
-                                        <CFormInput
-                                            onChange={(e) => { setPayment_date(e.target.value) }}
-                                            value={Payment_date}
-                                            type="date"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Amount</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlepaymentamount}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                        />
-                                        <CFormFeedback invalid>Please choose a Payment Date.</CFormFeedback>
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                defaultValue={params.id ? Payment_Data.payment_amount : Payment_amount}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
 
-                                    </CCol>
-                                </div>
+                                            <CFormFeedback invalid>Please choose a Payment Amount.</CFormFeedback>
+                                        </CCol>
 
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Payment Amount</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlepaymentamount}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Method</CFormLabel>
+                                            <CFormSelect
+                                                onChange={handlepaymentmethod}
+                                                value={Payment_method}
+                                                list="customerSuggestions"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
+                                            >
+                                                <option>Select</option>
+                                                {
+                                                    paymentmethods.map((i) => {
+                                                        return (
+                                                            <option key={i.id} value={i.id}>{i.name}</option>
+                                                        )
+                                                    })
                                                 }
-                                            }}
-                                            type="text"
-                                            defaultValue={params.id ? Payment_Data.payment_amount : Payment_amount}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                            </CFormSelect>
 
-                                        <CFormFeedback invalid>Please choose a Payment Amount.</CFormFeedback>
-                                    </CCol>
-                                </div>
+                                            <CFormFeedback invalid>Please choose a valid Payment Method.</CFormFeedback>
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Payment Method</CFormLabel>
-                                        <CFormSelect
-                                            onChange={handlepaymentmethod}
-                                            value={Payment_method}
-                                            list="customerSuggestions"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-
-                                        >
-                                            <option>Select</option>
-                                            {
-                                                paymentmethods.map((i) => {
-                                                    return (
-                                                        <option key={i.id} value={i.id}>{i.name}</option>
-                                                    )
-                                                })
-                                            }
-                                        </CFormSelect>
-
-                                        <CFormFeedback invalid>Please choose a valid Payment Method.</CFormFeedback>
-
-                                    </CCol>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Recieving Staff</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlerecievingstaff}
-                                            defaultValue={params.id ? Payment_Data.recieving_staff : Recieving_staff}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Recieving Staff.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Recieving Staff</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlerecievingstaff}
+                                                defaultValue={params.id ? Payment_Data.recieving_staff : Recieving_staff}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Recieving Staff.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Recieving Account</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlerecievingaccount}
+                                                type="number"
+                                                defaultValue={params.id ? Payment_Data.recieving_account : Recieving_account}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+
+                                            <CFormFeedback invalid>Please choose a Recieving Account.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Recieving Account</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlerecievingaccount}
-                                            type="number"
-                                            defaultValue={params.id ? Payment_Data.recieving_account : Recieving_account}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Balance</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlepaymentbalance}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                        <CFormFeedback invalid>Please choose a Recieving Account.</CFormFeedback>
-                                    </CCol>
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                defaultValue={params.id ? Payment_Data.payment_balance : Payment_balance}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Payment Balance.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Tip</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlepaymenttip}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
+
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                defaultValue={params.id ? Payment_Data.payment_tip : Payment_tip}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Payment Tip.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Payment Balance</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlepaymentbalance}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Tip For Rider</CFormLabel>
+                                            <CFormInput
+                                                onChange={handletipforrider}
+                                                onKeyPress={(e) => {
+                                                    const allowedKeys = /[0-9.]|\./;
+                                                    const key = e.key;
 
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            defaultValue={params.id ? Payment_Data.payment_balance : Payment_balance}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Payment Balance.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Payment Tip</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlepaymenttip}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
-
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            defaultValue={params.id ? Payment_Data.payment_tip : Payment_tip}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Payment Tip.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Tip For Rider</CFormLabel>
-                                        <CFormInput
-                                            onChange={handletipforrider}
-                                            onKeyPress={(e) => {
-                                                const allowedKeys = /[0-9.]|\./;
-                                                const key = e.key;
-
-                                                if (!allowedKeys.test(key)) {
-                                                    e.preventDefault();
-                                                }
-                                            }}
-                                            type="text"
-                                            defaultValue={params.id ? Payment_Data.tip_for_rider : Tip_for_rider}
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Tip For Rider.</CFormFeedback>
-                                    </CCol>
+                                                    if (!allowedKeys.test(key)) {
+                                                        e.preventDefault();
+                                                    }
+                                                }}
+                                                type="text"
+                                                defaultValue={params.id ? Payment_Data.tip_for_rider : Tip_for_rider}
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Tip For Rider.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <CCol xs={12}>
