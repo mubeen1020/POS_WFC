@@ -349,7 +349,6 @@ export default function OrderStockItem(props) {
 
 
     const fishpackrefStringArray = [];
-    console.log(Order_Stock_Item_Data)
     fishData.filter((fish) => {
         return fishpackData.some((fishpack) => {
             if (Number(fishpack.fish_ref) === Number(fish.id)) {
@@ -456,7 +455,7 @@ export default function OrderStockItem(props) {
                                             ))}
                                         </datalist> */}
 
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Fish Pack Refrence</CFormLabel>
                                             <CFormInput
                                                 name="order_date"
@@ -471,7 +470,7 @@ export default function OrderStockItem(props) {
                                             <CFormFeedback invalid>Please choose an Fish Pack Refrence.</CFormFeedback>
                                         </CCol>
 
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Total Pack Ordered </CFormLabel>
                                             <CFormInput
                                                 name="delivery_deadline"
@@ -499,7 +498,7 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Fish</CFormLabel>
                                             <CFormInput
                                                 type="text"
@@ -511,7 +510,7 @@ export default function OrderStockItem(props) {
                                             />
 
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername"> Fish Cut</CFormLabel>
                                             <CFormInput
                                                 type="text"
@@ -523,7 +522,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please choose an  Fish Cut.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername"> Packing Date</CFormLabel>
                                             <CFormInput
                                                 type="date"
@@ -541,7 +540,7 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Fish Weight</CFormLabel>
                                             <CFormInput
                                                 name="delivery_charges"
@@ -555,7 +554,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please choose an Fish Weight.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Meat Weight</CFormLabel>
                                             <CFormInput
                                                 name="delivery_charges"
@@ -569,7 +568,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please enter Meat Weight.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Fish Rate</CFormLabel>
                                             <CFormInput
                                                 name="urgent_delivery_charges"
@@ -589,7 +588,7 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Meat Rate</CFormLabel>
                                             <CFormInput
                                                 name="order_total"
@@ -603,7 +602,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please enter Meat Rate.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Skin</CFormLabel>
                                             <CFormSelect
                                                 name="payment_status"
@@ -620,7 +619,7 @@ export default function OrderStockItem(props) {
                                             </CFormSelect>
                                             <CFormFeedback invalid>Please choose a Skin.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Kante</CFormLabel>
                                             <CFormInput
                                                 name="order_total"
@@ -642,7 +641,7 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Pack Price</CFormLabel>
                                             <CFormInput
                                                 name="order_total"
@@ -656,7 +655,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please enter Pack Price.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Item Discount Absolute</CFormLabel>
                                             <CFormInput
                                                 name="order_total"
@@ -669,7 +668,7 @@ export default function OrderStockItem(props) {
                                             />
                                             <CFormFeedback invalid>Please enter Item Discount Absolute.</CFormFeedback>
                                         </CCol>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Item Discount Percent</CFormLabel>
                                             <CFormInput
                                                 name="order_total"

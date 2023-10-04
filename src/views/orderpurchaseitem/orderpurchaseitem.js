@@ -98,8 +98,6 @@ export default function Order_Purchase_Item(props) {
     let get_Order_Purchase_Item_data = () => {
         let api = new OrderpurchaseitemService;
         api.getorderpurchaseitembyId(props.purchase_id).then((res) => {
-            console.log()
-            console.log(res.data, "res.data")
             setOrder_Purchase_Item_Data(res.data);
             setFish_cut(res.data.fish_cut)
             setPreferred_fish_size(res.data.preferred_fish_size)

@@ -52,8 +52,6 @@ function Order_purchase_item_List() {
           item_discount_percent: 0,
         }));
 
-        console.log(selectedData)
-        
         if (selectedData.length === 0) {
           toast.current.show({
             severity: 'error',
@@ -69,7 +67,6 @@ function Order_purchase_item_List() {
         .createorderitems(selectedData)
         .then((res) => {
           const orderItem = res.data.orderItem;
-          console.log(orderItem)
           delete_record()
           toast.current.show({
             severity: 'success',
@@ -87,7 +84,6 @@ function Order_purchase_item_List() {
             detail: `${error}`,
             life: 3000,
           });
-          console.log('error: ', error);
         });
       };
       

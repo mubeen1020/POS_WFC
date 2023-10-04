@@ -487,7 +487,6 @@ export default function Orders() {
                     detail: `${error}`,
                     life: 3000,
                 });
-                console.log('error: ', error);
             });
 
 

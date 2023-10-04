@@ -248,74 +248,82 @@ export default function Customer() {
                                                                 {
                                                                         params.id &&
                                                                         <>
-                                                                                <div >
-                                                                                        <CCol >
-                                                                                                <CFormLabel htmlFor="validationCustomUsername">Username</CFormLabel>
-                                                                                                <CFormInput
-                                                                                                        onChange={handleusername}
-                                                                                                        defaultValue={params.id ? Customer_Data.username : UserName}
-                                                                                                        type="text"
-                                                                                                        id="validationCustomUsername"
-                                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                                        required
-                                                                                                        disabled={params.id ? params.id : ''}
-                                                                                                />
-                                                                                                <CFormFeedback invalid>Please choose a Username.</CFormFeedback>
-                                                                                        </CCol>
-                                                                                </div>
 
                                                                                 <div >
-                                                                                        <CCol >
-                                                                                                <CFormLabel htmlFor="validationCustomUsername">Password</CFormLabel>
-                                                                                                <CFormInput
-                                                                                                        onChange={handlepassword}
-                                                                                                        defaultValue={params.id ? Customer_Data.password : Password}
-                                                                                                        type="text"
-                                                                                                        id="validationCustomUsername"
-                                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                                        required
-                                                                                                />
-                                                                                                <CFormFeedback invalid>Please choose a Password.</CFormFeedback>
-                                                                                        </CCol>
+                                                                                        <CRow>
+                                                                                                <CCol sm={6} lg={6}>
+                                                                                                        <CFormLabel htmlFor="validationCustomUsername">Username</CFormLabel>
+                                                                                                        <CFormInput
+                                                                                                                onChange={handleusername}
+                                                                                                                defaultValue={params.id ? Customer_Data.username : UserName}
+                                                                                                                type="text"
+                                                                                                                id="validationCustomUsername"
+                                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                                required
+                                                                                                                disabled={params.id ? params.id : ''}
+                                                                                                        />
+                                                                                                        <CFormFeedback invalid>Please choose a Username.</CFormFeedback>
+                                                                                                </CCol>
+
+                                                                                                <CCol sm={6} lg={6}>
+                                                                                                        <CFormLabel htmlFor="validationCustomPassword">Password</CFormLabel>
+                                                                                                        <CFormInput
+                                                                                                                onChange={handlepassword}
+                                                                                                                defaultValue={params.id ? Customer_Data.password : Password}
+                                                                                                                type="password" // Assuming it's a password input
+                                                                                                                id="validationCustomPassword"
+                                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                                required
+                                                                                                        />
+                                                                                                        <CFormFeedback invalid>Please choose a Password.</CFormFeedback>
+                                                                                                </CCol>
+
+                                                                                        </CRow>
+
                                                                                 </div>
+
                                                                         </>
                                                                 }
+
+
                                                                 <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Name</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlename}
-                                                                                        defaultValue={params.id ? Customer_Data.full_name : Name}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Name.</CFormFeedback>
-                                                                        </CCol>
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Name</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlename}
+                                                                                                defaultValue={params.id ? Customer_Data.full_name : Name}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Name.</CFormFeedback>
+                                                                                </CCol>
+
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Care of Customer</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlecare_of_ref}
+                                                                                                defaultValue={
+                                                                                                        params.id && filter_name.length > 0 ? filter_name[0].full_name : Care_Of_Ref
+                                                                                                }
+                                                                                                list="customerSuggestions"
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                                className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
+                                                                                                style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                                                                        />
+                                                                                        {customerNotFound && (
+                                                                                                <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>
+                                                                                        )}
+                                                                                </CCol>
+                                                                        </CRow>
                                                                 </div>
 
-                                                                <div>
-                                                                        <CCol>
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Care of Customer</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlecare_of_ref}
-                                                                                        defaultValue={
-                                                                                                params.id && filter_name.length > 0 ? filter_name[0].full_name : Care_Of_Ref
-                                                                                        }
-                                                                                        list="customerSuggestions"
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                        className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
-                                                                                        style={{ borderColor: customerNotFound ? 'red' : '' }}
-                                                                                />
-                                                                                {customerNotFound && (
-                                                                                        <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>
-                                                                                )}
-                                                                        </CCol>
-                                                                </div>
+
 
 
                                                                 <datalist id="customerSuggestions" >
@@ -326,174 +334,188 @@ export default function Customer() {
 
 
 
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Care of name</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlecare_of_name}
-                                                                                        defaultValue={params.id ? Customer_Data.care_of_name : Care_Of_Name}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Care of name.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
 
                                                                 <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Phone 1</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlephone1}
-                                                                                        defaultValue={params.id ? Customer_Data.phone_1 : Phone1}
-                                                                                        type="number"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Phone 1.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Phone 2</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlephone2}
-                                                                                        defaultValue={params.id ? Customer_Data.phone_2 : Phone2}
-                                                                                        type="number"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Phone 2.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Phone 3</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlephone3}
-                                                                                        defaultValue={params.id ? Customer_Data.phone_3 : Phone3}
-                                                                                        type="number"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Phone 3.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Address</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handleaddress}
-                                                                                        defaultValue={params.id ? Customer_Data.address : Address}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Address.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Area</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handlearea}
-                                                                                        defaultValue={params.id ? Customer_Data.area : Area}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Area.</CFormFeedback>
-                                                                        </CCol>
-                                                                </div>
-
-                                                                <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Pin Location</CFormLabel>
-                                                                                <CInputGroup>
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Care of name</CFormLabel>
                                                                                         <CFormInput
-                                                                                                onChange={handlepinlocation}
-                                                                                                defaultValue={params.id ? Customer_Data.pin_location : PinLocation}
+                                                                                                onChange={handlecare_of_name}
+                                                                                                defaultValue={params.id ? Customer_Data.care_of_name : Care_Of_Name}
                                                                                                 type="text"
                                                                                                 id="validationCustomUsername"
                                                                                                 aria-describedby="inputGroupPrepend"
                                                                                                 required
                                                                                         />
+                                                                                        <CFormFeedback invalid>Please choose a Care of name.</CFormFeedback>
+                                                                                </CCol>
 
-                                                                                        <CInputGroupText onClick={openMapModal} style={{ cursor: 'pointer' }}>
-                                                                                                <CIcon icon={cilMap} />
-                                                                                        </CInputGroupText>
-                                                                                </CInputGroup>
-                                                                                <CFormFeedback invalid>Please choose a Pin Location.</CFormFeedback>
-                                                                        </CCol>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Phone 1</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlephone1}
+                                                                                                defaultValue={params.id ? Customer_Data.phone_1 : Phone1}
+                                                                                                type="number"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Phone 1.</CFormFeedback>
+                                                                                </CCol>
+                                                                        </CRow>
+
                                                                 </div>
 
 
-                                                                <Dialog header="Map" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
-                                                                        <div style={{ height: '100vh', width: '100%' }}>
-                                                                                <GoogleMapReact
-                                                                                        bootstrapURLKeys={{ key: "" }}
-                                                                                        defaultCenter={defaultProps.center}
-                                                                                        defaultZoom={defaultProps.zoom}
-                                                                                >
-                                                                                        <AnyReactComponent
-                                                                                                lat={59.955413}
-                                                                                                lng={30.337844}
-                                                                                                text="pakistan"
+
+                                                                <div >
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Phone 2</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlephone2}
+                                                                                                defaultValue={params.id ? Customer_Data.phone_2 : Phone2}
+                                                                                                type="number"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
                                                                                         />
-                                                                                </GoogleMapReact>
-                                                                        </div>
-                                                                </Dialog>
+                                                                                        <CFormFeedback invalid>Please choose a Phone 2.</CFormFeedback>
+                                                                                </CCol>
 
-                                                                <div>
-                                                                        <CCol>
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Distance</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handledistance}
-                                                                                        defaultValue={params.id ? Customer_Data.distance : Distance}
-                                                                                        onKeyPress={(e) => {
-                                                                                                const allowedKeys = /[0-9.]|\./;
-                                                                                                const key = e.key;
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Phone 3</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlephone3}
+                                                                                                defaultValue={params.id ? Customer_Data.phone_3 : Phone3}
+                                                                                                type="number"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Phone 3.</CFormFeedback>
+                                                                                </CCol>
+                                                                        </CRow>
+                                                                </div>
 
-                                                                                                if (!allowedKeys.test(key)) {
-                                                                                                        e.preventDefault();
-                                                                                                }
-                                                                                        }}
-                                                                                        type="text"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Distance.</CFormFeedback>
-                                                                        </CCol>
+
+
+                                                                <div >
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Address</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handleaddress}
+                                                                                                defaultValue={params.id ? Customer_Data.address : Address}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Address.</CFormFeedback>
+                                                                                </CCol>
+
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Area</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlearea}
+                                                                                                defaultValue={params.id ? Customer_Data.area : Area}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                // aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Area.</CFormFeedback>
+                                                                                </CCol>
+                                                                        </CRow>
                                                                 </div>
 
 
                                                                 <div >
-                                                                        <CCol >
-                                                                                <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
-                                                                                <CFormInput
-                                                                                        onChange={handledeliverycharges}
-                                                                                        defaultValue={params.id ? Customer_Data.delivery_charges : DeliveryCharges}
-                                                                                        type="number"
-                                                                                        id="validationCustomUsername"
-                                                                                        aria-describedby="inputGroupPrepend"
-                                                                                        required
-                                                                                />
-                                                                                <CFormFeedback invalid>Please choose a Delivery Charges.</CFormFeedback>
-                                                                        </CCol>
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Pin Location</CFormLabel>
+                                                                                        <CInputGroup>
+                                                                                                <CFormInput
+                                                                                                        onChange={handlepinlocation}
+                                                                                                        defaultValue={params.id ? Customer_Data.pin_location : PinLocation}
+                                                                                                        type="text"
+                                                                                                        id="validationCustomUsername"
+                                                                                                        aria-describedby="inputGroupPrepend"
+                                                                                                        required
+                                                                                                />
+
+                                                                                                <CInputGroupText onClick={openMapModal} style={{ cursor: 'pointer' }}>
+                                                                                                        <CIcon icon={cilMap} />
+                                                                                                </CInputGroupText>
+                                                                                        </CInputGroup>
+                                                                                        <CFormFeedback invalid>Please choose a Pin Location.</CFormFeedback>
+                                                                                </CCol>
+
+
+
+
+                                                                                <Dialog header="Map" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
+                                                                                        <div style={{ height: '100vh', width: '100%' }}>
+                                                                                                <GoogleMapReact
+                                                                                                        bootstrapURLKeys={{ key: "" }}
+                                                                                                        defaultCenter={defaultProps.center}
+                                                                                                        defaultZoom={defaultProps.zoom}
+                                                                                                >
+                                                                                                        <AnyReactComponent
+                                                                                                                lat={59.955413}
+                                                                                                                lng={30.337844}
+                                                                                                                text="pakistan"
+                                                                                                        />
+                                                                                                </GoogleMapReact>
+                                                                                        </div>
+                                                                                </Dialog>
+
+
+
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Distance</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handledistance}
+                                                                                                defaultValue={params.id ? Customer_Data.distance : Distance}
+                                                                                                onKeyPress={(e) => {
+                                                                                                        const allowedKeys = /[0-9.]|\./;
+                                                                                                        const key = e.key;
+
+                                                                                                        if (!allowedKeys.test(key)) {
+                                                                                                                e.preventDefault();
+                                                                                                        }
+                                                                                                }}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Distance.</CFormFeedback>
+                                                                                </CCol>
+                                                                        </CRow>
                                                                 </div>
 
-                                                                <CCol xs={12}>
+
+                                                                <div>
+                                                                        <CRow>
+                                                                                <CCol sm={6} lg={6}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handledeliverycharges}
+                                                                                                defaultValue={params.id ? Customer_Data.delivery_charges : DeliveryCharges}
+                                                                                                type="number"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Delivery Charges.</CFormFeedback>
+                                                                                </CCol>
+                                                                        </CRow>
+                                                                </div>
+
+
+                                                                <CCol >
                                                                         <CButton style={{ float: 'right' }} color="primary" type="submit">
                                                                                 <CIcon icon={cilCheck} className="mr-1" /> Submit
                                                                         </CButton>

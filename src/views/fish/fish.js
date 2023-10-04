@@ -182,69 +182,71 @@ export default function Fish() {
                             >
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Local Name</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlelocalname}
-                                            defaultValue={params.id ? Fish_Data.local_name : Local_name}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
 
-                                        />
-                                        <CFormFeedback invalid>Please choose a Local Name.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Local Name</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlelocalname}
+                                                defaultValue={params.id ? Fish_Data.local_name : Local_name}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+
+                                            />
+                                            <CFormFeedback invalid>Please choose a Local Name.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">English Name</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleenglishname}
+                                                defaultValue={params.id ? Fish_Data.english_name : English_name}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+
+                                            />
+                                            <CFormFeedback invalid>Please choose a English Name.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">English Name</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleenglishname}
-                                            defaultValue={params.id ? Fish_Data.english_name : English_name}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
 
-                                        />
-                                        <CFormFeedback invalid>Please choose a English Name.</CFormFeedback>
-                                    </CCol>
-                                </div>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Minimum Size</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleminimumsize}
+                                                defaultValue={params.id ? Fish_Data.minimum_size : Minimum_size}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Minimum Size.</CFormFeedback>
+                                        </CCol>
 
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Minimum Size</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleminimumsize}
-                                            defaultValue={params.id ? Fish_Data.minimum_size : Minimum_size}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Minimum Size.</CFormFeedback>
-                                    </CCol>
-                                </div>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Maximum Size</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlemaximumsize}
+                                                defaultValue={params.id ? Fish_Data.maximum_size : Maximum_size}
+                                                list="customerSuggestions"
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
 
-                                <div>
-                                    <CCol>
-                                        <CFormLabel htmlFor="validationCustomUsername">Maximum Size</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlemaximumsize}
-                                            defaultValue={params.id ? Fish_Data.maximum_size : Maximum_size}
-                                            list="customerSuggestions"
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
+                                            />
 
-                                        />
+                                            <CFormFeedback invalid>Please choose a valid Maximum Size.</CFormFeedback>
 
-                                        <CFormFeedback invalid>Please choose a valid Maximum Size.</CFormFeedback>
-
-                                    </CCol>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
 
@@ -253,112 +255,116 @@ export default function Fish() {
 
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Net Steaks</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlenetsteak}
-                                            defaultValue={params.id ? Fish_Data.net_steaks : Net_steaks}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Net Steaks.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Net Steaks</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlenetsteak}
+                                                defaultValue={params.id ? Fish_Data.net_steaks : Net_steaks}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Net Steaks.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Net Boneless</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlenetboneless}
+                                                defaultValue={params.id ? Fish_Data.net_boneless : Net_boneless}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Net Boneless.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Net Boneless</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlenetboneless}
-                                            defaultValue={params.id ? Fish_Data.net_boneless : Net_boneless}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Net Boneless.</CFormFeedback>
-                                    </CCol>
+
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleBones}
+                                                defaultValue={params.id ? Fish_Data.bones : Bones}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                            />
+                                            <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleminrate}
+                                                defaultValue={params.id ? Fish_Data.min_purchase_rate : Min_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Min Purchase Rate.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleBones}
-                                            defaultValue={params.id ? Fish_Data.bones : Bones}
-                                            type="text"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                        />
-                                        <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlemaxrate}
+                                                defaultValue={params.id ? Fish_Data.max_purchase_rate : Max_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Max Purchase Rate.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleaveragerate}
+                                                defaultValue={params.id ? Fish_Data.average_purchase_rate : Average_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Average Purchase Rate.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
                                 <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleminrate}
-                                            defaultValue={params.id ? Fish_Data.min_purchase_rate : Min_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
-                                        <CFormFeedback invalid>Please choose a Min Purchase Rate.</CFormFeedback>
-                                    </CCol>
-                                </div>
 
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
-                                        <CFormInput
-                                            onChange={handlemaxrate}
-                                            defaultValue={params.id ? Fish_Data.max_purchase_rate : Max_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
-                                        <CFormFeedback invalid>Please choose a Max Purchase Rate.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleaveragerate}
-                                            defaultValue={params.id ? Fish_Data.average_purchase_rate : Average_rate}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
-                                        <CFormFeedback invalid>Please choose a Average Purchase Rate.</CFormFeedback>
-                                    </CCol>
-                                </div>
-
-                                <div >
-                                    <CCol >
-                                        <CFormLabel htmlFor="validationCustomUsername">Overall Purchase Quantity</CFormLabel>
-                                        <CFormInput
-                                            onChange={handleoverallpurchacequantity}
-                                            defaultValue={params.id ? Fish_Data.overall_purchase_quantity : Overall_purchace_quantity}
-                                            type="number"
-                                            id="validationCustomUsername"
-                                            aria-describedby="inputGroupPrepend"
-                                            required
-                                            disabled={params.id ? params.id : ''}
-                                        />
-                                        <CFormFeedback invalid>Please choose a Overall Purchase Quantity.</CFormFeedback>
-                                    </CCol>
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Overall Purchase Quantity</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleoverallpurchacequantity}
+                                                defaultValue={params.id ? Fish_Data.overall_purchase_quantity : Overall_purchace_quantity}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={params.id ? params.id : ''}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Overall Purchase Quantity.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
                                 </div>
 
 
