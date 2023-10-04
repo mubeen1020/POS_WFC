@@ -372,7 +372,6 @@ export default function Orders() {
         const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
         const selectedData = selectedItemPurchaseRows.map((item) => {
 
-
             fishpackData.filter((fishpack) => {
                 if (Number(fishpack.fish_ref) === Number(item.fish_ref)) {
                     return fishcutData.some((fishcut) => {
@@ -686,14 +685,15 @@ export default function Orders() {
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
                                 {params.id &&
                                     <span style={{ float: 'right' }}>
-                                        <p className="bg-primary" style={{
+                                        <p  style={{
                                             fontSize: 18,
-                                            color: 'white',
+                                            color: 'black',
                                             fontWeight: 'bold',
                                             width: 200,
                                             padding: '10px',
                                             textAlign: 'center',
                                             position: 'relative',
+                                            backgroundColor:'#ebedef'
                                         }}>
                                             {Order_status === 'available_booked' && 'Available Booked'
                                                 || Order_status === 'packed' && 'Packed' ||
@@ -712,7 +712,7 @@ export default function Orders() {
                                                     border: 'solid transparent',
                                                     borderWidth: '8px',
                                                     borderColor: 'transparent',
-                                                    borderTopColor: '#007bff',
+                                                    borderTopColor: '#ebedef',
                                                     transform: 'translateX(-50%)',
                                                 }}
                                             ></span>

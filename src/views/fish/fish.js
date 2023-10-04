@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
 import { Toast } from 'primereact/toast';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
@@ -45,6 +45,7 @@ export default function Fish() {
         let api = new FishService;
         api.getfishbyId(params.id).then((res) => {
             setFish_Data(res.data.fish[0]);
+            setBones(res.data.fish[0].bones)
 
         }).catch((err) => { });
     }
@@ -289,6 +290,19 @@ export default function Fish() {
                                     <CRow>
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
+                                            <CFormSelect
+                                             onChange={handleBones}
+                                             value={ Bones}
+                                             type="text"
+                                             id="validationCustomUsername"
+                                             aria-describedby="inputGroupPrepend"
+                                             required
+                                            >
+                                           <option>Select</option>
+                                           <option value='middle bone only'>Middle bone only,</option>
+                                           <option value='few bones'>Few bones</option>
+                                           <option value='many bones'>Many bones</option>
+                                            </CFormSelect>
                                             <CFormInput
                                                 onChange={handleBones}
                                                 defaultValue={params.id ? Fish_Data.bones : Bones}
