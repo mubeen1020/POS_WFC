@@ -5,6 +5,7 @@ class FishService {
     createfish = (data) => apiClient().post(`api/fish`, data);
     getfish = (search) => search ? apiClient().get(`api/fish/search?query=${search}`) : apiClient().get('api/fish');
     getfishbyId = (id) => apiClient().get("api/fish/" + id);
+    getfishsettings = () => apiClient().get("api/fish/settings");
     deletefish = (id) => apiClient().delete("api/fish/" + id);
     updatefish = (id, data) => apiClient().put("api/fish/" + id, data);
     static Fishname(row){

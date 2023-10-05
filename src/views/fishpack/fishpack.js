@@ -9,6 +9,7 @@ import { cilCheck } from "@coreui/icons";
 import FishpackService from "src/services/fishpack_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
+import SettingsService from "src/services/settings_services";
 
 
 export default function FishPack() {
@@ -70,11 +71,26 @@ export default function FishPack() {
         setFilteredFishes(filtered);
 
     }
-    const handlewholefishpayment = (e) => { setWhole_fish_payment(e.target.value) }
-    const handlewholefishtotalweight = (e) => { setWhole_fish_total_weight(e.target.value) }
+   
+    const handlewholefishpayment = (e) => {
+        const purchaseValue = parseFloat(e.target.value);
+        setWhole_fish_payment(purchaseValue);
+        const purchaseRate = purchaseValue / parseFloat(Whole_fish_total_weight);
+        setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
+        settingsData(purchaseRate);
+      }
+      
+      const handlewholefishtotalweight = (e) => {
+        const totalWeight = parseFloat(e.target.value);
+        setWhole_fish_total_weight(totalWeight);
+        const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight;
+        setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
+        settingsData(purchaseRate);
+      }
+
+
     const handlefishpack = (e) => { setfish_packs(e.target.value) }
     const handlewholefishpackweight = (e) => { setWhole_fish_pack_weight(e.target.value) }
-    const handlewholefishpurchaserate = (e) => { setWhole_fish_purchase_rate(e.target.value) }
     const handlewholefishsalerate = (e) => { setWhole_fish_sale_rate(e.target.value) }
     const handlenetmeatpackweight = (e) => { setNet_meat_pack_weight(e.target.value) }
     const handlenetmeatweightperkg = (e) => { setNet_meat_weight_per_kg(e.target.value) }
@@ -115,6 +131,7 @@ export default function FishPack() {
         }).catch((err) => { });
     }
 
+   
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
@@ -260,8 +277,15 @@ export default function FishPack() {
         return fish.id === Fish_Pack_Data.fish_ref;
 
     });
-
-
+    const settingsData = (purchaseRate) => {
+        let api = new SettingsService();
+        api.getSettings().then((res) => {
+          const settings = res.data.settings[0];
+          const saleRate = ((purchaseRate * settings.variable_profit_percent_per_kg) / 100)+purchaseRate + settings.fixed_profit_per_kg + settings.expense_per_kg;
+          setWhole_fish_sale_rate(purchaseRate!=0?saleRate.toFixed(2):0);
+        }).catch((err) => { });
+      }
+ 
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -277,10 +301,17 @@ export default function FishPack() {
         }
         Fish_Data_Get();
         Fish_Cut_Data_Get();
+        settingsData()
         const currentDate = new Date().toISOString().split('T')[0];
         params.id ? get_fish_pack_data() : setPacking_date(currentDate)
     }, [])
-
+ 
+  useEffect(() => {
+        if (!Whole_fish_purchase_rate||!Whole_fish_total_weight||!Whole_fish_payment) {
+            settingsData()
+        }
+    }, [Whole_fish_purchase_rate, Whole_fish_total_weight, Whole_fish_payment,Whole_fish_sale_rate])
+   
     return (
         <>
 
@@ -520,13 +551,12 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    onChange={handlewholefishpurchaserate}
-                                                    defaultValue={params.id ? Fish_Pack_Data.whole_fish_purchase_rate : Whole_fish_purchase_rate}
+                                                    value={ Whole_fish_purchase_rate}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    disabled={params.id ? params.id : ''}
+                                                    disabled  
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Whole Fish Purchase Rate</CFormFeedback>
@@ -536,13 +566,13 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    onChange={handlewholefishsalerate}
+                                                    // onChange={handlewholefishsalerate}
                                                     defaultValue={params.id ? Fish_Pack_Data.whole_fish_sale_rate : Whole_fish_sale_rate}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    disabled={params.id ? params.id : ''}
+                                                    disabled
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Whole Fish Sale Rate.</CFormFeedback>

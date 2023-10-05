@@ -64,7 +64,8 @@ export default function Fish() {
             min_purchase_rate: Min_rate,
             max_purchase_rate: Max_rate,
             average_purchase_rate: Average_rate,
-            overall_purchase_quantity: Overall_purchace_quantity
+            overall_purchase_quantity: Overall_purchace_quantity,
+            settings_id :1
         };
 
         const api = new FishService();
@@ -108,7 +109,8 @@ export default function Fish() {
             min_purchase_rate: Min_rate || Fish_Data.min_purchase_rate,
             max_purchase_rate: Max_rate || Fish_Data.max_purchase_rate,
             average_purchase_rate: Average_rate || Fish_Data.average_purchase_rate,
-            overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity
+            overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity,
+            settings_id :1
         };
 
         const api = new FishService();
@@ -303,14 +305,6 @@ export default function Fish() {
                                            <option value='few bones'>Few bones</option>
                                            <option value='many bones'>Many bones</option>
                                             </CFormSelect>
-                                            <CFormInput
-                                                onChange={handleBones}
-                                                defaultValue={params.id ? Fish_Data.bones : Bones}
-                                                type="text"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
                                             <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
                                         </CCol>
 
