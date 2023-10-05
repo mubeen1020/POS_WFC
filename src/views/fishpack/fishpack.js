@@ -86,12 +86,17 @@ export default function FishPack() {
         const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight;
         setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
         settingsData(purchaseRate);
+        const packweight = parseFloat(e.target.value) / Fish_packs;
+        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) ? 0 : packweight.toFixed(2));
+        
+
       }
 
-
-    const handlefishpack = (e) => { setfish_packs(e.target.value) }
-    const handlewholefishpackweight = (e) => { setWhole_fish_pack_weight(e.target.value) }
-    const handlewholefishsalerate = (e) => { setWhole_fish_sale_rate(e.target.value) }
+    const handlefishpack = (e) => { 
+        setfish_packs(e.target.value)
+        const packweight = parseFloat(Whole_fish_total_weight) / e.target.value;
+        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) ? 0 : packweight.toFixed(2));
+     }
     const handlenetmeatpackweight = (e) => { setNet_meat_pack_weight(e.target.value) }
     const handlenetmeatweightperkg = (e) => { setNet_meat_weight_per_kg(e.target.value) }
     const handlenetmeatsalerate = (e) => { setNet_meat_sale_rate(e.target.value) }
@@ -283,6 +288,9 @@ export default function FishPack() {
           const settings = res.data.settings[0];
           const saleRate = ((purchaseRate * settings.variable_profit_percent_per_kg) / 100)+purchaseRate + settings.fixed_profit_per_kg + settings.expense_per_kg;
           setWhole_fish_sale_rate(purchaseRate!=0?saleRate.toFixed(2):0);
+          console.log(Whole_fish_pack_weight,'Whole_fish_pack_weight')
+          const packprice = parseFloat(Whole_fish_pack_weight)/saleRate
+          setWhole_fish_pack_price(packprice.toFixed(2))
         }).catch((err) => { });
       }
  
@@ -508,7 +516,6 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight</CFormLabel>
                                             <CTooltip content="Kg" placement="left">
                                                 <CFormInput
-                                                    onChange={handlewholefishpackweight}
                                                     defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_weight : Whole_fish_pack_weight}
                                                     onKeyPress={(e) => {
                                                         const allowedKeys = /[0-9.]|\./;
@@ -522,6 +529,7 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
+                                                    disabled
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Whole Fish Pack Weight.</CFormFeedback>
@@ -531,13 +539,12 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
-                                                    onChange={handlewholefishpackprice}
                                                     defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_price : Whole_fish_pack_price}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    disabled={params.id ? params.id : ''}
+                                                    disabled
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a  Whole Fish Pack Price</CFormFeedback>
