@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
 import { Toast } from 'primereact/toast';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
@@ -45,6 +45,7 @@ export default function Fish() {
         let api = new FishService;
         api.getfishbyId(params.id).then((res) => {
             setFish_Data(res.data.fish[0]);
+            setBones(res.data.fish[0].bones)
 
         }).catch((err) => { });
     }
@@ -63,7 +64,8 @@ export default function Fish() {
             min_purchase_rate: Min_rate,
             max_purchase_rate: Max_rate,
             average_purchase_rate: Average_rate,
-            overall_purchase_quantity: Overall_purchace_quantity
+            overall_purchase_quantity: Overall_purchace_quantity,
+            settings_id :1
         };
 
         const api = new FishService();
@@ -107,7 +109,8 @@ export default function Fish() {
             min_purchase_rate: Min_rate || Fish_Data.min_purchase_rate,
             max_purchase_rate: Max_rate || Fish_Data.max_purchase_rate,
             average_purchase_rate: Average_rate || Fish_Data.average_purchase_rate,
-            overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity
+            overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity,
+            settings_id :1
         };
 
         const api = new FishService();
@@ -289,14 +292,19 @@ export default function Fish() {
                                     <CRow>
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
-                                            <CFormInput
-                                                onChange={handleBones}
-                                                defaultValue={params.id ? Fish_Data.bones : Bones}
-                                                type="text"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
+                                            <CFormSelect
+                                             onChange={handleBones}
+                                             value={ Bones}
+                                             type="text"
+                                             id="validationCustomUsername"
+                                             aria-describedby="inputGroupPrepend"
+                                             required
+                                            >
+                                           <option>Select</option>
+                                           <option value='middle bone only'>Middle bone only,</option>
+                                           <option value='few bones'>Few bones</option>
+                                           <option value='many bones'>Many bones</option>
+                                            </CFormSelect>
                                             <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
                                         </CCol>
 

@@ -105,7 +105,7 @@ function Fish_List() {
     const get_data = (search='') => {
         setGlobatEvent({ eventName: 'refreshfish' });
         const api = new FishService();
-        api.getfish(search)
+        api.getfishsettings(search)
           .then((res) => {
             if (Array.isArray(res.data)) {
               setTableData(res.data);
@@ -113,11 +113,12 @@ function Fish_List() {
               if (res.data && res.data.message === "fish item not found.") {
                 setTableData([]);
               } else {
-                setTableData(res.data.fishList);
+                setTableData(res.data.list);
               }
             }
           })
           .catch((err) => { });
+          
     }
 
 
@@ -162,15 +163,12 @@ function Fish_List() {
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="local_name" header="Local Name" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="english_name" header="English Name" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="minimum_size" header="Minimum Size" sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="maximum_size" header="Maximum Size" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_steaks" header="Net Steaks" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="net_boneless" header="Net Boneless" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="bones" header="Bones" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="min_purchase_rate" header="Min Purchase Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="max_purchase_rate" header="Max Purchase Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_purchase_rate" header="Average Purchase Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="overall_purchase_quantity" header="Overall Purchase Quantity" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="half_service_charges" header="Half Service Charges" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="full_service_charges" header="Full Service Charges" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="miniumum_order_weight" header="Miniumum Order Weight" ></Column>
                         </DataTable>
                     </CCardBody>
                 </CCard>

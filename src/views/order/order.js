@@ -152,7 +152,7 @@ export default function Orders() {
             customer: Customer_id,
             order_date: Order_date,
             delivery_deadline: Delivery_deadline,
-            order_status: 8,
+            order_status: 15,
             delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges),
             urgent_delivery_charges: Urgent_delivery_charges,
             order_total: Order_total,
@@ -361,16 +361,16 @@ export default function Orders() {
         )
     }
 
-    const orderstockitemDataSubmit = (event) => {
+    const orderstockitemDataSubmit = (event,orderDatastring) => {
         handleSubmit(event);
         event.preventDefault();
         let formdata = {};
         let Purchasedata = {};
-        let fishpackdata = {};
+        let orderdata = {};
         let purcgaseid;
         let fishpackid;
+        const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
         const selectedData = selectedItemPurchaseRows.map((item) => {
-
 
             fishpackData.filter((fishpack) => {
                 if (Number(fishpack.fish_ref) === Number(item.fish_ref)) {
@@ -409,36 +409,18 @@ export default function Orders() {
                     preferred_fish_size: item.preferred_fish_size,
                     other_instructions: item.other_instructions || 'N/A',
                     status: 1
+                },
+                orderdata = {
+                    customer: Customer_id || Order_Data.customer,
+                    order_date: Order_date || Order_Data.order_date,
+                    delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
+                    order_status: data[0].id || Order_Data.order_status,
+                    delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
+                    urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
+                    order_total: Order_total || Order_Data.order_total,
+                    payment_status: Order_Data.payment_status,
+                    payment_mode: Payment_mode || Order_Data.payment_mode
                 }
-
-            // fishpackdata = {
-            //     packing_date: Packing_date,
-            //     fish_ref: item.fish_ref,
-            //     whole_fish_payment: Whole_fish_payment,
-            //     whole_fish_total_weight: Whole_fish_total_weight,
-            //     fish_packs: Fish_packs,
-            //     whole_fish_pack_weight: Whole_fish_pack_weight,
-            //     whole_fish_pack_price: Whole_fish_pack_price,
-            //     whole_fish_purchase_rate: Whole_fish_purchase_rate,
-            //     whole_fish_sale_rate: Whole_fish_sale_rate,
-            //     net_meat_pack_weight: Net_meat_Pack_weight,
-            //     net_meat_total_weight: Net_meat_total_weight,
-            //     net_meat_sale_rate: Net_meat_sale_rate,
-            //     net_meat_weight_per_kg: Net_meat_weight_per_kg,
-            //     bones_pack_weight: Bones_pack_weight,
-            //     bones_packs: Bones_packs,
-            //     bones_total_weight: Bones_total_weight,
-            //     bones_pack_rate: Bones_pack_rate,
-            //     bones_pack_price: Bones_pack_price,
-            //     available_meat_packs: Available_meat_packs,
-            //     available_bones_packs: Available_bones_packs,
-            //     fish_cut: Fish_cut || 7,
-            //     average_fish_piece_size: Average_fish_piece_size,
-            //     head_removed: Head_removed || 0,
-            //     skin_removed: Skin_removed || 0,
-            //     kante: Kante,
-            //     available_packs: Available_packs
-            // }
 
         });
 
@@ -472,6 +454,22 @@ export default function Orders() {
                     .then((res) => {
 
                         get_data()
+                        const orderapi = new OrdersService();
+                        orderapi
+                            .updateorders(params.id, orderdata)
+                            .then((res) => {
+                                get_order_data()
+
+                            })
+                            .catch((error) => {
+                                toast.current.show({
+                                    severity: 'info',
+                                    summary: 'Error',
+                                    detail: `${error}`,
+                                    life: 3000,
+                                });
+
+                            });
 
                     })
                     .catch((error) => {
@@ -504,7 +502,7 @@ export default function Orders() {
                     </CButton>
                 </span>
                 <span className="p-input-icon-left" style={{ float: 'right' }}>
-                    <CButton onClick={(event) => { orderstockitemDataSubmit(event) }} style={{ marginRight: 5 }}>
+                    <CButton onClick={(event) => { orderstockitemDataSubmit(event,'to_be_purchased') }} style={{ marginRight: 5 }}>
                         <CIcon icon={cilSend} className="mr-2" />Convert
                     </CButton>
                     <CButton color="primary" onClick={() => { setItemPurchaseModal(true) }}>
@@ -687,16 +685,24 @@ export default function Orders() {
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
                                 {params.id &&
                                     <span style={{ float: 'right' }}>
-                                        <p className="bg-primary" style={{
+                                        <p  style={{
                                             fontSize: 18,
-                                            color: 'white',
+                                            color: 'black',
                                             fontWeight: 'bold',
-                                            width: 130,
+                                            width: 200,
                                             padding: '10px',
                                             textAlign: 'center',
                                             position: 'relative',
+                                            backgroundColor:'#ebedef'
                                         }}>
-                                            {Order_status}
+                                            {Order_status === 'available_booked' && 'Available Booked'
+                                                || Order_status === 'packed' && 'Packed' ||
+                                                Order_status === 'delivered' && 'Delivered' ||
+                                                Order_status === 'purchased_approve' && 'Purchased Approve' ||
+                                                Order_status === 'returned' && 'Returned' ||
+                                                Order_status === 'to_be_purchased' && 'To be purchased' ||
+                                                Order_status === 'closed' && 'Closed'
+                                            }
                                             <span
                                                 style={{
                                                     content: '',
@@ -706,7 +712,7 @@ export default function Orders() {
                                                     border: 'solid transparent',
                                                     borderWidth: '8px',
                                                     borderColor: 'transparent',
-                                                    borderTopColor: '#007bff',
+                                                    borderTopColor: '#ebedef',
                                                     transform: 'translateX(-50%)',
                                                 }}
                                             ></span>
@@ -720,48 +726,43 @@ export default function Orders() {
                                         <CButton onClick={(event) => orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
                                             <CIcon icon={status == 'paid' ? cilCheck : cilDollar} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
                                     </span>}&nbsp;
-                                {Orderstatusdata === 'new' ? (
+                                {Orderstatusdata === 'available_booked' ? (
                                     <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'quotation')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Quotation</CButton>
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'packed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Packed</CButton>
 
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'pending')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
-
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event)} style={{ width: 150, padding: 10 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
                                     </span>) : null}
 
-                                {Orderstatusdata === 'quotation' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'pending')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Pending</CButton>
-
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'confirm')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Confirm</CButton>
-
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
-                                    </span>) : null}
-
-                                {Orderstatusdata === 'pending' ? (
+                                {Orderstatusdata === 'packed' ? (
                                     <span className="" >
                                         <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
+                                    </span>) : null}
 
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'cancelled')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
+                                {Orderstatusdata === 'to_be_purchased' ? (
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'purchased_approve')} style={{ width: 200, padding: 10, marginRight: 5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Purchased Approve</CButton>
+                                    </span>) : null}
 
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
+                                {Orderstatusdata === 'purchased_approve' ? (
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'available_booked')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Approve</CButton>
+                                    </span>) : null}
+
+
+                                {Orderstatusdata === 'returned' ? (
+                                    <span className="" >
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
                                     </span>) : null}
 
                                 {Orderstatusdata === 'delivered' ? (
                                     <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'cancelled')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Cancelled</CButton>
-
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10 }} color="primary">
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                            <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
+                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
                                     </span>) : null}
                             </h4>

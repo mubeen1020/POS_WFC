@@ -79,7 +79,7 @@ const Login = () => {
           <CCol md={8}>
             <CCardGroup>
               <CCard
-                className="text-white bg-primary py-5"
+                className="text-white bg-primary py-5 imagebg"
                 style={{ width: '100%' }}
               >
                 <CCardBody className="text-center">
