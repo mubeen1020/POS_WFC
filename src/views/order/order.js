@@ -779,7 +779,7 @@ export default function Orders() {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
                                             <CFormInput
                                                 onChange={handlecustomer}
@@ -806,7 +806,7 @@ export default function Orders() {
                                             ))}
                                         </datalist>
 
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Order Date</CFormLabel>
                                             <CFormInput
                                                 name="order_date"
@@ -820,7 +820,7 @@ export default function Orders() {
                                             <CFormFeedback invalid>Please choose an Order Date.</CFormFeedback>
                                         </CCol>
 
-                                        <CCol>
+                                        <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Delivery Deadline</CFormLabel>
                                             <CFormInput
                                                 name="delivery_deadline"
@@ -845,7 +845,7 @@ export default function Orders() {
                                             <CFormFeedback invalid>Please choose an Order Status.</CFormFeedback>
                                         </CCol> */}
 
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
                                             <CFormInput
                                                 name="delivery_charges"
@@ -859,7 +859,7 @@ export default function Orders() {
                                             <CFormFeedback invalid>Please enter Delivery Charges.</CFormFeedback>
                                         </CCol>
 
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Urgent Delivery Charges</CFormLabel>
                                             <CFormInput
                                                 name="urgent_delivery_charges"
@@ -878,7 +878,7 @@ export default function Orders() {
 
                                 <div>
                                     <CRow>
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Order Total</CFormLabel>
                                             <CFormInput
                                                 name="order_total"
@@ -892,7 +892,7 @@ export default function Orders() {
                                             <CFormFeedback invalid>Please enter Order Total.</CFormFeedback>
                                         </CCol>
 
-                                        <CCol>
+                                        <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Payment Mode</CFormLabel>
                                             <CFormSelect
                                                 name="payment_mode"
