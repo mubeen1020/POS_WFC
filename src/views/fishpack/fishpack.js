@@ -99,7 +99,8 @@ export default function FishPack() {
         setNet_meat_pack_weight(meatpackweight.toFixed(2)) ? 0 : meatpackweight.toFixed(2)
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
         const meatweightkg = parseFloat(Net_meat_weight_per_kg)
-        settingsData(purchaseRate, packweight, meatweightkg)
+        const bonepackweight = parseFloat(Bones_pack_weight)
+        settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
     const handlenetmeattotalweight = (e) => {
         setNet_meat_total_weight(e.target.value)
@@ -109,26 +110,33 @@ export default function FishPack() {
         setNet_meat_pack_weight(meatpackweight.toFixed(2)) ? 0 : meatpackweight.toFixed(2)
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
         const packweight = parseFloat(Whole_fish_pack_weight)
-        settingsData(purchaseRate, packweight, meatweightkg)
+        const bonepackweight = parseFloat(Bones_pack_weight)
+        settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
     const handlebonetotalweight = (e) => {
         setBones_total_weight(e.target.value)
         const bonepackweight = e.target.value / parseFloat(Bones_packs);
         setBones_pack_weight(isNaN(bonepackweight.toFixed(2)) ? 0 : bonepackweight.toFixed(2))
+        const purchaseRate = parseFloat(Whole_fish_purchase_rate)
+        const packweight = parseFloat(Whole_fish_pack_weight)
+        const meatweightkg = parseFloat(Net_meat_weight_per_kg)
+        settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
     const handlebonepacks = (e) => {
         setBones_packs(e.target.value)
         const bonepackweight = parseFloat(Bones_total_weight) / e.target.value;
         setBones_pack_weight(isNaN(bonepackweight.toFixed(2)) ? 0 : bonepackweight.toFixed(2))
+        const purchaseRate = parseFloat(Whole_fish_purchase_rate)
+        const packweight = parseFloat(Whole_fish_pack_weight)
+        const meatweightkg = parseFloat(Net_meat_weight_per_kg)
+        settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
-    const handlebonespackrate = (e) => { setBones_pack_rate(e.target.value) }
     const handlefishcut = (e) => { setFish_cut(e.target.value) }
     const handleaveragefishpiecesize = (e) => { setAverage_fish_piece_size(e.target.value) }
     const handleheadremoved = (e) => { setHead_removed(e.target.value) }
     const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
     const handlekante = (e) => { setKante(e.target.value) }
     const handleavailablepacks = (e) => { setAvailable_packs(e.target.value) }
-    const handlebonespackprice = (e) => { setBones_pack_price(e.target.value) }
     const handleavailablemeatpacks = (e) => { setAvailable_meat_packs(e.target.value) }
     const handleavailablebonepacks = (e) => { setAvailable_bones_packs(e.target.value) }
 
@@ -139,6 +147,16 @@ export default function FishPack() {
             setHead_removed(res.data.fishPack.head_removed)
             setSkin_removed(res.data.fishPack.skin_removed)
             setFish_cut(res.data.fishPack.fish_cut)
+            setWhole_fish_pack_weight(res.data.fishPack.whole_fish_pack_weight)
+            setWhole_fish_pack_price(res.data.fishPack.whole_fish_pack_price)
+            setWhole_fish_purchase_rate(res.data.fishPack.whole_fish_purchase_rate)
+            setWhole_fish_sale_rate(res.data.fishPack.whole_fish_sale_rate)
+            setNet_meat_pack_weight(res.data.fishPack.net_meat_pack_weight)
+            setNet_meat_weight_per_kg(res.data.fishPack.net_meat_weight_per_kg)
+            setNet_meat_sale_rate(res.data.fishPack.net_meat_sale_rate)
+            setBones_pack_weight(res.data.fishPack.bones_pack_weight)
+            setBones_pack_rate(res.data.fishPack.bones_pack_rate)
+            setBones_pack_price(res.data.fishPack.bones_pack_price)
             const isoDate = res.data.fishPack.packing_date;
 
             if (isoDate) {
@@ -298,7 +316,7 @@ export default function FishPack() {
         return fish.id === Fish_Pack_Data.fish_ref;
 
     });
-    const settingsData = (purchaseRate, packweight, meatweightkg) => {
+    const settingsData = (purchaseRate, packweight, meatweightkg, bonepackweight) => {
         let api = new SettingsService();
         api.getSettings().then((res) => {
             const settings = res.data.settings[0];
@@ -308,6 +326,15 @@ export default function FishPack() {
             setWhole_fish_pack_price(packprice.toFixed(2))
             const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))) * 1000)
             setNet_meat_sale_rate(netmeatsale.toFixed(2))
+            const bonesrate = Math.round((saleRate * bonepackweight) / 2 * 100) / 100;
+            setBones_pack_rate(bonesrate);
+            console.log(bonepackweight,'bonepackweight')
+            console.log(bonesrate,'bonesrate')
+            console.log(bonepackweight * bonesrate,'bonepackweight / bonesrate')
+            const bonespackprice = Math.round((bonepackweight * bonesrate) * 100) / 100;
+            setBones_pack_price(bonespackprice);
+
+
         }).catch((err) => { });
     }
 
@@ -326,23 +353,10 @@ export default function FishPack() {
         }
         Fish_Data_Get();
         Fish_Cut_Data_Get();
-        settingsData()
         const currentDate = new Date().toISOString().split('T')[0];
         params.id ? get_fish_pack_data() : setPacking_date(currentDate)
     }, [])
 
-    useEffect(() => {
-        if (!Whole_fish_pack_weight) {
-            settingsData()
-        }
-    }, [Whole_fish_pack_weight])
-
-
-    useEffect(() => {
-        if (!Whole_fish_purchase_rate || !Whole_fish_pack_weight || !Whole_fish_total_weight || !Whole_fish_payment) {
-            settingsData()
-        }
-    }, [Whole_fish_purchase_rate, Whole_fish_pack_weight, Whole_fish_payment, Whole_fish_sale_rate, Net_meat_sale_rate, Whole_fish_pack_price])
 
     return (
         <>
@@ -540,7 +554,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight</CFormLabel>
                                             <CTooltip content="Kg" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_weight : Whole_fish_pack_weight}
+                                                    value={Whole_fish_pack_weight}
                                                     onKeyPress={(e) => {
                                                         const allowedKeys = /[0-9.]|\./;
                                                         const key = e.key;
@@ -563,7 +577,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.whole_fish_pack_price : Whole_fish_pack_price}
+                                                    value={Whole_fish_pack_price}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
@@ -583,7 +597,15 @@ export default function FishPack() {
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
                                                     value={Whole_fish_purchase_rate}
-                                                    type="number"
+                                                    onKeyPress={(e) => {
+                                                        const allowedKeys = /[0-9.]|\./;
+                                                        const key = e.key;
+
+                                                        if (!allowedKeys.test(key)) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    type="text"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
@@ -597,8 +619,16 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.whole_fish_sale_rate : Whole_fish_sale_rate}
-                                                    type="number"
+                                                    value={Whole_fish_sale_rate}
+                                                    onKeyPress={(e) => {
+                                                        const allowedKeys = /[0-9.]|\./;
+                                                        const key = e.key;
+
+                                                        if (!allowedKeys.test(key)) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                    type="text"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
@@ -618,7 +648,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Net Meat Pack Weight</CFormLabel>
                                             <CTooltip content="Kg" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.net_meat_pack_weight : Net_meat_Pack_weight}
+                                                    value={Net_meat_Pack_weight}
                                                     onKeyPress={(e) => {
                                                         const allowedKeys = /[0-9.]|\./;
                                                         const key = e.key;
@@ -641,7 +671,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Net Meat Weight Per Kg</CFormLabel>
                                             <CTooltip content="Gram" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.net_meat_weight_per_kg : Net_meat_weight_per_kg}
+                                                    value={Net_meat_weight_per_kg}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
@@ -660,7 +690,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Net Meat Sale Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.net_meat_sale_rate : Net_meat_sale_rate}
+                                                    value={Net_meat_sale_rate}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
@@ -675,7 +705,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Bones Pack Weight</CFormLabel>
                                             <CTooltip content="Kg" placement="left">
                                                 <CFormInput
-                                                    defaultValue={params.id ? Fish_Pack_Data.bones_pack_weight : Bones_pack_weight}
+                                                    value={Bones_pack_weight}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
@@ -694,13 +724,12 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Bone Pack Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    onChange={handlebonespackrate}
-                                                    defaultValue={params.id ? Fish_Pack_Data.bones_pack_rate : Bones_pack_rate}
+                                                    value={Bones_pack_rate}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    disabled={params.id ? params.id : ''}
+                                                    disabled
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Bone Pack Rate.</CFormFeedback>
@@ -710,13 +739,12 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
-                                                    onChange={handlebonespackprice}
-                                                    defaultValue={params.id ? Fish_Pack_Data.bones_pack_price : Bones_pack_price}
+                                                    value={Bones_pack_price}
                                                     type="number"
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    disabled={params.id ? params.id : ''}
+                                                    disabled
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
