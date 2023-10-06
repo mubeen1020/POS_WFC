@@ -39,10 +39,10 @@ function Order_Stock_Item_List() {
         return (
             <div className="flex justify-content-between">
                 <span className="mb-3">
-                    <h4><strong>Order Stock Item</strong><span className="" style={{ float: "right" }}>
+                    <h4><strong>Order Stock Item</strong><span className="d-grid gap-2 d-md-block" style={{ float: "right" }}>
                         <>
                             <Link to="/Order/OrderStockItemsList/OrderItems">
-                                <CButton style={{ float: 'right', width: 100, padding: 10 }} color="primary" type="submit">
+                                <CButton style={{ float: 'right', width: 100, padding: 10, marginRight: 5 }} color="primary" type="submit">
                                     <CIcon icon={cilPlus} className="mr-1" />  Add
                                 </CButton>
                             </Link>
@@ -55,7 +55,7 @@ function Order_Stock_Item_List() {
                 </span>
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
-                    <InputText onChange={onGlobalFilterChange} value={globalFilterValue} placeholder="Keyword Search" />
+                    <InputText onChange={onGlobalFilterChange} value={globalFilterValue} style={{ width: 170, marginTop: 10 }} placeholder="Keyword Search" />
                 </span>
 
             </div>
