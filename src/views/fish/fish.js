@@ -7,6 +7,8 @@ import '../../scss/style.scss';
 import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
 import FishService from "src/services/fish_services";
+import FishpackService from "src/services/fishpack_services";
+import { InputSwitch } from "primereact/inputswitch";
 
 
 export default function Fish() {
@@ -28,6 +30,7 @@ export default function Fish() {
 
     const [Fish_Data, setFish_Data] = useState([])
 
+    const [checked, setChecked] = useState(false);
 
     const handlelocalname = (e) => { setLocal_name(e.target.value) }
     const handleenglishname = (e) => { setEnglish_name(e.target.value) }
@@ -45,10 +48,31 @@ export default function Fish() {
         let api = new FishService;
         api.getfishbyId(params.id).then((res) => {
             setFish_Data(res.data.fish[0]);
-            setBones(res.data.fish[0].bones)
-
+            const isChecked = res.data.fish[0].ischeck !== 0 ? true : false;
+            setChecked(isChecked);
+            setBones(res.data.fish[0].bones);
+            setMin_rate(res.data.fish[0].min_purchase_rate || 0);
+            setMax_rate(res.data.fish[0].max_purchase_rate || 0);
+            setAverage_rate(res.data.fish[0].average_purchase_rate || 0);
+            if (!isChecked) {
+                get_min_max_rate(res.data.fish[0].id);
+            }
         }).catch((err) => { });
     }
+    
+    let get_min_max_rate = (id) => {
+        let api = new FishpackService;
+        api.getfishmin_max_rate().then((res) => {
+            if (!checked) {
+                const filterbyid = res.data.fishPacks.filter((item) => item.fish_ref === id);
+                setMin_rate(filterbyid[0].smallest_rate || 0);
+                setMax_rate(filterbyid[0].greatest_rate || 0);
+                setAverage_rate((filterbyid[0].average_rate).toFixed(2) || 0);
+            }
+        }).catch((err) => { });
+    }
+    
+    
 
     const fishDataSubmit = (event) => {
         handleSubmit(event)
@@ -61,11 +85,12 @@ export default function Fish() {
             net_steaks: Net_steaks,
             net_boneless: Net_boneless,
             bones: Bones,
-            min_purchase_rate: Min_rate,
-            max_purchase_rate: Max_rate,
-            average_purchase_rate: Average_rate,
+            min_purchase_rate: Min_rate || 0,
+            max_purchase_rate: Max_rate || 0,
+            average_purchase_rate: Average_rate || 0,
             overall_purchase_quantity: Overall_purchace_quantity,
-            settings_id :1
+            settings_id: 1,
+            ischeck: checked == false? 0:1
         };
 
         const api = new FishService();
@@ -91,7 +116,7 @@ export default function Fish() {
                     detail: `${error}`,
                     life: 3000,
                 });
-               
+
             });
     }
 
@@ -106,12 +131,15 @@ export default function Fish() {
             net_steaks: Net_steaks || Fish_Data.net_steaks,
             net_boneless: Net_boneless || Fish_Data.net_boneless,
             bones: Bones || Fish_Data.bones,
-            min_purchase_rate: Min_rate || Fish_Data.min_purchase_rate,
-            max_purchase_rate: Max_rate || Fish_Data.max_purchase_rate,
-            average_purchase_rate: Average_rate || Fish_Data.average_purchase_rate,
+            min_purchase_rate: Min_rate || 0,
+            max_purchase_rate: Max_rate || 0,
+            average_purchase_rate: Average_rate || 0,
             overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity,
-            settings_id :1
+            settings_id: 1,
+            ischeck: checked == false? 0:1
         };
+
+        
 
         const api = new FishService();
         api
@@ -149,7 +177,9 @@ export default function Fish() {
         setValidated(true)
     }
 
-
+    const handleChange = () => {
+        setChecked(!checked);
+      };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -159,12 +189,24 @@ export default function Fish() {
             const tokenData = JSON.parse(atob(token.split('.')[1]));
             const tokenExpirationTimestamp = tokenData.exp * 1000;
             if (Date.now() >= tokenExpirationTimestamp) {
-                localStorage.removeItem('token')
+                localStorage.removeItem('token');
                 navigate("/");
+            } else {
+                if (params.id ) {
+                    get_fish_data();
+                }
+
+           
             }
         }
-        params.id ? get_fish_data() : ''
-    }, [])
+    }, [params.id]);
+
+  useEffect(()=>{
+    if (checked !== true) {
+        get_min_max_rate();
+    }
+  },[checked])
+   
 
     return (
         <>
@@ -252,11 +294,6 @@ export default function Fish() {
                                     </CRow>
                                 </div>
 
-
-
-
-
-
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
@@ -293,72 +330,21 @@ export default function Fish() {
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
                                             <CFormSelect
-                                             onChange={handleBones}
-                                             value={ Bones}
-                                             type="text"
-                                             id="validationCustomUsername"
-                                             aria-describedby="inputGroupPrepend"
-                                             required
+                                                onChange={handleBones}
+                                                value={Bones}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
                                             >
-                                           <option>Select</option>
-                                           <option value='middle bone only'>Middle bone only,</option>
-                                           <option value='few bones'>Few bones</option>
-                                           <option value='many bones'>Many bones</option>
+                                                <option>Select</option>
+                                                <option value='middle bone only'>Middle bone only,</option>
+                                                <option value='few bones'>Few bones</option>
+                                                <option value='many bones'>Many bones</option>
                                             </CFormSelect>
                                             <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
                                         </CCol>
 
-                                        <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
-                                            <CFormInput
-                                                onChange={handleminrate}
-                                                defaultValue={params.id ? Fish_Data.min_purchase_rate : Min_rate}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                disabled={params.id ? params.id : ''}
-                                            />
-                                            <CFormFeedback invalid>Please choose a Min Purchase Rate.</CFormFeedback>
-                                        </CCol>
-                                    </CRow>
-                                </div>
-
-                                <div >
-                                    <CRow>
-                                        <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
-                                            <CFormInput
-                                                onChange={handlemaxrate}
-                                                defaultValue={params.id ? Fish_Data.max_purchase_rate : Max_rate}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                disabled={params.id ? params.id : ''}
-                                            />
-                                            <CFormFeedback invalid>Please choose a Max Purchase Rate.</CFormFeedback>
-                                        </CCol>
-
-                                        <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
-                                            <CFormInput
-                                                onChange={handleaveragerate}
-                                                defaultValue={params.id ? Fish_Data.average_purchase_rate : Average_rate}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                disabled={params.id ? params.id : ''}
-                                            />
-                                            <CFormFeedback invalid>Please choose a Average Purchase Rate.</CFormFeedback>
-                                        </CCol>
-                                    </CRow>
-                                </div>
-
-                                <div >
-
-                                    <CRow>
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Overall Purchase Quantity</CFormLabel>
                                             <CFormInput
@@ -372,6 +358,65 @@ export default function Fish() {
                                             />
                                             <CFormFeedback invalid>Please choose a Overall Purchase Quantity.</CFormFeedback>
                                         </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <br />
+                                            <InputSwitch checked={checked} onChange={handleChange} />
+                                            <br />
+                                        </CCol>
+                                    </CRow>
+                                </div>
+
+                                <div >
+                                    <CRow>
+                                        <CCol sm={6} lg={6}>
+
+                                            <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleminrate}
+                                                defaultValue={Min_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={checked != true}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Min Purchase Rate.</CFormFeedback>
+                                        </CCol>
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handlemaxrate}
+                                                defaultValue={Max_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={checked != true}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Max Purchase Rate.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
+                                            <CFormInput
+                                                onChange={handleaveragerate}
+                                                defaultValue={Average_rate}
+                                                type="number"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
+                                                disabled={checked != true}
+                                            />
+                                            <CFormFeedback invalid>Please choose a Average Purchase Rate.</CFormFeedback>
+                                        </CCol>
+                                    </CRow>
+                                </div>
+
+                                <div >
+
+                                    <CRow>
+
                                     </CRow>
                                 </div>
 

@@ -39,7 +39,6 @@ export default function FishPack() {
     const [Head_removed, setHead_removed] = useState('')
     const [Skin_removed, setSkin_removed] = useState('')
     const [Kante, setKante] = useState('')
-    const [Available_packs, setAvailable_packs] = useState('')
     const [Whole_fish_pack_price, setWhole_fish_pack_price] = useState('')
     const [Bones_pack_price, setBones_pack_price] = useState('')
     const [Available_meat_packs, setAvailable_meat_packs] = useState('')
@@ -51,6 +50,37 @@ export default function FishPack() {
     const [Fishcut, setFishcut] = useState([])
 
     const [FishNotFound, setFishNotFound] = useState(false)
+
+    let get_fish_pack_data = () => {
+        let api = new FishpackService();
+        api.getfishpackbyId(params.id).then((res) => {
+            setFish_Pack_Data(res.data.fishPack);
+            setHead_removed(res.data.fishPack.head_removed)
+            setSkin_removed(res.data.fishPack.skin_removed)
+            setFish_cut(res.data.fishPack.fish_cut)
+            setWhole_fish_pack_weight(res.data.fishPack.whole_fish_pack_weight)
+            setWhole_fish_pack_price(res.data.fishPack.whole_fish_pack_price)
+            setWhole_fish_purchase_rate(res.data.fishPack.whole_fish_purchase_rate)
+            setWhole_fish_sale_rate(res.data.fishPack.whole_fish_sale_rate)
+            setNet_meat_pack_weight(res.data.fishPack.net_meat_pack_weight)
+            setNet_meat_weight_per_kg(res.data.fishPack.net_meat_weight_per_kg)
+            setNet_meat_sale_rate(res.data.fishPack.net_meat_sale_rate)
+            setBones_pack_weight(res.data.fishPack.bones_pack_weight)
+            setBones_pack_rate(res.data.fishPack.bones_pack_rate)
+            setBones_pack_price(res.data.fishPack.bones_pack_price)
+            setKante(res.data.fishPack.kante)
+            const isoDate = res.data.fishPack.packing_date;
+
+            if (isoDate) {
+                const parsedDate = new Date(isoDate);
+                parsedDate.setHours(parsedDate.getHours() + 5);
+                const formattedDate = parsedDate.toISOString().split('T')[0];
+                setPacking_date(formattedDate);
+            } else {
+            }
+
+        }).catch((err) => { });
+    }
 
     const handlefish = (e) => {
         const fishvalue = e.target.value;
@@ -75,24 +105,27 @@ export default function FishPack() {
     const handlewholefishpayment = (e) => {
         const purchaseValue = parseFloat(e.target.value);
         setWhole_fish_payment(purchaseValue);
-        const purchaseRate = purchaseValue / parseFloat(Whole_fish_total_weight);
+        const purchaseRate = purchaseValue || Whole_fish_payment / parseFloat(Whole_fish_total_weight);
         setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
         settingsData(purchaseRate);
     }
 
     const handlewholefishtotalweight = (e) => {
         const totalWeight = parseFloat(e.target.value);
-        setWhole_fish_total_weight(e.target.value);
-        const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight;
-        setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
-        const packweight = parseFloat(e.target.value) / Fish_packs;
-        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) ? 0 : packweight.toFixed(2));
-        const meatweightkg = parseFloat((Net_meat_total_weight) / totalWeight) * 1000;
+        setWhole_fish_total_weight(totalWeight);
+        console.log(Whole_fish_total_weight)
+        const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight || Whole_fish_total_weight;
+        setWhole_fish_purchase_rate(purchaseRate);
+        const packweight = parseFloat(totalWeight) || Whole_fish_total_weight / Fish_packs;
+        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) ||packweight === Infinity ? 0 : packweight.toFixed(2));
+        const meatweightkg = parseFloat((Net_meat_total_weight) / totalWeight || Whole_fish_total_weight) * 1000;
         setNet_meat_weight_per_kg(isNaN(meatweightkg.toFixed(2)) ? 0 : meatweightkg.toFixed(2))
         settingsData(purchaseRate, packweight, meatweightkg);
     }
+
     const handlefishpack = (e) => {
         setfish_packs(e.target.value)
+        setAvailable_meat_packs(e.target.value)
         const packweight = parseFloat(Whole_fish_total_weight) / e.target.value;
         setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) || packweight.toFixed(2) === 'Infinity' ? 0 : packweight.toFixed(2));
         const meatpackweight = parseFloat((Net_meat_total_weight) / e.target.value);
@@ -124,6 +157,7 @@ export default function FishPack() {
     }
     const handlebonepacks = (e) => {
         setBones_packs(e.target.value)
+        setAvailable_bones_packs(e.target.value)
         const bonepackweight = parseFloat(Bones_total_weight) / e.target.value;
         setBones_pack_weight(isNaN(bonepackweight.toFixed(2)) ? 0 : bonepackweight.toFixed(2))
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
@@ -136,39 +170,9 @@ export default function FishPack() {
     const handleheadremoved = (e) => { setHead_removed(e.target.value) }
     const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
     const handlekante = (e) => { setKante(e.target.value) }
-    const handleavailablepacks = (e) => { setAvailable_packs(e.target.value) }
-    const handleavailablemeatpacks = (e) => { setAvailable_meat_packs(e.target.value) }
-    const handleavailablebonepacks = (e) => { setAvailable_bones_packs(e.target.value) }
+   
 
-    let get_fish_pack_data = () => {
-        let api = new FishpackService();
-        api.getfishpackbyId(params.id).then((res) => {
-            setFish_Pack_Data(res.data.fishPack);
-            setHead_removed(res.data.fishPack.head_removed)
-            setSkin_removed(res.data.fishPack.skin_removed)
-            setFish_cut(res.data.fishPack.fish_cut)
-            setWhole_fish_pack_weight(res.data.fishPack.whole_fish_pack_weight)
-            setWhole_fish_pack_price(res.data.fishPack.whole_fish_pack_price)
-            setWhole_fish_purchase_rate(res.data.fishPack.whole_fish_purchase_rate)
-            setWhole_fish_sale_rate(res.data.fishPack.whole_fish_sale_rate)
-            setNet_meat_pack_weight(res.data.fishPack.net_meat_pack_weight)
-            setNet_meat_weight_per_kg(res.data.fishPack.net_meat_weight_per_kg)
-            setNet_meat_sale_rate(res.data.fishPack.net_meat_sale_rate)
-            setBones_pack_weight(res.data.fishPack.bones_pack_weight)
-            setBones_pack_rate(res.data.fishPack.bones_pack_rate)
-            setBones_pack_price(res.data.fishPack.bones_pack_price)
-            const isoDate = res.data.fishPack.packing_date;
-
-            if (isoDate) {
-                const parsedDate = new Date(isoDate);
-                parsedDate.setHours(parsedDate.getHours() + 5);
-                const formattedDate = parsedDate.toISOString().split('T')[0];
-                setPacking_date(formattedDate);
-            } else {
-            }
-
-        }).catch((err) => { });
-    }
+  
 
 
 
@@ -201,7 +205,6 @@ export default function FishPack() {
             head_removed: Head_removed || 0,
             skin_removed: Skin_removed || 0,
             kante: Kante,
-            available_packs: Available_packs
         };
 
         const api = new FishpackService();
@@ -260,7 +263,6 @@ export default function FishPack() {
             head_removed: Head_removed || Fish_Pack_Data.head_removed,
             skin_removed: Skin_removed || Fish_Pack_Data.skin_removed,
             kante: Kante || Fish_Pack_Data.kante,
-            available_packs: Available_packs || Fish_Pack_Data.available_packs
         };
 
         const api = new FishpackService();
@@ -316,28 +318,6 @@ export default function FishPack() {
         return fish.id === Fish_Pack_Data.fish_ref;
 
     });
-    const settingsData = (purchaseRate, packweight, meatweightkg, bonepackweight) => {
-        let api = new SettingsService();
-        api.getSettings().then((res) => {
-            const settings = res.data.settings[0];
-            const saleRate = ((purchaseRate * settings.variable_profit_percent_per_kg) / 100) + purchaseRate + settings.fixed_profit_per_kg + settings.expense_per_kg;
-            setWhole_fish_sale_rate(saleRate.toFixed(2));
-            const packprice = parseFloat(packweight.toFixed(2)) * saleRate.toFixed(2)
-            setWhole_fish_pack_price(packprice.toFixed(2))
-            const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))) * 1000)
-            setNet_meat_sale_rate(netmeatsale.toFixed(2))
-            const bonesrate = Math.round((saleRate * bonepackweight) / 2 * 100) / 100;
-            setBones_pack_rate(bonesrate);
-            console.log(bonepackweight,'bonepackweight')
-            console.log(bonesrate,'bonesrate')
-            console.log(bonepackweight * bonesrate,'bonepackweight / bonesrate')
-            const bonespackprice = Math.round((bonepackweight * bonesrate) * 100) / 100;
-            setBones_pack_price(bonespackprice);
-
-
-        }).catch((err) => { });
-    }
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -356,6 +336,29 @@ export default function FishPack() {
         const currentDate = new Date().toISOString().split('T')[0];
         params.id ? get_fish_pack_data() : setPacking_date(currentDate)
     }, [])
+
+    const settingsData = (purchaseRate, packweight, meatweightkg, bonepackweight) => {
+        let api = new SettingsService();
+        api.getSettings().then((res) => {
+            const settings = res.data.settings[0];
+            const saleRate = ((purchaseRate * settings.variable_profit_percent_per_kg) / 100) + purchaseRate + settings.fixed_profit_per_kg + settings.expense_per_kg;
+            const newsalerate = isNaN(saleRate) ? 0 : saleRate.toFixed(2);
+            setWhole_fish_sale_rate(newsalerate);
+            const packprice = parseFloat(packweight.toFixed(2)) * saleRate.toFixed(2)
+            setWhole_fish_pack_price(packprice.toFixed(2))
+            const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))) * 1000)
+            setNet_meat_sale_rate(netmeatsale.toFixed(2))
+            const bonesrate = Math.round((saleRate * bonepackweight) / 3 * 100) / 100;
+            setBones_pack_rate(bonesrate);
+            const bonespackprice = Math.round((bonepackweight * bonesrate) * 100) / 100;
+            setBones_pack_price(bonespackprice);
+
+
+        }).catch((err) => { });
+    }
+
+
+   
 
 
     return (
@@ -619,7 +622,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    value={Whole_fish_sale_rate}
+                                                    value={Whole_fish_sale_rate === NaN ? 0 :Whole_fish_sale_rate}
                                                     onKeyPress={(e) => {
                                                         const allowedKeys = /[0-9.]|\./;
                                                         const key = e.key;
@@ -757,13 +760,12 @@ export default function FishPack() {
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Available Meat Packs</CFormLabel>
                                             <CFormInput
-                                                onChange={handleavailablemeatpacks}
                                                 defaultValue={params.id ? Fish_Pack_Data.available_meat_packs : Available_meat_packs}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
-                                                disabled={params.id ? params.id : ''}
+                                                disabled
                                             />
                                             <CFormFeedback invalid>Please choose a Available Meat Packs.</CFormFeedback>
                                         </CCol>
@@ -771,13 +773,12 @@ export default function FishPack() {
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername"> Available Bone Packs</CFormLabel>
                                             <CFormInput
-                                                onChange={handleavailablebonepacks}
                                                 defaultValue={params.id ? Fish_Pack_Data.available_bones_packs : Available_bones_packs}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
-                                                disabled={params.id ? params.id : ''}
+                                                disabled
                                             />
                                             <CFormFeedback invalid>Please choose a  Available Bone Packs.</CFormFeedback>
                                         </CCol>
@@ -862,31 +863,25 @@ export default function FishPack() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Kante</CFormLabel>
-                                            <CFormInput
-                                                onChange={handlekante}
-                                                defaultValue={params.id ? Fish_Pack_Data.kante : Kante}
-                                                type="text"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                            />
-                                            <CFormFeedback invalid>Please choose a Kante.</CFormFeedback>
+
+                                        <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
+                                            <CFormSelect
+                                              onChange={handlekante}
+                                              value={Kante}
+                                             type="text"
+                                             id="validationCustomUsername"
+                                             aria-describedby="inputGroupPrepend"
+                                             required
+                                            >
+                                           <option>Select</option>
+                                           <option value='middle bone only'>Middle bone only</option>
+                                           <option value='few bones'>Few bones</option>
+                                           <option value='many bones'>Many bones</option>
+                                            </CFormSelect>
+                                            <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
+
                                         </CCol>
 
-                                        <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Available Packs</CFormLabel>
-                                            <CFormInput
-                                                onChange={handleavailablepacks}
-                                                defaultValue={params.id ? Fish_Pack_Data.available_packs : Available_packs}
-                                                type="number"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                disabled={params.id ? params.id : ''}
-                                            />
-                                            <CFormFeedback invalid>Please choose a Available Packs.</CFormFeedback>
-                                        </CCol>
                                     </CRow>
                                 </div>
 

@@ -79,7 +79,7 @@ const routes = [
   { path: '/Customer/customerList', name: 'Customer List', element: Customer_List },
   { path: '/Customer/customerList/customerupdate/:id', name: 'update Customer', element: Customer },
 
-  { path: '/Fish', name: 'Fish', element: FileList, exact: true },
+  { path: '/Fish', name: 'Fish', element: Fish_List, exact: true },
   { path: '/Fish/FishList/Fish', name: 'Add Fish', element: Fish },
   { path: '/Fish/FishList', name: 'Fish List', element: Fish_List },
   { path: '/Fish/FishList/Fish/fishupdate/:id', name: 'update Fish', element: Fish },
@@ -88,7 +88,7 @@ const routes = [
   { path: '/Fish/FishPackList/FishPack', name: 'Add Fish Pack', element: FishPack },
   { path: '/Fish/FishPackList/FishPack/fishPackupdate/:id', name: 'update Fish', element: FishPack },
 
-  { path: '/order', name: 'Order', element: FileList, exact: true },
+  { path: '/order', name: 'Order', element: Order_List, exact: true },
   { path: '/Order/OrderList/Order', name: 'Add Order', element: Orders },
   { path: '/Order/OrderList', name: 'Order List', element: Order_List },
   { path: '/Order/OrderList/Order/Orderupdate/:id', name: 'update Order', element: Orders },
@@ -101,7 +101,7 @@ const routes = [
   { path: '/Order/OrderPurchaseItemsList', name: 'Order Purchase Items List', element: Order_purchase_item_List },
   { path: '/Order/OrderPurchaseItemsList/OrderPurchaseItems/OrderPurchaseItemsupdate/:id', name: 'update  Order Purchase Items ', element: Order_Purchase_Item },
 
-  { path: '/payment', name: 'Payment', element: FileList, exact: true },
+  { path: '/payment', name: 'Payment', element: Payments_List, exact: true },
   { path: '/Payment/PaymentList/Payment', name: 'Add Payment', element: Payments },
   { path: '/Payment/PaymentList', name: 'Payment List', element: Payments_List },
   { path: '/Payment/PaymentList/Payment/Paymentupdate/:id', name: 'update Payment', element: Payments },

@@ -8,11 +8,31 @@ class OrderStatusService {
     deleteorderStatus = (id) => apiClient().delete("api/orderStatus/" + id);
     updateorderStatus = (id, data) => apiClient().put("api/orderStatus/" + id, data);
     static orderStatusname(row) {
-        const orderStatusData = useRecoilValue(orderstatusAtom)
+        const orderStatusData = useRecoilValue(orderstatusAtom);
         const filteredorderStatus = orderStatusData.filter(item => row.order_status == item.id);
         const orderStatusNames = filteredorderStatus.map(item => item.order_status);
-        return orderStatusNames;
+        if (orderStatusNames.length > 0) {
+            const firstStatus = orderStatusNames[0];
+            if (firstStatus === 'available_booked') {
+                return 'Available Booked';
+            } else if (firstStatus === 'packed') {
+                return 'Packed';
+            } else if (firstStatus === 'delivered') {
+                return 'Delivered';
+            } else if (firstStatus === 'purchased_approve') {
+                return 'Purchased Approve';
+            } else if (firstStatus === 'returned') {
+                return 'Returned';
+            } else if (firstStatus === 'to_be_purchased') {
+                return 'To be purchased';
+            } else if (firstStatus === 'closed') {
+                return 'Closed';
+            }
+        }
+        
+        return '';
     }
+    
 
 }
 

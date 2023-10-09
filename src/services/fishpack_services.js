@@ -7,6 +7,7 @@ class FishpackService {
     createfishpack = (data) => apiClient().post(`api/fishpack`, data);
     getfishpack = (search) => search ? apiClient().get(`/api/fishpack/search?fishRef=${search}`) : apiClient().get('api/fishpack');
     getfishpackbyId = (id) => apiClient().get("api/fishpack/" + id);
+    getfishmin_max_rate = () => apiClient().get("api/fishpack/min_max_purchaserate");
     deletefishpack = (id) => apiClient().delete("api/fishpack/" + id);
     updatefishpack = (id, data) => apiClient().put("api/fishpack/" + id, data);
     static fishpackname(row) {

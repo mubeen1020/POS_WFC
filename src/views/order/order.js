@@ -14,7 +14,6 @@ import PaymentstatusService from "src/services/paymentstatus_services";
 import OrderitemsService from "src/services/orderstockitem_services";
 import { globalEventAtom } from "src/_state/globalEventAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { InputText } from "primereact/inputtext";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import FishpackService from "src/services/fishpack_services";
@@ -22,8 +21,6 @@ import { ConfirmDialog } from 'primereact/confirmdialog';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Dialog } from "primereact/dialog";
 import OrderStockItem from "../orderstockitem/orderstockitem";
-import { orderAtom } from "src/_state/orderAtom";
-import { orderstatusAtom } from "src/_state/orderstatusAtom";
 import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
@@ -44,8 +41,8 @@ export default function Orders() {
     const [Delivery_deadline, setDelivery_deadline] = useState('')
     const [Order_status, setOrder_status] = useState('')
     const [Delivery_charges, setDelivery_charges] = useState(0)
-    const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState()
-    const [Order_total, setOrder_total] = useState('')
+    const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState(0)
+    const [Order_total, setOrder_total] = useState(0)
     const [Payment_mode, setPayment_mode] = useState('')
     const [OrderID, setOrderID] = useState([])
 
@@ -112,11 +109,13 @@ export default function Orders() {
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
+   
 
+    
 
-    let get_order_data = () => {
+    let get_order_data = (id) => {
         let api = new OrdersService;
-        api.getordersbyId(params.id).then((res) => {
+        api.getordersbyId(params.id || id).then((res) => {
             setOrder_Data(res.data.order);
             setDelivery_charges(res.data.order.delivery_charges)
             setOrder_date(res.data.order.order_date)
@@ -144,10 +143,9 @@ export default function Orders() {
     const statusId = Paymentstatusdata.map(i => i.id)
 
     const orderDataSubmit = (event) => {
-
+        setPurchaseID(0)
         handleSubmit(event)
         event.preventDefault();
-
         let formData = {
             customer: Customer_id,
             order_date: Order_date,
@@ -168,7 +166,7 @@ export default function Orders() {
             api
                 .createorders(formData)
                 .then((res) => {
-                    get_order_data()
+                   get_order_data(res.data.newOrder.id)
                     setOrderID(res.data.newOrder.id)
                     setModalVisible(true); setPopup(true)
                 })
@@ -182,9 +180,14 @@ export default function Orders() {
 
                 })
         }
+
     }
 
+
+
+
     const orderDataupdateSubmit = (event) => {
+        get_order_data()
         handleSubmit(event)
         event.preventDefault();
         let formData = {
@@ -275,7 +278,7 @@ export default function Orders() {
             .updateorders(params.id, formData)
             .then((res) => {
                 get_order_data()
-
+                orderItem()
                 toast.current.show({ severity: 'success', summary: 'Success', detail: `Successfully ${data[0].order_status}` })
             })
             .catch((error) => {
@@ -288,7 +291,42 @@ export default function Orders() {
 
             });
     };
+    const orderItem = (orderdata) => {
+        setGlobatEvent({ eventName: 'refreshorderitems' });
+        const api = new OrderitemsService;
+        api.getorderitems().then((res) => {
+            if (orderdata === 'returned') {
+                const filterdata = res.data.orderItems.filter((item) => item.order_id === parseInt(params.id));
 
+                const fishpackapi = new FishpackService();
+                let totalPacksOrdered = 0;
+
+                filterdata.forEach((item) => {
+                    totalPacksOrdered += item.total_packs_ordered;
+                });
+
+                const fishPackRef = filterdata[0].fish_pack_ref;
+
+                fishpackapi.getfishpackbyId(fishPackRef).then((res) => {
+                    const currentFishPack = res.data.fishPack;
+
+                    const formData = {
+                        available_meat_packs: currentFishPack.available_meat_packs + totalPacksOrdered,
+                    };
+
+                    fishpackapi
+                        .updatefishpack(fishPackRef, formData)
+                        .then((res) => {
+                        })
+                        .catch((error) => {
+                        });
+                }).catch((err) => { });
+            }
+        }).catch((err) => { });
+
+
+
+    }
 
     const handleSubmit = (event) => {
         const form = event.currentTarget
@@ -312,6 +350,7 @@ export default function Orders() {
             setOrder_status(data[0].order_status)
             setOrderstatusdata(data[0].order_status);
             setOrderstatusID(res.data.orderStatuses)
+            orderItem(data[0].order_status)
         })
             .catch((err) => { });
     }
@@ -334,11 +373,6 @@ export default function Orders() {
     });
 
     useEffect(() => {
-
-
-    }, [])
-
-    useEffect(() => {
         if (Order_date) {
             const orderDate = new Date(Order_date);
             orderDate.setDate(orderDate.getDate() + 2);
@@ -352,7 +386,7 @@ export default function Orders() {
             <div className="flex justify-content-between">
                 <h4><strong style={{ fontWeight: 550 }}>Order Stock Item</strong></h4>
                 <span className="p-input-icon-left">
-                    <CButton onClick={handleDelete} style={{ marginRight: 5 }}>
+                    <CButton disabled={Order_status === 'closed'} onClick={handleDelete} style={{ marginRight: 5 }}>
                         <CIcon icon={cilTrash} className="mr-2" />Delete stock item
                     </CButton>
                 </span>
@@ -361,7 +395,7 @@ export default function Orders() {
         )
     }
 
-    const orderstockitemDataSubmit = (event,orderDatastring) => {
+    const orderstockitemDataSubmit = (event, orderDatastring) => {
         handleSubmit(event);
         event.preventDefault();
         let formdata = {};
@@ -423,7 +457,6 @@ export default function Orders() {
                 }
 
         });
-
 
         if (selectedData.length === 0) {
             toast.current.show({
@@ -497,15 +530,15 @@ export default function Orders() {
                 <h4><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4>
 
                 <span className="p-input-icon-left">
-                    <CButton onClick={handleDeleteItemPurchase} style={{ marginRight: 5 }}>
+                    <CButton disabled={Order_status === 'closed'} onClick={handleDeleteItemPurchase} style={{ marginRight: 5 }}>
                         <CIcon icon={cilTrash} className="mr-2" />Delete purchase item
                     </CButton>
                 </span>
                 <span className="p-input-icon-left" style={{ float: 'right' }}>
-                    <CButton onClick={(event) => { orderstockitemDataSubmit(event,'to_be_purchased') }} style={{ marginRight: 5 }}>
+                    <CButton onClick={(event) => { orderstockitemDataSubmit(event, 'to_be_purchased') }} style={{ marginRight: 5 }}>
                         <CIcon icon={cilSend} className="mr-2" />Convert
                     </CButton>
-                    <CButton color="primary" onClick={() => { setItemPurchaseModal(true) }}>
+                    <CButton color="primary" disabled={Order_status === 'closed'} onClick={() => { setItemPurchaseModal(true) }}>
                         <CIcon icon={cilCheck} className="mr-2" />Add a purchase item
                     </CButton>
 
@@ -555,7 +588,6 @@ export default function Orders() {
                 });
         }
     };
-
 
     const handleDelete = () => {
         if (selectedRows.length > 0) {
@@ -671,6 +703,7 @@ export default function Orders() {
     useEffect(() => {
         if (!modalVisible || !OrderID) {
             get_data();
+            orderstatus_Data_Get();
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
 
@@ -683,49 +716,86 @@ export default function Orders() {
                     <CCard className="mb-4">
                         <CCardHeader>
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
-                                {params.id &&
-                                    <span style={{ float: 'right' }}>
-                                        <p  style={{
-                                            fontSize: 18,
-                                            color: 'black',
-                                            fontWeight: 'bold',
-                                            width: 200,
-                                            padding: '10px',
-                                            textAlign: 'center',
-                                            position: 'relative',
-                                            backgroundColor:'#ebedef'
-                                        }}>
-                                            {Order_status === 'available_booked' && 'Available Booked'
-                                                || Order_status === 'packed' && 'Packed' ||
-                                                Order_status === 'delivered' && 'Delivered' ||
-                                                Order_status === 'purchased_approve' && 'Purchased Approve' ||
-                                                Order_status === 'returned' && 'Returned' ||
-                                                Order_status === 'to_be_purchased' && 'To be purchased' ||
-                                                Order_status === 'closed' && 'Closed'
-                                            }
-                                            <span
-                                                style={{
-                                                    content: '',
-                                                    position: 'absolute',
-                                                    left: '50%',
-                                                    bottom: '-15px',
-                                                    border: 'solid transparent',
-                                                    borderWidth: '8px',
-                                                    borderColor: 'transparent',
-                                                    borderTopColor: '#ebedef',
-                                                    transform: 'translateX(-50%)',
-                                                }}
-                                            ></span>
-                                        </p>
-                                    </span>
-                                }
+{Order_status &&
+<>
+                                <span style={{ float: 'right', marginLeft:5 }}>
+                                    <p style={{
+                                        fontSize: 18,
+                                        color: 'black',
+                                        fontWeight: 'bold',
+                                        width: 200,
+                                        padding: '10px',
+                                        textAlign: 'center',
+                                        position: 'relative',
+                                        backgroundColor: '#ebedef'
+                                    }}>
+                                        {Order_status === 'available_booked' && 'Available Booked'
+                                            || Order_status === 'packed' && 'Packed' ||
+                                            Order_status === 'delivered' && 'Delivered' ||
+                                            Order_status === 'purchased_approve' && 'Purchased Approve' ||
+                                            Order_status === 'returned' && 'Returned' ||
+                                            Order_status === 'to_be_purchased' && 'To be purchased' ||
+                                            Order_status === 'closed' && 'Closed'
+                                        }
+                                        <span
+                                            style={{
+                                                content: '',
+                                                position: 'absolute',
+                                                left: '50%',
+                                                bottom: '-15px',
+                                                border: 'solid transparent',
+                                                borderWidth: '8px',
+                                                borderColor: 'transparent',
+                                                borderTopColor: '#ebedef',
+                                                transform: 'translateX(-50%)',
+                                               
+                                            }}
+                                        ></span>
+                                    </p>
+                                </span>
+
+                                <span style={{ float: 'right' }}>
+                                    <p style={{
+                                        fontSize: 18,
+                                        color: 'black',
+                                        fontWeight: 'bold',
+                                        width: 200,
+                                        padding: '10px',
+                                        textAlign: 'center',
+                                        position: 'relative',
+                                        backgroundColor: '#ebedef'
+                                    }}>
+                                        {status == 'paid' ? 'Paid' : 'Pay'}
+                                        
+                                        <span
+                                            style={{
+                                                content: '',
+                                                position: 'absolute',
+                                                left: '50%',
+                                                bottom: '-15px',
+                                                border: 'solid transparent',
+                                                borderWidth: '8px',
+                                                borderColor: 'transparent',
+                                                borderTopColor: '#ebedef',
+                                                transform: 'translateX(-50%)',
+                                            }}
+                                        ></span>
+                                    </p>
+                                </span>
+                                </>
+}
+
                             </h4>
+                            {params.id &&
                             <h4>&nbsp;
-                                {params.id &&
+                               
                                     <span className="" >
                                         <CButton onClick={(event) => orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
                                             <CIcon icon={status == 'paid' ? cilCheck : cilDollar} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
-                                    </span>}&nbsp;
+                                    </span>
+
+                                &nbsp;
+
                                 {Orderstatusdata === 'available_booked' ? (
                                     <span className="" >
                                         <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'packed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
@@ -765,7 +835,12 @@ export default function Orders() {
                                         <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
                                             <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
                                     </span>) : null}
+
+
                             </h4>
+                                }
+
+
                         </CCardHeader>
                         <CCardBody>
                             <CForm
@@ -790,7 +865,8 @@ export default function Orders() {
                                                 type="text"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                required
+                                                
+                                                disabled={Order_status === 'closed'}
                                                 className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
                                                 style={{ borderColor: customerNotFound ? 'red' : '' }}
                                             />
@@ -815,7 +891,7 @@ export default function Orders() {
                                                 onChange={(e) => setOrder_date(e.target.value)}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                required
+                                                disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please choose an Order Date.</CFormFeedback>
                                         </CCol>
@@ -830,6 +906,7 @@ export default function Orders() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please choose a Delivery Deadline.</CFormFeedback>
                                         </CCol>
@@ -855,6 +932,7 @@ export default function Orders() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please enter Delivery Charges.</CFormFeedback>
                                         </CCol>
@@ -868,7 +946,8 @@ export default function Orders() {
                                                 defaultValue={params.id ? Order_Data.urgent_delivery_charges : Urgent_delivery_charges}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                required
+                                                
+                                                disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please enter Urgent Delivery Charges.</CFormFeedback>
                                         </CCol>
@@ -887,7 +966,8 @@ export default function Orders() {
                                                 defaultValue={params.id ? Order_Data.order_total : Order_total}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                required
+                                                
+                                                disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please enter Order Total.</CFormFeedback>
                                         </CCol>
@@ -900,7 +980,8 @@ export default function Orders() {
                                                 value={Payment_mode}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                required
+                                                
+                                                disabled={Order_status === 'closed'}
                                             >
                                                 <option>Select</option>
                                                 {
@@ -917,7 +998,7 @@ export default function Orders() {
                                 </div>
 
                                 <CCol xs={12}>
-                                    <CButton style={{ float: 'right' }} color="primary" type="submit">
+                                    <CButton style={{ float: 'right' }} disabled={Order_status === 'closed'} color="primary" type="submit">
                                         <CIcon icon={cilCheck} className="mr-1" /> Add a stock item
                                     </CButton>
                                 </CCol>

@@ -14,6 +14,7 @@ import { fishAtom } from "src/_state/fishAtom";
 import { fishpackAtom } from "src/_state/fishpackAtom";
 import { fishcutAtom } from "src/_state/fishcutAtom";
 import { globalEventAtom } from "src/_state/globalEventAtom";
+import FishpackService from "src/services/fishpack_services";
 
 
 export default function OrderStockItem(props) {
@@ -38,6 +39,8 @@ export default function OrderStockItem(props) {
     const [Fish_cut, setFish_cut] = useState('')
     const [Packingdate, setPackingdate] = useState('')
     const [Avaiablepack, setAvaiablepack] = useState('')
+    const [Available_meat_packs, setAvailable_meat_packs] = useState([])
+    const [Available_bones_packs, setAvailable_bones_packs] = useState([])
 
 
     const [fishpack_id_data, setfishpack_id_data] = useState([])
@@ -89,7 +92,7 @@ export default function OrderStockItem(props) {
         const value = e.target.value;
         setFish_pack_ref(value)
         const fishpackArray = [];
-        const selectedfish = fishData.filter((fish) => {
+        fishData.filter((fish) => {
             return fishpackData.some((fishpack) => {
                 if (Number(fishpack.fish_ref) === Number(fish.id)) {
                     return fishcutData.some((fishcut) => {
@@ -98,6 +101,7 @@ export default function OrderStockItem(props) {
                             const result = searchString.includes(value.toLowerCase());
                             if (result) {
                                 fishpackArray.push(searchString);
+                                get_fish_pack_data(fishpack.id)
                                 fishpackArray.push(fishpack.id)
                                 setfishpack_id_data(fishpack.id)
                                 setFish_weight(fishpack.whole_fish_pack_weight)
@@ -109,8 +113,6 @@ export default function OrderStockItem(props) {
                                 setPack_price(fishpack.fish_packs)
                                 setFishname(fish.local_name)
                                 setFish_cut(fishcut.fish_cut)
-                                setTotal_packs_ordered(fishpack.available_packs)
-                                setAvaiablepack(fishpack.available_packs)
                                 const isoDate = fishpack.packing_date;
 
                                 if (isoDate) {
@@ -137,7 +139,7 @@ export default function OrderStockItem(props) {
                 if (Number(fishpack.fish_ref) === Number(fish.id)) {
                     return fishcutData.some((fishcut) => {
                         if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
+                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fish.id).toLowerCase();
                             const result = searchString.includes(value.toLowerCase());
                             if (result) {
                                 searchStringArray.push(searchString);
@@ -153,16 +155,26 @@ export default function OrderStockItem(props) {
         setFishpackfilterdata(searchStringArray)
 
     }
+
+    let get_fish_pack_data = (id) => {
+        let api = new FishpackService();
+        api.getfishpackbyId(id).then((res) => {
+            setTotal_packs_ordered(res.data.fishPack.available_meat_packs)
+            setAvailable_meat_packs(res.data.fishPack.available_meat_packs)
+            setAvaiablepack(res.data.fishPack.available_meat_packs)
+        }).catch((err) => { });
+    }
     const handletotalpackorder = (e) => {
         const value = e.target.value;
 
-        if (value >= Avaiablepack) {
+        if (Avaiablepack === 0 || value > Avaiablepack) {
             setError(true);
             setTotal_packs_ordered('');
         } else {
             setError(false);
             setTotal_packs_ordered(value);
         }
+        
     }
     const handlefishweight = (e) => { setFish_weight(e.target.value) }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
@@ -174,7 +186,25 @@ export default function OrderStockItem(props) {
     const handleitemdiscountabsolute = (e) => { setItem_discount_absolute(e.target.value) }
     const handleitemdiscountpercent = (e) => { setItem_discount_percent(e.target.value) }
 
+   
+
+    const fishpackDataupdateSubmit = () => {
+        let formData = {
+            available_meat_packs: Available_meat_packs-Total_packs_ordered,
+        };
+
+        const api = new FishpackService();
+        api
+            .updatefishpack(fishpack_id_data, formData)
+            .then((res) => {
+            })
+            .catch((error) => {
+            });
+    }
+
+
     let get_order_stock_item_data = () => {
+       
         let api = new OrderitemsService;
         api.getorderitemsbyId(props.stock_id).then((res) => {
             setOrder_Stock_Item_Data(res.data.orderItem);
@@ -251,8 +281,8 @@ export default function OrderStockItem(props) {
         api
             .createorderitems(formData)
             .then((res) => {
-
-
+                fishpackDataupdateSubmit()
+                setGlobatEvent({ eventName: 'refreshfishpack' });
                 if (!props.ispopup) {
 
                 } else {
@@ -337,15 +367,6 @@ export default function OrderStockItem(props) {
         setValidated(true)
     }
 
-    // const filter_name = customerData.filter((customer) => {
-    //     return orderData.some((order) => {
-    //         if (Number(customer.id) === Number(order.customer)) {
-    //             return order.id === Order_Stock_Item_Data.order_id;
-    //         }
-    //         return false;
-    //     });
-    // });
-
 
 
     const fishpackrefStringArray = [];
@@ -367,33 +388,6 @@ export default function OrderStockItem(props) {
             }
         });
     });
-
-    const paramData = () => {
-        fishData.find((fish) => {
-            return fishpackData.some((fishpack) => {
-                if (fishpack.id === Order_Stock_Item_Data.id) {
-                    if (Number(fishpack.fish_ref) === Number(fish.id)) {
-                        const foundFishCut = fishcutData.find((fishcut) => {
-                            return Number(fishpack.fish_cut) === Number(fishcut.id);
-                        });
-
-                        if (foundFishCut) {
-                            setFishname(fish.local_name);
-                            setFish_cut(foundFishCut.fish_cut);
-                            const isoDate = fishpack.packing_date;
-                            if (isoDate) {
-                                const parsedDate = new Date(isoDate);
-                                parsedDate.setHours(parsedDate.getHours() + 5);
-                                const formattedDate = parsedDate.toISOString().split('T')[0];
-                                setPackingdate(formattedDate);
-                            }
-                        }
-                    }
-                }
-                return false;
-            });
-        });
-    }
 
 
     useEffect(() => {
