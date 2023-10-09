@@ -109,9 +109,9 @@ export default function Orders() {
     const handleordertotal = (e) => { setOrder_total(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
-   
 
-    
+
+
 
     let get_order_data = (id) => {
         let api = new OrdersService;
@@ -166,7 +166,7 @@ export default function Orders() {
             api
                 .createorders(formData)
                 .then((res) => {
-                   get_order_data(res.data.newOrder.id)
+                    get_order_data(res.data.newOrder.id)
                     setOrderID(res.data.newOrder.id)
                     setModalVisible(true); setPopup(true)
                 })
@@ -716,129 +716,134 @@ export default function Orders() {
                     <CCard className="mb-4">
                         <CCardHeader>
                             <h4><Link to="/Order/OrderList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Orders</strong>
-{Order_status &&
-<>
-                                <span style={{ float: 'right', marginLeft:5 }}>
-                                    <p style={{
-                                        fontSize: 18,
-                                        color: 'black',
-                                        fontWeight: 'bold',
-                                        width: 200,
-                                        padding: '10px',
-                                        textAlign: 'center',
-                                        position: 'relative',
-                                        backgroundColor: '#ebedef'
-                                    }}>
-                                        {Order_status === 'available_booked' && 'Available Booked'
-                                            || Order_status === 'packed' && 'Packed' ||
-                                            Order_status === 'delivered' && 'Delivered' ||
-                                            Order_status === 'purchased_approve' && 'Purchased Approve' ||
-                                            Order_status === 'returned' && 'Returned' ||
-                                            Order_status === 'to_be_purchased' && 'To be purchased' ||
-                                            Order_status === 'closed' && 'Closed'
-                                        }
-                                        <span
-                                            style={{
-                                                content: '',
-                                                position: 'absolute',
-                                                left: '50%',
-                                                bottom: '-15px',
-                                                border: 'solid transparent',
-                                                borderWidth: '8px',
-                                                borderColor: 'transparent',
-                                                borderTopColor: '#ebedef',
-                                                transform: 'translateX(-50%)',
-                                               
-                                            }}
-                                        ></span>
-                                    </p>
-                                </span>
+                                {Order_status &&
+                                    <>
+                                        <span style={{ float: 'right', marginLeft: 5 }}>
+                                            <p style={{
+                                                fontSize: 18,
+                                                color: 'black',
+                                                fontWeight: 'bold',
+                                                width: 200,
+                                                padding: '10px',
+                                                textAlign: 'center',
+                                                position: 'relative',
+                                                backgroundColor: '#ebedef',
+                                                transition: 'opacity 0.5s ease', // Add a CSS transition for opacity
+                                                opacity: 1, // Start with full opacity
+                                            }}>
+                                                {Order_status === 'available_booked' && 'Available Booked'
+                                                    || Order_status === 'packed' && 'Packed' ||
+                                                    Order_status === 'delivered' && 'Delivered' ||
+                                                    Order_status === 'purchased_approve' && 'Purchased Approve' ||
+                                                    Order_status === 'returned' && 'Returned' ||
+                                                    Order_status === 'to_be_purchased' && 'To be purchased' ||
+                                                    Order_status === 'closed' && 'Closed'
+                                                }
+                                                <span
+                                                    style={{
+                                                        content: '',
+                                                        position: 'absolute',
+                                                        left: '50%',
+                                                        bottom: '-15px',
+                                                        border: 'solid transparent',
+                                                        borderWidth: '8px',
+                                                        borderColor: 'transparent',
+                                                        borderTopColor: '#ebedef',
+                                                        transform: 'translateX(-50%)',
 
-                                <span style={{ float: 'right' }}>
-                                    <p style={{
-                                        fontSize: 18,
-                                        color: 'black',
-                                        fontWeight: 'bold',
-                                        width: 200,
-                                        padding: '10px',
-                                        textAlign: 'center',
-                                        position: 'relative',
-                                        backgroundColor: '#ebedef'
-                                    }}>
-                                        {status == 'paid' ? 'Paid' : 'Pay'}
-                                        
-                                        <span
-                                            style={{
-                                                content: '',
-                                                position: 'absolute',
-                                                left: '50%',
-                                                bottom: '-15px',
-                                                border: 'solid transparent',
-                                                borderWidth: '8px',
-                                                borderColor: 'transparent',
-                                                borderTopColor: '#ebedef',
-                                                transform: 'translateX(-50%)',
-                                            }}
-                                        ></span>
-                                    </p>
-                                </span>
-                                </>
-}
+                                                    }}
+                                                ></span>
+                                            </p>
+                                        </span>
+                                        <span style={{ float: 'right' }}>
+                                            <p style={{
+                                                fontSize: 18,
+                                                color: 'black',
+                                                fontWeight: 'bold',
+                                                width: 200,
+                                                padding: '10px',
+                                                textAlign: 'center',
+                                                position: 'relative',
+                                                backgroundColor: '#ebedef',
+                                                transition: 'opacity 0.5s ease', // Add a CSS transition for opacity
+                                                opacity: 1, // Start with full opacity
+                                            }}>
+                                                {status == 'paid' ? 'Paid' : 'Pay'}
+
+                                                <span
+                                                    style={{
+                                                        content: '',
+                                                        position: 'absolute',
+                                                        left: '50%',
+                                                        bottom: '-15px',
+                                                        border: 'solid transparent',
+                                                        borderWidth: '8px',
+                                                        borderColor: 'transparent',
+                                                        borderTopColor: '#ebedef',
+                                                        transform: 'translateX(-50%)',
+                                                    }}
+                                                ></span>
+                                            </p>
+                                        </span>
+
+
+                                    </>
+                                }
 
                             </h4>
                             {params.id &&
-                            <h4>&nbsp;
-                               
+                                <h4>&nbsp;
+
                                     <span className="" >
                                         <CButton onClick={(event) => orderDataunpaidSubmit(event)} style={{ width: 100, padding: 10 }} color="primary">
                                             <CIcon icon={status == 'paid' ? cilCheck : cilDollar} className="mr-1" /> {status == 'paid' ? 'Paid' : 'Pay'}</CButton>
                                     </span>
 
-                                &nbsp;
+                                    &nbsp;
 
-                                {Orderstatusdata === 'available_booked' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'packed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Packed</CButton>
+                                    {Orderstatusdata === 'available_booked' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'packed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Packed</CButton>
 
-                                    </span>) : null}
+                                        </span>) : null}
 
-                                {Orderstatusdata === 'packed' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
-                                    </span>) : null}
+                                    {Orderstatusdata === 'packed' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'delivered')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Delivered</CButton>
+                                        </span>) : null}
 
-                                {Orderstatusdata === 'to_be_purchased' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'purchased_approve')} style={{ width: 200, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Purchased Approve</CButton>
-                                    </span>) : null}
+                                    {Orderstatusdata === 'to_be_purchased' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'purchased_approve')} style={{ width: 200, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Purchased Approve</CButton>
+                                        </span>) : null}
 
-                                {Orderstatusdata === 'purchased_approve' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'available_booked')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Approve</CButton>
-                                    </span>) : null}
-
-
-                                {Orderstatusdata === 'returned' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
-                                    </span>) : null}
-
-                                {Orderstatusdata === 'delivered' ? (
-                                    <span className="" >
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
-                                        <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
-                                            <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
-                                    </span>) : null}
+                                    {Orderstatusdata === 'purchased_approve' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'available_booked')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Approve</CButton>
+                                        </span>) : null}
 
 
-                            </h4>
-                                }
+                                    {Orderstatusdata === 'returned' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
+                                        </span>) : null}
+
+                                    {Orderstatusdata === 'delivered' ? (
+                                        <span className="" >
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'closed')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Closed</CButton>
+                                            <CButton onClick={(event) => orderDataorderstatusSubmit(event, 'returned')} style={{ width: 150, padding: 10, marginRight: 5 }} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Returned</CButton>
+                                        </span>) : null}
+
+
+                                </h4>
+                            }
 
 
                         </CCardHeader>
@@ -865,7 +870,7 @@ export default function Orders() {
                                                 type="text"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                
+
                                                 disabled={Order_status === 'closed'}
                                                 className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
                                                 style={{ borderColor: customerNotFound ? 'red' : '' }}
@@ -946,7 +951,7 @@ export default function Orders() {
                                                 defaultValue={params.id ? Order_Data.urgent_delivery_charges : Urgent_delivery_charges}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                
+
                                                 disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please enter Urgent Delivery Charges.</CFormFeedback>
@@ -966,7 +971,7 @@ export default function Orders() {
                                                 defaultValue={params.id ? Order_Data.order_total : Order_total}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                
+
                                                 disabled={Order_status === 'closed'}
                                             />
                                             <CFormFeedback invalid>Please enter Order Total.</CFormFeedback>
@@ -980,7 +985,7 @@ export default function Orders() {
                                                 value={Payment_mode}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
-                                                
+
                                                 disabled={Order_status === 'closed'}
                                             >
                                                 <option>Select</option>

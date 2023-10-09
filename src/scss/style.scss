@@ -161,5 +161,11 @@ $enable-rtl: true;
     background-size: 100%;
   }
 
+  /* Add this CSS code to create the hover effect */
+p:hover {
+  opacity: 0.8; /* Reduce opacity on hover */
+}
+
+
 
   
