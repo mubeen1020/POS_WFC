@@ -292,7 +292,6 @@ export default function OrderStockItem(props) {
                         detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
                         life: 3000,
                     });
-                    props.setstock_id(null)
                     setTimeout(() => {
                         props.setVisible(false)
                     }, [2000])
@@ -341,7 +340,6 @@ export default function OrderStockItem(props) {
                         detail: 'Your Order Stock Item information has been successfully update and recorded.',
                         life: 3000,
                     });
-                    props.setstock_id(null)
                     setTimeout(() => {
                         props.setVisible(false)
                     }, [2000])
