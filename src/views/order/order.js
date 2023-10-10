@@ -1010,8 +1010,11 @@ export default function Orders() {
                             </CForm>
                             <br />
                             <div>
-                                <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
-                                    <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
+                                <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => {
+                                    setModalVisible(false);
+                                    setOrderstockID(null);
+                                }}>
+                                    <OrderStockItem stock_id={OrderstockID} setstock_id={setOrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (

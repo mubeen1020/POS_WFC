@@ -722,7 +722,7 @@ export default function FishPack() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Bone Pack Rate</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Bones Pack Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
                                                     value={Bones_pack_rate}

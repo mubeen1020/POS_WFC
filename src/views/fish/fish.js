@@ -336,7 +336,7 @@ export default function Fish() {
                                                 required
                                             >
                                                 <option>Select</option>
-                                                <option value='middle bone only'>Middle bone only,</option>
+                                                <option value='middle bone only'>Middle bone only</option>
                                                 <option value='few bones'>Few bones</option>
                                                 <option value='many bones'>Many bones</option>
                                             </CFormSelect>
