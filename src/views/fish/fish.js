@@ -32,6 +32,22 @@ export default function Fish() {
 
     const [checked, setChecked] = useState(false);
 
+    let get_min_max_rate = () => {
+        if (checked !== false) {
+        let api = new FishpackService;
+        api.getfishmin_max_rate().then((res) => {
+                const filterbyid = res.data.fishPacks.filter((item) => item.fish_ref === Number(params.id));
+                console.log(filterbyid[0].smallest_rate)
+                setMin_rate(filterbyid[0].smallest_rate || 0);
+                setMax_rate(filterbyid[0].greatest_rate || 0);
+                setAverage_rate((filterbyid[0].average_rate).toFixed(2) || 0);
+           
+        }).catch((err) => { });
+    }
+    }
+
+ 
+
     const handlelocalname = (e) => { setLocal_name(e.target.value) }
     const handleenglishname = (e) => { setEnglish_name(e.target.value) }
     const handleminimumsize = (e) => { setMinimum_size(e.target.value) }
@@ -43,36 +59,6 @@ export default function Fish() {
     const handlemaxrate = (e) => { setMax_rate(e.target.value) }
     const handleaveragerate = (e) => { setAverage_rate(e.target.value) }
     const handleoverallpurchacequantity = (e) => { setOverall_purchace_quantity(e.target.value) }
-
-    let get_fish_data = () => {
-        let api = new FishService;
-        api.getfishbyId(params.id).then((res) => {
-            setFish_Data(res.data.fish[0]);
-            const isChecked = res.data.fish[0].ischeck !== 0 ? true : false;
-            setChecked(isChecked);
-            setBones(res.data.fish[0].bones);
-            setMin_rate(res.data.fish[0].min_purchase_rate || 0);
-            setMax_rate(res.data.fish[0].max_purchase_rate || 0);
-            setAverage_rate(res.data.fish[0].average_purchase_rate || 0);
-            if (!isChecked) {
-                get_min_max_rate(res.data.fish[0].id);
-            }
-        }).catch((err) => { });
-    }
-
-    let get_min_max_rate = (id) => {
-        let api = new FishpackService;
-        api.getfishmin_max_rate().then((res) => {
-            if (!checked) {
-                const filterbyid = res.data.fishPacks.filter((item) => item.fish_ref === id);
-                setMin_rate(filterbyid[0].smallest_rate || 0);
-                setMax_rate(filterbyid[0].greatest_rate || 0);
-                setAverage_rate((filterbyid[0].average_rate).toFixed(2) || 0);
-            }
-        }).catch((err) => { });
-    }
-
-
 
     const fishDataSubmit = (event) => {
         handleSubmit(event)
@@ -167,6 +153,21 @@ export default function Fish() {
             });
     }
 
+    let get_fish_data = () => {
+        let api = new FishService;
+        api.getfishbyId(params.id).then((res) => {
+            setFish_Data(res.data.fish[0]);
+            const isChecked = res.data.fish[0].ischeck !== 0 ? true : false;
+            setChecked(isChecked);
+            setBones(res.data.fish[0].bones);
+            setMin_rate(res.data.fish[0].min_purchase_rate || 0);
+            setMax_rate(res.data.fish[0].max_purchase_rate || 0);
+            setAverage_rate(res.data.fish[0].average_purchase_rate || 0);
+                get_min_max_rate();
+        }).catch((err) => { });
+    }
+
+
 
     const handleSubmit = (event) => {
         const form = event.currentTarget
@@ -179,6 +180,7 @@ export default function Fish() {
 
     const handleChange = () => {
         setChecked(!checked);
+        get_min_max_rate()
     };
 
     useEffect(() => {
@@ -201,11 +203,7 @@ export default function Fish() {
         }
     }, [params.id]);
 
-    useEffect(() => {
-        if (checked !== true) {
-            get_min_max_rate();
-        }
-    }, [checked])
+  
 
 
     return (
@@ -338,7 +336,7 @@ export default function Fish() {
                                                 required
                                             >
                                                 <option>Select</option>
-                                                <option value='middle bone only'>Middle bone only,</option>
+                                                <option value='middle bone only'>Middle bone only</option>
                                                 <option value='few bones'>Few bones</option>
                                                 <option value='many bones'>Many bones</option>
                                             </CFormSelect>
@@ -374,7 +372,7 @@ export default function Fish() {
                                             <CFormLabel htmlFor="validationCustomUsername">Min Purchase Rate</CFormLabel>
                                             <CFormInput
                                                 onChange={handleminrate}
-                                                defaultValue={Min_rate}
+                                                value={Min_rate}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
@@ -387,7 +385,7 @@ export default function Fish() {
                                             <CFormLabel htmlFor="validationCustomUsername">Max Purchase Rate</CFormLabel>
                                             <CFormInput
                                                 onChange={handlemaxrate}
-                                                defaultValue={Max_rate}
+                                                value={Max_rate}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
@@ -401,7 +399,7 @@ export default function Fish() {
                                             <CFormLabel htmlFor="validationCustomUsername">Average Purchase Rate</CFormLabel>
                                             <CFormInput
                                                 onChange={handleaveragerate}
-                                                defaultValue={Average_rate}
+                                                value={Average_rate}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"

@@ -32,15 +32,14 @@ export default function OrderStockItem(props) {
     const [Skin, setSkin] = useState('')
     const [Kante, setKante] = useState('')
     const [Pack_price, setPack_price] = useState('')
-    const [Item_discount_absolute, setItem_discount_absolute] = useState('')
-    const [Item_discount_percent, setItem_discount_percent] = useState('')
+    const [Item_discount_absolute, setItem_discount_absolute] = useState(0)
+    const [Item_discount_percent, setItem_discount_percent] = useState(0)
     const [Order_id_data, setOrder_id_data] = useState('')
     const [Fishname, setFishname] = useState('')
     const [Fish_cut, setFish_cut] = useState('')
     const [Packingdate, setPackingdate] = useState('')
     const [Avaiablepack, setAvaiablepack] = useState('')
     const [Available_meat_packs, setAvailable_meat_packs] = useState([])
-    const [Available_bones_packs, setAvailable_bones_packs] = useState([])
 
 
     const [fishpack_id_data, setfishpack_id_data] = useState([])
@@ -97,20 +96,20 @@ export default function OrderStockItem(props) {
                 if (Number(fishpack.fish_ref) === Number(fish.id)) {
                     return fishcutData.some((fishcut) => {
                         if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut).toLowerCase();
+                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut+ ' / ' + fishpack.net_meat_pack_weight).toLowerCase();
                             const result = searchString.includes(value.toLowerCase());
                             if (result) {
                                 fishpackArray.push(searchString);
                                 get_fish_pack_data(fishpack.id)
                                 fishpackArray.push(fishpack.id)
                                 setfishpack_id_data(fishpack.id)
-                                setFish_weight(fishpack.whole_fish_pack_weight)
+                                setFish_weight(fishpack.net_meat_pack_weight)
                                 setMeat_weight(fishpack.net_meat_weight_per_kg)
                                 setFish_rate(fishpack.whole_fish_sale_rate)
                                 setMeat_rate(fishpack.net_meat_sale_rate)
                                 setSkin(fishpack.skin_removed)
                                 setKante(fishpack.kante)
-                                setPack_price(fishpack.fish_packs)
+                                setPack_price(fishpack.whole_fish_pack_price)
                                 setFishname(fish.local_name)
                                 setFish_cut(fishcut.fish_cut)
                                 const isoDate = fishpack.packing_date;
@@ -133,26 +132,27 @@ export default function OrderStockItem(props) {
             });
         });
 
-        const searchStringArray = [];
-        fishData.filter((fish) => {
-            return fishpackData.some((fishpack) => {
-                if (Number(fishpack.fish_ref) === Number(fish.id)) {
-                    return fishcutData.some((fishcut) => {
-                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fish.id).toLowerCase();
-                            const result = searchString.includes(value.toLowerCase());
-                            if (result) {
-                                searchStringArray.push(searchString);
-                            }
-                            return result;
-                        }
-                        return false;
-                    });
-                }
-                return false;
-            });
-        });
-        setFishpackfilterdata(searchStringArray)
+        const searchStringArray = fishData
+        .map((fish) => {
+          const matchingFishpacks = fishpackData.filter((fishpack) => {
+            return Number(fishpack.fish_ref) === Number(fish.id);
+          });
+      
+          const matchingStrings = matchingFishpacks.map((fishpack) => {
+            const fishcut = fishcutData.find((fishcut) => Number(fishpack.fish_cut) === Number(fishcut.id));
+            if (fishcut) {
+              return (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpack.net_meat_pack_weight).toLowerCase();
+            }
+            return '';
+          });
+      
+          return matchingStrings;
+        })
+        .flat() // Flatten the array of arrays
+      
+      setFishpackfilterdata(searchStringArray);
+      
+      
 
     }
 
@@ -404,6 +404,7 @@ export default function OrderStockItem(props) {
             }
         }
         props.stock_id ? get_order_stock_item_data() : ''
+       
 
     }, []);
 
@@ -655,7 +656,7 @@ export default function OrderStockItem(props) {
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handleitemdiscountabsolute}
-                                                defaultValue={Item_discount_absolute}
+                                                value={Item_discount_absolute}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
@@ -668,7 +669,7 @@ export default function OrderStockItem(props) {
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handleitemdiscountpercent}
-                                                defaultValue={Item_discount_percent}
+                                                value={Item_discount_percent}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required

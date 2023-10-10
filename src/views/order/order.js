@@ -95,6 +95,8 @@ export default function Orders() {
         if (params.id) {
             if (filteredCustomers && filteredCustomers.length > 0) {
                 setDelivery_charges(filteredCustomers[0].delivery_charges);
+                setOrder_total(TableData.length)
+
             }
         }
     }
@@ -106,7 +108,8 @@ export default function Orders() {
         setUrgent_delivery_charges(urgentDeliveryCharge);
     };
 
-    const handleordertotal = (e) => { setOrder_total(e.target.value) }
+    const handleordertotal = (e) => { 
+        setOrder_total(e.target.value) }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
 
@@ -338,6 +341,7 @@ export default function Orders() {
     }
 
     const Customer_Data_Get = (search = "") => {
+
         let api = new CustomerService;
         api.getCustomer(search).then((res) => { setCustomerData(res.data.customers); })
             .catch((err) => { });
@@ -650,13 +654,17 @@ export default function Orders() {
             const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setTableData(filteredData);
+                setOrder_total(filteredData.length)
             } else {
                 if (res.data && res.data.message === "orderItems not found.") {
                     setTableData([]);
                 } else {
                     setTableData(filteredData);
+                    setOrder_total(filteredData.length)
                 }
             }
+
+          
 
         }).catch((err) => { });
 
@@ -675,6 +683,7 @@ export default function Orders() {
             }
 
         }).catch((err) => { });
+        setOrder_total(TableData.length)
 
 
     }
@@ -968,7 +977,7 @@ export default function Orders() {
                                                 name="order_total"
                                                 type="number"
                                                 onChange={handleordertotal}
-                                                defaultValue={params.id ? Order_Data.order_total : Order_total}
+                                                value={Order_total}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
 
@@ -1010,8 +1019,11 @@ export default function Orders() {
                             </CForm>
                             <br />
                             <div>
-                                <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
-                                    <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
+                                <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => {
+                                    setModalVisible(false);
+                                    setOrderstockID(null);
+                                }}>
+                                    <OrderStockItem stock_id={OrderstockID} setstock_id={setOrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
