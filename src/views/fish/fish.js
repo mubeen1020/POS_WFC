@@ -59,7 +59,7 @@ export default function Fish() {
             }
         }).catch((err) => { });
     }
-    
+
     let get_min_max_rate = (id) => {
         let api = new FishpackService;
         api.getfishmin_max_rate().then((res) => {
@@ -71,8 +71,8 @@ export default function Fish() {
             }
         }).catch((err) => { });
     }
-    
-    
+
+
 
     const fishDataSubmit = (event) => {
         handleSubmit(event)
@@ -90,7 +90,7 @@ export default function Fish() {
             average_purchase_rate: Average_rate || 0,
             overall_purchase_quantity: Overall_purchace_quantity,
             settings_id: 1,
-            ischeck: checked == false? 0:1
+            ischeck: checked == false ? 0 : 1
         };
 
         const api = new FishService();
@@ -136,10 +136,10 @@ export default function Fish() {
             average_purchase_rate: Average_rate || 0,
             overall_purchase_quantity: Overall_purchace_quantity || Fish_Data.overall_purchase_quantity,
             settings_id: 1,
-            ischeck: checked == false? 0:1
+            ischeck: checked == false ? 0 : 1
         };
 
-        
+
 
         const api = new FishService();
         api
@@ -179,7 +179,7 @@ export default function Fish() {
 
     const handleChange = () => {
         setChecked(!checked);
-      };
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -192,21 +192,21 @@ export default function Fish() {
                 localStorage.removeItem('token');
                 navigate("/");
             } else {
-                if (params.id ) {
+                if (params.id) {
                     get_fish_data();
                 }
 
-           
+
             }
         }
     }, [params.id]);
 
-  useEffect(()=>{
-    if (checked !== true) {
-        get_min_max_rate();
-    }
-  },[checked])
-   
+    useEffect(() => {
+        if (checked !== true) {
+            get_min_max_rate();
+        }
+    }, [checked])
+
 
     return (
         <>

@@ -58,6 +58,8 @@ export default function FishPack() {
             setHead_removed(res.data.fishPack.head_removed)
             setSkin_removed(res.data.fishPack.skin_removed)
             setFish_cut(res.data.fishPack.fish_cut)
+            setWhole_fish_total_weight(res.data.fishPack.whole_fish_total_weight)
+            setWhole_fish_payment(res.data.fishPack.whole_fish_payment)
             setWhole_fish_pack_weight(res.data.fishPack.whole_fish_pack_weight)
             setWhole_fish_pack_price(res.data.fishPack.whole_fish_pack_price)
             setWhole_fish_purchase_rate(res.data.fishPack.whole_fish_purchase_rate)
@@ -105,22 +107,25 @@ export default function FishPack() {
     const handlewholefishpayment = (e) => {
         const purchaseValue = parseFloat(e.target.value);
         setWhole_fish_payment(purchaseValue);
-        const purchaseRate = purchaseValue || Whole_fish_payment / parseFloat(Whole_fish_total_weight);
+        const purchaseRate = purchaseValue  / parseFloat(Whole_fish_total_weight);
         setWhole_fish_purchase_rate(isNaN(purchaseRate.toFixed(2)) ? 0 : purchaseRate.toFixed(2));
-        settingsData(purchaseRate);
+        const packweight = parseFloat(Whole_fish_pack_weight)
+        const meatweightkg = parseFloat(Net_meat_weight_per_kg)
+        const bonepackweight = parseFloat(Bones_pack_weight)
+        settingsData(purchaseRate,packweight,meatweightkg,bonepackweight);
     }
 
     const handlewholefishtotalweight = (e) => {
         const totalWeight = parseFloat(e.target.value);
         setWhole_fish_total_weight(totalWeight);
-        console.log(Whole_fish_total_weight)
         const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight || Whole_fish_total_weight;
         setWhole_fish_purchase_rate(purchaseRate);
         const packweight = parseFloat(totalWeight) || Whole_fish_total_weight / Fish_packs;
-        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) ||packweight === Infinity ? 0 : packweight.toFixed(2));
+        setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) || packweight === Infinity ? 0 : packweight.toFixed(2));
         const meatweightkg = parseFloat((Net_meat_total_weight) / totalWeight || Whole_fish_total_weight) * 1000;
         setNet_meat_weight_per_kg(isNaN(meatweightkg.toFixed(2)) ? 0 : meatweightkg.toFixed(2))
-        settingsData(purchaseRate, packweight, meatweightkg);
+        const bonepackweight = parseFloat(Bones_pack_weight)
+        settingsData(purchaseRate, packweight, meatweightkg,bonepackweight);
     }
 
     const handlefishpack = (e) => {
@@ -170,11 +175,6 @@ export default function FishPack() {
     const handleheadremoved = (e) => { setHead_removed(e.target.value) }
     const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
     const handlekante = (e) => { setKante(e.target.value) }
-   
-
-  
-
-
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
@@ -352,13 +352,11 @@ export default function FishPack() {
             setBones_pack_rate(bonesrate);
             const bonespackprice = Math.round((bonepackweight * bonesrate) * 100) / 100;
             setBones_pack_price(bonespackprice);
-
-
         }).catch((err) => { });
     }
 
 
-   
+
 
 
     return (
@@ -622,7 +620,7 @@ export default function FishPack() {
                                             <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
                                             <CTooltip content="Rs/Kg" placement="left">
                                                 <CFormInput
-                                                    value={Whole_fish_sale_rate === NaN ? 0 :Whole_fish_sale_rate}
+                                                    value={Whole_fish_sale_rate === NaN ? 0 : Whole_fish_sale_rate}
                                                     onKeyPress={(e) => {
                                                         const allowedKeys = /[0-9.]|\./;
                                                         const key = e.key;
@@ -864,19 +862,19 @@ export default function FishPack() {
                                     <CRow>
                                         <CCol sm={6} lg={6}>
 
-                                        <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
                                             <CFormSelect
-                                              onChange={handlekante}
-                                              value={Kante}
-                                             type="text"
-                                             id="validationCustomUsername"
-                                             aria-describedby="inputGroupPrepend"
-                                             required
+                                                onChange={handlekante}
+                                                value={Kante}
+                                                type="text"
+                                                id="validationCustomUsername"
+                                                aria-describedby="inputGroupPrepend"
+                                                required
                                             >
-                                           <option>Select</option>
-                                           <option value='middle bone only'>Middle bone only</option>
-                                           <option value='few bones'>Few bones</option>
-                                           <option value='many bones'>Many bones</option>
+                                                <option>Select</option>
+                                                <option value='middle bone only'>Middle bone only</option>
+                                                <option value='few bones'>Few bones</option>
+                                                <option value='many bones'>Many bones</option>
                                             </CFormSelect>
                                             <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
 

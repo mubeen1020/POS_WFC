@@ -19,7 +19,7 @@ import { cilAsteriskCircle, cilBug, cilCart, cilColumns, cilCreditCard, cilHome,
 
 const CommonHome = () => {
     const navigate = useNavigate();
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate("/");
@@ -31,7 +31,7 @@ const CommonHome = () => {
                 navigate("/");
             }
         }
-    },[])
+    }, [])
 
     return (
         <>
@@ -152,7 +152,7 @@ const CommonHome = () => {
                 </CRow>
 
                 <CRow >
-                   
+
                     <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
                         <CCard style={{ 'background': 'pink', minHeight: '25vh' }} color="info">
                             <span className='divcorner' style={{ minHeight: '25vh', 'margin': '-2px' }}>
@@ -191,9 +191,9 @@ const CommonHome = () => {
                                                 Order Stock Item
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px' ,width:'200px' }}>View Order Stock Item  </CCardText>
+                                            <CCardText style={{ 'minHeight': '20px', width: '200px' }}>View Order Stock Item  </CCardText>
                                             <Link to="/Order/OrderStockItemsList">
-                                                <CButton style={{ 'float': 'left'  ,width:'170px'}} color="dark" variant="outline"> Order Stock Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left', width: '170px' }} color="dark" variant="outline"> Order Stock Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -216,9 +216,9 @@ const CommonHome = () => {
                                                 &nbsp; Order Purchase Item
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px',width:'200px' }}> View Order Purchase Item</CCardText>
+                                            <CCardText style={{ 'minHeight': '20px', width: '200px' }}> View Order Purchase Item</CCardText>
                                             <Link to="/Order/OrderPurchaseItemsList">
-                                                <CButton style={{ 'float': 'left' ,width:'200px'}} color="success" variant="outline"> Order Purchase Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left', width: '200px' }} color="success" variant="outline"> Order Purchase Item <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -253,7 +253,7 @@ const CommonHome = () => {
                 </CRow>
 
                 <CRow >
-                   
+
 
 
                     <CCol style={{ 'padding': '10px' }} sm={3} lg={3}>
@@ -269,9 +269,9 @@ const CommonHome = () => {
                                                 Purchase Requirement
                                             </CCardTitle>
                                             <hr></hr>
-                                            <CCardText style={{ 'minHeight': '20px',width:'250px' }}>View Purchase Requirement  </CCardText>
+                                            <CCardText style={{ 'minHeight': '20px', width: '250px' }}>View Purchase Requirement  </CCardText>
                                             <Link to="/Purchaserequirement">
-                                                <CButton style={{ 'float': 'left',width:'220px' }} color="primary" variant="outline"> Purchase Requirement <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
+                                                <CButton style={{ 'float': 'left', width: '220px' }} color="primary" variant="outline"> Purchase Requirement <i className="pi pi-angle-right" style={{ fontSize: '1rem' }}></i></CButton>
                                             </Link>
                                         </CCardBody>
                                     </CCol>
@@ -308,7 +308,7 @@ const CommonHome = () => {
 
                 </CRow>
 
-               
+
 
             </CContainer>
 

@@ -102,23 +102,23 @@ function Fish_List() {
     const header = renderHeader();
 
 
-    const get_data = (search='') => {
+    const get_data = (search = '') => {
         setGlobatEvent({ eventName: 'refreshfish' });
         const api = new FishService();
         api.getfishsettings(search)
-          .then((res) => {
-            if (Array.isArray(res.data)) {
-              setTableData(res.data);
-            } else {
-              if (res.data && res.data.message === "fish item not found.") {
-                setTableData([]);
-              } else {
-                setTableData(res.data.list);
-              }
-            }
-          })
-          .catch((err) => { });
-          
+            .then((res) => {
+                if (Array.isArray(res.data)) {
+                    setTableData(res.data);
+                } else {
+                    if (res.data && res.data.message === "fish item not found.") {
+                        setTableData([]);
+                    } else {
+                        setTableData(res.data.list);
+                    }
+                }
+            })
+            .catch((err) => { });
+
     }
 
 

@@ -52,10 +52,10 @@ function Customer_List() {
           </span></h4>
         </span>
         <span className="p-input-icon-left">
-       
+
           <i className="pi pi-search" />
           <InputText onChange={onGlobalFilterChange} value={globalFilterValue} style={{ width: 170, marginTop: 10 }} placeholder="Keyword Search" />
-    
+
         </span>
 
       </div>

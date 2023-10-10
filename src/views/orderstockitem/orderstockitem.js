@@ -174,7 +174,7 @@ export default function OrderStockItem(props) {
             setError(false);
             setTotal_packs_ordered(value);
         }
-        
+
     }
     const handlefishweight = (e) => { setFish_weight(e.target.value) }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
@@ -186,11 +186,11 @@ export default function OrderStockItem(props) {
     const handleitemdiscountabsolute = (e) => { setItem_discount_absolute(e.target.value) }
     const handleitemdiscountpercent = (e) => { setItem_discount_percent(e.target.value) }
 
-   
+
 
     const fishpackDataupdateSubmit = () => {
         let formData = {
-            available_meat_packs: Available_meat_packs-Total_packs_ordered,
+            available_meat_packs: Available_meat_packs - Total_packs_ordered,
         };
 
         const api = new FishpackService();
@@ -204,7 +204,7 @@ export default function OrderStockItem(props) {
 
 
     let get_order_stock_item_data = () => {
-       
+
         let api = new OrderitemsService;
         api.getorderitemsbyId(props.stock_id).then((res) => {
             setOrder_Stock_Item_Data(res.data.orderItem);

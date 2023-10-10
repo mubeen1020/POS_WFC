@@ -131,7 +131,7 @@ export default function Customer() {
                                         detail: `${error}`,
                                         life: 3000,
                                 });
-                               
+
                         });
         }
 
@@ -177,7 +177,7 @@ export default function Customer() {
                                         detail: `${error}`,
                                         life: 3000,
                                 });
-                               
+
                         });
         }
 
