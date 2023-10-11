@@ -421,7 +421,7 @@ export default function OrderStockItem(props) {
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    Order_Stock_Item_Data ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
+                                    props.stock_id ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
                                 }}
                             >
 

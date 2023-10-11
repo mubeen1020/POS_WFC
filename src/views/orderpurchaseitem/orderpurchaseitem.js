@@ -286,7 +286,7 @@ export default function Order_Purchase_Item(props) {
                                 className="row g-3 needs-validation"
                                 noValidate
                                 validated={validated}
-                                onSubmit={(event) => { props.purchase_id.length != 0 ? orderpurchaseitemDataupdateSubmit(event) : orderpurchaseitemDataSubmit(event) }}
+                                onSubmit={(event) => { props.purchase_id? orderpurchaseitemDataupdateSubmit(event) : orderpurchaseitemDataSubmit(event) }}
                             >
 
                                 {/* <div>

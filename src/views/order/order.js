@@ -95,7 +95,8 @@ export default function Orders() {
         if (params.id) {
             if (filteredCustomers && filteredCustomers.length > 0) {
                 setDelivery_charges(filteredCustomers[0].delivery_charges);
-                setOrder_total(TableData.length)
+                console.log(TableData)
+                setOrder_total(TableData)
 
             }
         }
@@ -422,16 +423,6 @@ export default function Orders() {
             formdata = {
                 order_id: item.order_id,
                 fish_pack_ref: fishpackid,
-                total_packs_ordered: 0,
-                fish_weight: item.fish_weight,
-                meat_weight: item.meat_weight,
-                fish_rate: 0,
-                meat_rate: 0,
-                skin: 0,
-                kante: 0,
-                pack_price: 0,
-                item_discount_absolute: 0,
-                item_discount_percent: 0,
             },
                 Purchasedata = {
                     order_id: item.order_id,
@@ -652,13 +643,15 @@ export default function Orders() {
             const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setTableData(filteredData);
-                setOrder_total(filteredData.length)
+                const totalPacksOrderedSum = filteredData.reduce((sum, item) => sum + item.total_packs_ordered, 0);
+                setOrder_total(totalPacksOrderedSum);
             } else {
                 if (res.data && res.data.message === "orderItems not found.") {
                     setTableData([]);
                 } else {
                     setTableData(filteredData);
-                    setOrder_total(filteredData.length)
+                    const totalPacksOrderedSum = filteredData.reduce((sum, item) => sum + item.total_packs_ordered, 0);
+                    setOrder_total(totalPacksOrderedSum);
                 }
             }
 
@@ -1019,9 +1012,11 @@ export default function Orders() {
                             <div>
                                 <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => {
                                     setModalVisible(false);
+                                   if(OrderstockID){
                                     setOrderstockID(null);
+                                   }
                                 }}>
-                                    <OrderStockItem stock_id={OrderstockID} setstock_id={setOrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
+                                    <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
