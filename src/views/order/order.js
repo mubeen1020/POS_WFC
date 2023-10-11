@@ -399,30 +399,25 @@ export default function Orders() {
         )
     }
 
-    const orderstockitemDataSubmit = (event, orderDatastring) => {
-        handleSubmit(event);
-        event.preventDefault();
+    const orderstockitemDataSubmit = (orderDatastring) => {
         let formdata = {};
         let Purchasedata = {};
         let orderdata = {};
         let purcgaseid;
         let fishpackid;
         const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
-        const selectedData = selectedItemPurchaseRows.map((item) => {
+        const selectedData = ItemPurchaseTableData.map((item) => {
 
             fishpackData.filter((fishpack) => {
-                if (Number(fishpack.fish_ref) === Number(item.fish_ref)) {
-                    return fishcutData.some((fishcut) => {
-                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            fishpackid = fishpack.id
-                        }
-                        return false;
-                    });
+                if (Number(fishpack.fish_ref) === Number(item.fish_ref) && Number(fishpack.fish_cut) === Number(item.fish_cut)) {
+                    return fishpackid = fishpack.id
                 }
                 return false;
             });
 
 
+           
+            if(fishpackid){
             purcgaseid = item.id
             formdata = {
                 order_id: item.order_id,
@@ -446,7 +441,8 @@ export default function Orders() {
                     meat_weight: item.meat_weight || 0,
                     preferred_fish_size: item.preferred_fish_size,
                     other_instructions: item.other_instructions || 'N/A',
-                    status: 1
+                    is_active: 1,
+                    status : 'to_be_purchased'
                 },
                 orderdata = {
                     customer: Customer_id || Order_Data.customer,
@@ -459,8 +455,10 @@ export default function Orders() {
                     payment_status: Order_Data.payment_status,
                     payment_mode: Payment_mode || Order_Data.payment_mode
                 }
+            }
 
         });
+  
 
         if (selectedData.length === 0) {
             toast.current.show({
@@ -539,7 +537,7 @@ export default function Orders() {
                     </CButton>
                 </span>
                 <span className="p-input-icon-left" style={{ float: 'right' }}>
-                    <CButton onClick={(event) => { orderstockitemDataSubmit(event, 'to_be_purchased') }} style={{ marginRight: 5 }}>
+                    <CButton onClick={(event) => { orderstockitemDataSubmit('to_be_purchased') }} style={{ marginRight: 5 }}>
                         <CIcon icon={cilSend} className="mr-2" />Convert
                     </CButton>
                     <CButton color="primary" disabled={Order_status === 'closed'} onClick={() => { setItemPurchaseModal(true) }}>
@@ -671,7 +669,7 @@ export default function Orders() {
         setGlobatEvent({ eventName: 'refreshorderpurchaseitem' });
         const apipurchase = new OrderpurchaseitemService;
         apipurchase.getorderpurchaseitem(search).then((res) => {
-            const filteredData = res.data.filter((item) => item.order_id === propID && item.status === 0);
+            const filteredData = res.data.filter((item) => item.order_id === propID && item.is_active === 0);
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setItemPurchaseTableData(filteredData);
             } else {
@@ -713,6 +711,7 @@ export default function Orders() {
         if (!modalVisible || !OrderID) {
             get_data();
             orderstatus_Data_Get();
+            orderstockitemDataSubmit('to_be_purchased')
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
 
@@ -1062,7 +1061,7 @@ export default function Orders() {
 
                             <br />
                             <div>
-                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => setItemPurchaseModal(false)}>
+                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => {setItemPurchaseModal(false);setPurchaseID(null)}}>
                                     <Order_Purchase_Item purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
                                 </Dialog>
                             </div>

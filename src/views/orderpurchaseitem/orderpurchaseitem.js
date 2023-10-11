@@ -32,6 +32,7 @@ export default function Order_Purchase_Item(props) {
     const [Order_Purchase_Item_Data, setOrder_Purchase_Item_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
+    const [Status, setStatus] = useState([])
 
     const orderData = useRecoilValue(orderAtom)
     const customerData = useRecoilValue(customerAtom)
@@ -101,6 +102,7 @@ export default function Order_Purchase_Item(props) {
             setOrder_Purchase_Item_Data(res.data);
             setFish_cut(res.data.fish_cut)
             setPreferred_fish_size(res.data.preferred_fish_size)
+            setStatus(res.data.status)
         }).catch((err) => { });
     }
 
@@ -115,7 +117,7 @@ export default function Order_Purchase_Item(props) {
             meat_weight: Meat_weight || 0,
             preferred_fish_size: Preferred_fish_size,
             other_instructions: Other_instructions || 'N/A',
-            status: 0
+            is_active: 0
         };
 
         const api = new OrderpurchaseitemService();
@@ -160,7 +162,7 @@ export default function Order_Purchase_Item(props) {
             meat_weight: Meat_weight || Order_Purchase_Item_Data.meat_weight,
             preferred_fish_size: Preferred_fish_size || Order_Purchase_Item_Data.preferred_fish_size,
             other_instructions: Other_instructions || Order_Purchase_Item_Data.other_instructions,
-            status: 0
+            is_active: 0
         };
 
         const api = new OrderpurchaseitemService();
@@ -240,10 +242,45 @@ export default function Order_Purchase_Item(props) {
             <CRow>
                 <Toast ref={toast} />
                 <CCol xs={12}>
+
                     <CCard className="mb-4">
-                        {/* <CCardHeader> */}
-                        {/* <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4> */}
-                        {/* </CCardHeader> */}
+                        <div>
+                            <span style={{ float: 'right', marginRight: 10, marginTop: 10 }}>
+                                <p style={{
+                                    fontSize: 18,
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    width: 200,
+                                    padding: '10px',
+                                    textAlign: 'center',
+                                    position: 'relative',
+                                    backgroundColor: '#ebedef',
+                                    transition: 'opacity 0.5s ease', // Add a CSS transition for opacity
+                                    opacity: 1, // Start with full opacity
+                                }}>
+                                    {Status === 'purchased_approve' && 'Purchased Approve' ||
+                                        Status === 'to_be_purchased' && 'To be purchased' ||
+                                        Status === 'closed' && 'Closed'
+                                    }
+                                    <span
+                                        style={{
+                                            content: '',
+                                            position: 'absolute',
+                                            left: '50%',
+                                            bottom: '-15px',
+                                            border: 'solid transparent',
+                                            borderWidth: '8px',
+                                            borderColor: 'transparent',
+                                            borderTopColor: '#ebedef',
+                                            transform: 'translateX(-50%)',
+
+                                        }}
+                                    ></span>
+                                </p>
+                            </span>
+                        </div>
+
+
                         <CCardBody>
                             <CForm
                                 className="row g-3 needs-validation"

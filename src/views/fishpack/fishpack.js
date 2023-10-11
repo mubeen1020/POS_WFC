@@ -10,6 +10,11 @@ import FishpackService from "src/services/fishpack_services";
 import FishService from "src/services/fish_services";
 import FishCutsService from "src/services/fishcut_services";
 import SettingsService from "src/services/settings_services";
+import { useRecoilValue } from "recoil";
+import { fishpackAtom } from "src/_state/fishpackAtom";
+import OrderpurchaseitemService from "src/services/orderpurchaseitem_services";
+import OrderitemsService from "src/services/orderstockitem_services";
+import OrdersService from "src/services/order_services";
 
 
 export default function FishPack() {
@@ -50,6 +55,8 @@ export default function FishPack() {
     const [Fishcut, setFishcut] = useState([])
 
     const [FishNotFound, setFishNotFound] = useState(false)
+
+    const fishpackData = useRecoilValue(fishpackAtom)
 
     let get_fish_pack_data = () => {
         let api = new FishpackService();
@@ -233,6 +240,8 @@ export default function FishPack() {
 
             });
     }
+
+
 
     const fishpackDataupdateSubmit = (event) => {
         handleSubmit(event)
