@@ -406,7 +406,7 @@ export default function Orders() {
         let purcgaseid;
         let fishpackid;
         const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
-        const selectedData = ItemPurchaseTableData.map((item) => {
+        const selectedData = selectedItemPurchaseRows.map((item) => {
 
             fishpackData.filter((fishpack) => {
                 if (Number(fishpack.fish_ref) === Number(item.fish_ref) && Number(fishpack.fish_cut) === Number(item.fish_cut)) {
@@ -711,7 +711,6 @@ export default function Orders() {
         if (!modalVisible || !OrderID) {
             get_data();
             orderstatus_Data_Get();
-            orderstockitemDataSubmit('to_be_purchased')
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
 
