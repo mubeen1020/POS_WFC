@@ -269,6 +269,7 @@ export default function Fish() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                placeholder="Enter in grams"
                                             />
                                             <CFormFeedback invalid>Please choose a Minimum Size.</CFormFeedback>
                                         </CCol>
@@ -283,7 +284,7 @@ export default function Fish() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
-
+                                                placeholder="Enter in grams"
                                             />
 
                                             <CFormFeedback invalid>Please choose a valid Maximum Size.</CFormFeedback>
@@ -303,6 +304,7 @@ export default function Fish() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                placeholder="Enter in grams"
                                             />
                                             <CFormFeedback invalid>Please choose a Net Steaks.</CFormFeedback>
                                         </CCol>
@@ -316,6 +318,7 @@ export default function Fish() {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                placeholder="Enter in grams"
                                             />
                                             <CFormFeedback invalid>Please choose a Net Boneless.</CFormFeedback>
                                         </CCol>

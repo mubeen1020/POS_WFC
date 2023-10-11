@@ -381,7 +381,8 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Fish Refrence</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Fish Refrence </CFormLabel>
+                                                <CTooltip content="Search Fish" placement="left">
                                                 <CFormInput
                                                     onChange={handlefish}
                                                     defaultValue={
@@ -393,10 +394,10 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     className={`form-control ${FishNotFound ? 'is-invalid' : ''}`}
-                                                    style={{ borderColor: FishNotFound ? 'red' : '' }}
-                                                    placeholder="Search Fish"
+                                                    style={{ borderColor: FishNotFound ? 'red' : '' }}                                                   
 
                                                 />
+                                                </CTooltip>
                                                 {FishNotFound && (
                                                     <CFormFeedback invalid>Please choose a Fish.</CFormFeedback>
                                                 )}
@@ -409,6 +410,7 @@ export default function FishPack() {
 
                                             <CCol sm={6} lg={6}>
                                                 <CFormLabel htmlFor="validationCustomUsername">Fish Cut</CFormLabel>
+                                                <CTooltip content="Fish Cuts" placement="left">
                                                 <CFormSelect
                                                     onChange={handlefishcut}
                                                     value={Fish_cut}
@@ -426,6 +428,7 @@ export default function FishPack() {
                                                     }
 
                                                 </CFormSelect>
+                                                </CTooltip>
                                                 <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
                                             </CCol>
                                         </CRow>
@@ -447,7 +450,8 @@ export default function FishPack() {
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Average Fish Piece Size</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Average Fish Piece Size (In grams)</CFormLabel>
+                                                <CTooltip content="In Grams" placement="left">
                                                 <CFormInput
                                                     onChange={handleaveragefishpiecesize}
                                                     defaultValue={params.id ? Fish_Pack_Data.average_fish_piece_size : Average_fish_piece_size}
@@ -455,8 +459,8 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="Enter In Grams"
                                                 />
+                                                </CTooltip>
                                                 <CFormFeedback invalid>Please choose a Average Fish Piece Size.</CFormFeedback>
                                             </CCol>
                                         </CRow>
@@ -503,7 +507,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Payment</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Payment (Rs)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlewholefishpayment}
                                                     defaultValue={params.id ? Fish_Pack_Data.whole_fish_payment : Whole_fish_payment}
@@ -511,13 +515,12 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="Rs"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Whole Fish Payment.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Total Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Total Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlewholefishtotalweight}
                                                     defaultValue={params.id ? Fish_Pack_Data.whole_fish_total_weight : Whole_fish_total_weight}
@@ -534,7 +537,6 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a valid Whole Fish Total Weight.</CFormFeedback>
 
@@ -545,7 +547,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate (Rs/Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Whole_fish_purchase_rate}
                                                     onKeyPress={(e) => {
@@ -561,13 +563,12 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs/Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Whole Fish Purchase Rate</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate (Rs/Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Whole_fish_sale_rate}
                                                     onKeyPress={(e) => {
@@ -583,7 +584,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs/Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Whole Fish Sale Rate.</CFormFeedback>
                                             </CCol>
@@ -593,7 +593,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Whole_fish_pack_weight}
                                                     onKeyPress={(e) => {
@@ -609,13 +609,12 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Whole Fish Pack Weight.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price (Rs)</CFormLabel>
                                                 <CFormInput
                                                     value={Whole_fish_pack_price}
                                                     type="number"
@@ -623,7 +622,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs"
                                                 />
                                                 <CFormFeedback invalid>Please choose a  Whole Fish Pack Price</CFormFeedback>
                                             </CCol>
@@ -633,7 +631,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Fish Packs</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Fish Packs (1,2,3,...)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlefishpack}
                                                     defaultValue={params.id ? Fish_Pack_Data.fish_packs : Fish_packs}
@@ -641,7 +639,6 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="1,2,3,..."
                                                 />
                                                 <CFormFeedback invalid>Please choose a Fish Packs.</CFormFeedback>
                                             </CCol>
@@ -654,7 +651,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Total Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Total Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlenetmeattotalweight}
                                                     defaultValue={params.id ? Fish_Pack_Data.net_meat_total_weight : Net_meat_total_weight}
@@ -670,13 +667,12 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a  Net Meat Total Weight.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Weight Per Kg</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Weight Per Kg (in grams)</CFormLabel>
                                                 <CFormInput
                                                     value={Net_meat_weight_per_kg}
                                                     type="number"
@@ -684,7 +680,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Grams"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Net Meat Weight Per Kg.</CFormFeedback>
                                             </CCol>
@@ -694,7 +689,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Sale Rate</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Sale Rate (Rs/Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Net_meat_sale_rate}
                                                     type="number"
@@ -702,13 +697,12 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs/Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Net Meat Sale Rate.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Pack Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Net Meat Pack Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Net_meat_Pack_weight}
                                                     onKeyPress={(e) => {
@@ -724,7 +718,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Net Meat Pack Weight.</CFormFeedback>
                                             </CCol>
@@ -736,7 +729,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Bones Total Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Bones Total Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlebonetotalweight}
                                                     defaultValue={params.id ? Fish_Pack_Data.bones_total_weight : Bones_total_weight}
@@ -752,13 +745,12 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Bones Total Weight.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Bones Packs</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Bones Packs (1,2,3,...)</CFormLabel>
                                                 <CFormInput
                                                     onChange={handlebonepacks}
                                                     defaultValue={params.id ? Fish_Pack_Data.bones_packs : Bones_packs}
@@ -766,7 +758,6 @@ export default function FishPack() {
                                                     id="validationCustomUsername"
                                                     aria-describedby="inputGroupPrepend"
                                                     required
-                                                    placeholder="1,2,3,..."
                                                 />
                                                 <CFormFeedback invalid>Please choose a Bone Packs.</CFormFeedback>
                                             </CCol>
@@ -776,7 +767,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Bones Pack Weight</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Bones Pack Weight (Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Bones_pack_weight}
                                                     type="number"
@@ -784,13 +775,12 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Bones Pack Weight.</CFormFeedback>
                                             </CCol>
 
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Bone Pack Rate</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Bone Pack Rate (Rs/Kg)</CFormLabel>
                                                 <CFormInput
                                                     value={Bones_pack_rate}
                                                     type="number"
@@ -798,7 +788,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs/Kg"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Bone Pack Rate.</CFormFeedback>
                                             </CCol>
@@ -808,7 +797,7 @@ export default function FishPack() {
                                     <div style={{ marginBottom: 10, paddingBottom: 10}}>
                                         <CRow>
                                             <CCol sm={6} lg={6}>
-                                                <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price</CFormLabel>
+                                                <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price (Rs)</CFormLabel>
                                                 <CFormInput
                                                     value={Bones_pack_price}
                                                     type="number"
@@ -816,7 +805,6 @@ export default function FishPack() {
                                                     aria-describedby="inputGroupPrepend"
                                                     required
                                                     disabled
-                                                    placeholder="Rs"
                                                 />
                                                 <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
                                             </CCol>

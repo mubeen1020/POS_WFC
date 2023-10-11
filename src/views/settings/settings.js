@@ -174,7 +174,7 @@ export default function Settings() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Variable Profit Percent Per Kg</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Variable Profit Percent Per Kg (%)</CFormLabel>
                                             <CTooltip content="%" placement="left">
                                                 <CFormInput
                                                     onChange={handlevariableprofitpercentperkg}
@@ -191,7 +191,7 @@ export default function Settings() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Profit Per Kg</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Profit Per Kg (Rs)</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
                                                     onChange={handlefixedprofitperkg}
@@ -211,7 +211,7 @@ export default function Settings() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Expense Per Kg</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Expense Per Kg (Rs)</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
                                                     onChange={handleexpenseperkg}
@@ -226,7 +226,7 @@ export default function Settings() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Fuel Rate</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fuel Rate (Rs/Ltr)</CFormLabel>
                                             <CTooltip content="Rs / Ltr" placement="left">
                                                 <CFormInput
                                                     onChange={handlefuelrate}
@@ -245,10 +245,10 @@ export default function Settings() {
                                     </CRow>
                                 </div>
 
-                                <div >
+                                <div >90
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Bike Fuel Average</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Bike Fuel Average (Km/Ltr)</CFormLabel>
                                             <CTooltip content="Km / Ltr" placement="left">
                                                 <CFormInput
                                                     onChange={handlebikefuelaverage}
@@ -263,7 +263,7 @@ export default function Settings() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Delivery Charges</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Fixed Delivery Charges (Rs)</CFormLabel>
                                             <CTooltip content="Rs" placement="left">
                                                 <CFormInput
                                                     onChange={handlenetfixeddeliverycharges}
@@ -282,7 +282,7 @@ export default function Settings() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Half Service Charges</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Half Service Charges (Rs/Kg)</CFormLabel>
                                             <CTooltip content="Rs / Kg" placement="left">
                                                 <CFormInput
                                                     onChange={handlehalfservicecharges}
@@ -297,7 +297,7 @@ export default function Settings() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Full Service Charges</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Full Service Charges (Rs/Kg)</CFormLabel>
                                             <CTooltip content="Rs / Kg" placement="left">
                                                 <CFormInput
                                                     onChange={handlefullservicecharges}
@@ -316,7 +316,7 @@ export default function Settings() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Miniumum Order Weight</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Miniumum Order Weight (Kg)</CFormLabel>
                                             <CTooltip content="Kg" placement="left">
                                                 <CFormInput
                                                     onChange={handleminiumumorderweight}
