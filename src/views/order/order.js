@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect, COffcanvasBody } from "@coreui/react";
 import { Toast } from 'primereact/toast';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
@@ -95,7 +95,6 @@ export default function Orders() {
         if (params.id) {
             if (filteredCustomers && filteredCustomers.length > 0) {
                 setDelivery_charges(filteredCustomers[0].delivery_charges);
-                console.log(TableData)
                 setOrder_total(TableData)
 
             }
@@ -401,121 +400,95 @@ export default function Orders() {
     }
 
     const orderstockitemDataSubmit = (orderDatastring) => {
-        let formdata = {};
-        let Purchasedata = {};
-        let orderdata = {};
-        let purcgaseid;
-        let fishpackid;
-        const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
-        const selectedData = selectedItemPurchaseRows.map((item) => {
+        const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
+        const activeItems = selectedItemPurchaseRows && selectedItemPurchaseRows.filter((item) => item.is_active === 0);
+        activeItems && activeItems.forEach((item) => {
+          const matchingFishpack = fishpackData.find((fishpack) => {
+            return (
+              Number(fishpack.fish_ref) === Number(item.fish_ref) &&
+              Number(fishpack.fish_cut) === Number(item.fish_cut)
+            );
+          });
 
-            fishpackData.filter((fishpack) => {
-                if (Number(fishpack.fish_ref) === Number(item.fish_ref) && Number(fishpack.fish_cut) === Number(item.fish_cut)) {
-                    return fishpackid = fishpack.id
-                }
-                return false;
-            });
-
-
-           
-            if(fishpackid){
-            purcgaseid = item.id
-            formdata = {
+          if (matchingFishpack) {
+            const formdata = {
+              order_id: item.order_id,
+              fish_pack_ref: matchingFishpack.id,
+              total_packs_ordered: matchingFishpack.available_meat_packs,
+              fish_weight: matchingFishpack.net_meat_pack_weight,
+              meat_weight: matchingFishpack.net_meat_weight_per_kg,
+              fish_rate: matchingFishpack.whole_fish_sale_rate,
+              meat_rate: matchingFishpack.net_meat_sale_rate,
+              skin: matchingFishpack.skin_removed,
+              kante: matchingFishpack.kante,
+              pack_price: matchingFishpack.whole_fish_pack_price,
+              item_discount_absolute: 0,
+              item_discount_percent: 0,
+            };
+      
+            const purchaseUpdateData = {
                 order_id: item.order_id,
-                fish_pack_ref: fishpackid,
-            },
-                Purchasedata = {
-                    order_id: item.order_id,
-                    fish_ref: item.fish_ref,
-                    fish_cut: item.fish_cut,
-                    fish_weight: item.fish_weight || 0,
-                    meat_weight: item.meat_weight || 0,
-                    preferred_fish_size: item.preferred_fish_size,
-                    other_instructions: item.other_instructions || 'N/A',
-                    is_active: 1,
-                    status : 'to_be_purchased'
-                },
-                orderdata = {
-                    customer: Customer_id || Order_Data.customer,
-                    order_date: Order_date || Order_Data.order_date,
-                    delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
-                    order_status: data[0].id || Order_Data.order_status,
-                    delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
-                    urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
-                    order_total: Order_total || Order_Data.order_total,
-                    payment_status: Order_Data.payment_status,
-                    payment_mode: Payment_mode || Order_Data.payment_mode
-                }
+                fish_ref: item.fish_ref,
+                fish_cut: item.fish_cut,
+                fish_weight: item.fish_weight || 0,
+                meat_weight: item.meat_weight || 0,
+                preferred_fish_size: item.preferred_fish_size,
+                other_instructions: item.other_instructions || 'N/A',
+                is_active: 1,
+                status: 'to_be_purchased',
+            };
+          
+            const orderupdatedata = {
+                order_status : data.id
             }
+           
 
-        });
-  
 
-        if (selectedData.length === 0) {
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Please select at least one row to convert.',
-                life: 3000,
-            });
-            return;
-        }
 
-        const api = new OrderitemsService();
-        api
-            .createorderitems(formdata)
-            .then((res) => {
-                get_data()
-                const orderItem = res.data.orderItem;
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
-                    life: 3000,
-                });
-
+            const api = new OrderitemsService();
+            api.createorderitems(formdata)
+          
+              .then((res) => {
+                get_data();
                 const Purchaseapi = new OrderpurchaseitemService();
-                Purchaseapi
-                    .updateorderpurchaseitem(purcgaseid, Purchasedata)
-                    .then((res) => {
-
-                        get_data()
-                        const orderapi = new OrdersService();
-                        orderapi
-                            .updateorders(params.id, orderdata)
-                            .then((res) => {
-                                get_order_data()
-
-                            })
-                            .catch((error) => {
-                                toast.current.show({
-                                    severity: 'info',
-                                    summary: 'Error',
-                                    detail: `${error}`,
-                                    life: 3000,
-                                });
-
-                            });
-
-                    })
-                    .catch((error) => {
-
-
-                    });
-
-            })
-            .catch((error) => {
+                Purchaseapi.updateorderpurchaseitem(item.id, purchaseUpdateData)
+                  .then(() => {
+                    get_data();
+                    const orderapi = new OrdersService();
+                    orderapi
+                        .updateorders(params.id, orderupdatedata)
+                        .then((res) => {
+                            get_order_data()
+                        })
+                        .catch((error) => {
+            
+                        });
+                  })
+                  .catch((error) => {
+                    console.error('Error updating purchase items:', error);
+                  });;
                 toast.current.show({
-                    severity: 'info',
-                    summary: 'Error',
-                    detail: `${error}`,
-                    life: 3000,
+                  severity: 'success',
+                  summary: 'Data Submitted',
+                  detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                  life: 3000,
                 });
-            });
+          
+                
+              })
+              .catch((error) => {
+               
+              });
+             
 
 
+          }
+        });
 
-    };
+      
+        
+      };
+      
 
     const renderItemPurchaseHeader = () => {
         return (
@@ -1056,7 +1029,7 @@ export default function Orders() {
                             <br />
                             <div>
                                 <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => {setItemPurchaseModal(false);setPurchaseID(null)}}>
-                                    <Order_Purchase_Item purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
+                                    <Order_Purchase_Item  orderDataId={params.id} purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
