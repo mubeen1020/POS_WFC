@@ -135,7 +135,6 @@ export default function OrderStockItem(props) {
                 return false;
             });
         });
-        console.log(fishdataweight,'fishdataweight2')
         const searchStringArray = fishData
         .map((fish) => {
           const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -199,9 +198,9 @@ export default function OrderStockItem(props) {
     const handleitemdiscountpercent = (e) => { setItem_discount_percent(e.target.value) }
 
     const fishordereddata =(fish,ordered)=>{
-        const finaldata = (fish||fishdataweight) * Number(ordered)
-        console.log(finaldata,'finaldata')
-        setFish_weight(finaldata)
+        // const finaldata = (fish||fishdataweight) * Number(ordered)
+        // console.log(finaldata,'finaldata')
+        // setFish_weight(finaldata)
     }
 
 
