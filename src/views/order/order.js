@@ -610,6 +610,8 @@ export default function Orders() {
     const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
 
     const get_data = (search = '') => {
+        orderstatus_Data_Get()
+
         setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
@@ -636,8 +638,10 @@ export default function Orders() {
         const apipurchase = new OrderpurchaseitemService;
         apipurchase.getorderpurchaseitem(search).then((res) => {
             const filteredData = res.data.filter((item) => item.order_id === propID && item.is_active === 0);
+
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setItemPurchaseTableData(filteredData);
+                
             } else {
                 if (res.data && res.data.message === "order purchase item not found.") {
                     setItemPurchaseTableData([]);
@@ -677,8 +681,15 @@ export default function Orders() {
         if (!modalVisible || !OrderID) {
             get_data();
             orderstatus_Data_Get();
+
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
+    useEffect(() => {
+        if (!ItemPurchaseModal ) {
+           
+            get_order_data()
+        }
+    }, [ ItemPurchaseModal])
 
 
     return (

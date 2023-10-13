@@ -295,9 +295,7 @@ export default function Order_Purchase_Item(props) {
                     orderapi
                         .updateorders(orderparamid, orderupdatedata)
                         .then((res) => {
-                            setTimeout(() => {
-                                props.setVisible(false)
-                            }, [2000])
+                           
                         })
                         .catch((error) => {
             
@@ -309,7 +307,7 @@ export default function Order_Purchase_Item(props) {
                 toast.current.show({
                   severity: 'success',
                   summary: 'Data Submitted',
-                  detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                  detail: 'Your order purchase item convertion into  Order Stock Item information has been successfully submitted and recorded.',
                   life: 3000,
                 });
           
@@ -350,7 +348,7 @@ export default function Order_Purchase_Item(props) {
                 <CCol xs={12}>
 
                     <CCard className="mb-4">
-                        {params.id &&
+                        {props.purchase_id &&
                         <div>
                             <span style={{ float: 'right', marginRight: 10, marginTop: 10 }}>
                             <CButton onClick={()=>orderstockconvertion('to_be_purchased')} color="primary">
