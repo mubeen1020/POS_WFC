@@ -46,6 +46,8 @@ export default function OrderStockItem(props) {
     const [Order_Stock_Item_Data, setOrder_Stock_Item_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [Fishpackfilterdata, setFishpackfilterdata] = useState([])
+    const [Fish_Weightdata,setFish_Weightdata] = useState([])
+    const [Meat_Weightdata,setMeat_Weightdata] = useState([])
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
     const [error, setError] = useState(false);
@@ -87,7 +89,6 @@ export default function OrderStockItem(props) {
         );
         setFilteredCustomers(filteredCustomers);
     };
-    let fishdataweight ;
 
     const handlefishpackref = (e) => {
         const value = e.target.value;
@@ -105,8 +106,10 @@ export default function OrderStockItem(props) {
                                 get_fish_pack_data(fishpack.id)
                                 fishpackArray.push(fishpack.id)
                                 setfishpack_id_data(fishpack.id)
-                                setFish_weight(fishpack.net_meat_pack_weight)
-                                setMeat_weight(fishpack.net_meat_weight_per_kg)
+                                setFish_weight(fishpack.net_meat_pack_weight*fishpack.available_meat_packs)
+                                setFish_Weightdata(fishpack.net_meat_pack_weight)
+                                setMeat_weight(fishpack.net_meat_weight_per_kg*fishpack.available_meat_packs)
+                                setMeat_Weightdata(fishpack.net_meat_weight_per_kg)
                                 setFish_rate(fishpack.whole_fish_sale_rate)
                                 setMeat_rate(fishpack.net_meat_sale_rate)
                                 setSkin(fishpack.skin_removed)
@@ -114,8 +117,6 @@ export default function OrderStockItem(props) {
                                 setPack_price(fishpack.whole_fish_pack_price)
                                 setFishname(fish.local_name)
                                 setFish_cut(fishcut.fish_cut)
-                                fishordereddata(fishpack.net_meat_pack_weight,fishpack.available_meat_packs)
-                                fishdataweight = fishpack.net_meat_pack_weight
                                 const isoDate = fishpack.packing_date;
 
                                 if (isoDate) {
@@ -166,7 +167,6 @@ export default function OrderStockItem(props) {
             setTotal_packs_ordered(res.data.fishPack.available_meat_packs)
             setAvailable_meat_packs(res.data.fishPack.available_meat_packs)
             setAvaiablepack(res.data.fishPack.available_meat_packs)
-            fishordereddata(res.data.fishpack.net_meat_pack_weight,res.data.fishPack.available_meat_packs)
            
         }).catch((err) => { });
     }
@@ -180,13 +180,17 @@ export default function OrderStockItem(props) {
         } else {
             setError(false);
             setTotal_packs_ordered(value);
-            fishordereddata(Fish_weight,value)
+            const fishdata = value * Fish_Weightdata
+            const meatData = value * Meat_Weightdata
+            setMeat_weight(meatData)
+            setFish_weight(fishdata)
         }
 
     }
     const handlefishweight = (e) => { 
         let value =e.target.value
-        setFish_weight(value)
+        const fishdata = value * Total_packs_ordered
+        setFish_weight(fishdata)
      }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
     const handlefishrate = (e) => { setFish_rate(e.target.value) }
