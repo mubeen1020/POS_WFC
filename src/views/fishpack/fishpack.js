@@ -65,17 +65,17 @@ export default function FishPack() {
             setSkin_removed(res.data.fishPack.skin_removed)
             setFish_cut(res.data.fishPack.fish_cut)
             setWhole_fish_total_weight(res.data.fishPack.whole_fish_total_weight)
-            setWhole_fish_payment(res.data.fishPack.whole_fish_payment)
+            setWhole_fish_payment(Math.round(res.data.fishPack.whole_fish_payment))
             setWhole_fish_pack_weight(res.data.fishPack.whole_fish_pack_weight)
-            setWhole_fish_pack_price(res.data.fishPack.whole_fish_pack_price)
-            setWhole_fish_purchase_rate(res.data.fishPack.whole_fish_purchase_rate)
-            setWhole_fish_sale_rate(res.data.fishPack.whole_fish_sale_rate)
+            setWhole_fish_pack_price(Math.round(res.data.fishPack.whole_fish_pack_price))
+            setWhole_fish_purchase_rate(Math.round(res.data.fishPack.whole_fish_purchase_rate))
+            setWhole_fish_sale_rate(Math.round(res.data.fishPack.whole_fish_sale_rate))
             setNet_meat_pack_weight(res.data.fishPack.net_meat_pack_weight)
             setNet_meat_weight_per_kg(res.data.fishPack.net_meat_weight_per_kg)
-            setNet_meat_sale_rate(res.data.fishPack.net_meat_sale_rate)
+            setNet_meat_sale_rate(Math.round(res.data.fishPack.net_meat_sale_rate))
             setBones_pack_weight(res.data.fishPack.bones_pack_weight)
-            setBones_pack_rate(res.data.fishPack.bones_pack_rate)
-            setBones_pack_price(res.data.fishPack.bones_pack_price)
+            setBones_pack_rate(Math.round(res.data.fishPack.bones_pack_rate))
+            setBones_pack_price(Math.round(res.data.fishPack.bones_pack_price))
             setKante(res.data.fishPack.kante)
             setfish_packs(res.data.fishPack.fish_packs)
             const isoDate = res.data.fishPack.packing_date;
@@ -352,15 +352,15 @@ export default function FishPack() {
             const settings = res.data.settings[0];
             const saleRate = ((purchaseRate * settings.variable_profit_percent_per_kg) / 100) + purchaseRate + settings.fixed_profit_per_kg + settings.expense_per_kg;
             const newsalerate = isNaN(saleRate) ? 0 : saleRate.toFixed(2);
-            setWhole_fish_sale_rate(newsalerate);
+            setWhole_fish_sale_rate(Math.round(newsalerate));
             const packprice = parseFloat(packweight.toFixed(2)) * saleRate.toFixed(2)
-            setWhole_fish_pack_price(packprice.toFixed(2))
+            setWhole_fish_pack_price(Math.round(packprice))
             const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))) * 1000)
-            setNet_meat_sale_rate(netmeatsale.toFixed(2))
+            setNet_meat_sale_rate(Math.round(netmeatsale))
             const bonesrate = Math.round((saleRate * bonepackweight) / 3 * 100) / 100;
-            setBones_pack_rate(bonesrate);
-            const bonespackprice = Math.round((bonepackweight * bonesrate) * 100) / 100;
-            setBones_pack_price(bonespackprice);
+            setBones_pack_rate(Math.round(bonesrate));
+            const bonespackprice =(bonepackweight * bonesrate) ;
+            setBones_pack_price(Math.round(bonespackprice));
         }).catch((err) => { });
     }
 
