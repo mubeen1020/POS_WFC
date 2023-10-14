@@ -78,6 +78,7 @@ export default function FishPack() {
             setBones_pack_rate(res.data.fishPack.bones_pack_rate)
             setBones_pack_price(res.data.fishPack.bones_pack_price)
             setKante(res.data.fishPack.kante)
+            setfish_packs(res.data.fishPack.fish_packs)
             const isoDate = res.data.fishPack.packing_date;
 
             if (isoDate) {
