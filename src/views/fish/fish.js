@@ -244,9 +244,9 @@ export default function Fish() {
                 setAverage_sale_retail(averagesaleretail)
                 const max_discount = profit / averagesaleretail * 100
                 setMax_discount_percent(Math.round(max_discount) )
-                const averagebonless = Number(averagesaleretail) / Number(boneless) * 1000
+                const averagebonless = Number(averagesaleretail) / Number(boneless) 
                 setAverage_net_boneless(averagebonless.toFixed(2))
-                const averagenetsteak = Number(averagesaleretail) / Number(netsteaks) * 1000
+                const averagenetsteak = Number(averagesaleretail) / Number(netsteaks) 
                 setAverage_net_steaks(averagenetsteak.toFixed(2))
 
 
