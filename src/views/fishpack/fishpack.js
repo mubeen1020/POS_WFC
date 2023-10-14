@@ -13,6 +13,7 @@ import SettingsService from "src/services/settings_services";
 import { useRecoilValue } from "recoil";
 import { fishpackAtom } from "src/_state/fishpackAtom";
 import { Splitter, SplitterPanel } from 'primereact/splitter';
+import { InputSwitch } from "primereact/inputswitch";
 
 
 
@@ -61,8 +62,8 @@ export default function FishPack() {
         let api = new FishpackService();
         api.getfishpackbyId(params.id).then((res) => {
             setFish_Pack_Data(res.data.fishPack);
-            setHead_removed(res.data.fishPack.head_removed)
-            setSkin_removed(res.data.fishPack.skin_removed)
+            setHead_removed(res.data.fishPack.head_removed!= 0 ? true : false)
+            setSkin_removed(res.data.fishPack.skin_removed!= 0 ? true : false)
             setFish_cut(res.data.fishPack.fish_cut)
             setWhole_fish_total_weight(res.data.fishPack.whole_fish_total_weight)
             setWhole_fish_payment(Math.round(res.data.fishPack.whole_fish_payment))
@@ -179,13 +180,15 @@ export default function FishPack() {
     }
     const handlefishcut = (e) => { setFish_cut(e.target.value) }
     const handleaveragefishpiecesize = (e) => { setAverage_fish_piece_size(e.target.value) }
-    const handleheadremoved = (e) => { setHead_removed(e.target.value) }
-    const handleskinremoved = (e) => { setSkin_removed(e.target.value) }
+    const handleheadremoved = () => { setHead_removed(!Head_removed) }
+    const handleskinremoved = () => { setSkin_removed(!Skin_removed) }
     const handlekante = (e) => { setKante(e.target.value) }
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
+        console.log(Head_removed,'Head_removed')
+        console.log(Skin_removed,'Skin_removed')
         let formData = {
             packing_date: Packing_date,
             fish_ref: Fish_id,
@@ -209,8 +212,8 @@ export default function FishPack() {
             available_bones_packs: Available_bones_packs,
             fish_cut: Fish_cut || 7,
             average_fish_piece_size: Average_fish_piece_size,
-            head_removed: Head_removed || 0,
-            skin_removed: Skin_removed || 0,
+            head_removed: Head_removed== false ? 0 : 1 || 0,
+            skin_removed: Skin_removed== false ? 0 : 1 || 0,
             kante: Kante,
         };
 
@@ -269,8 +272,8 @@ export default function FishPack() {
             available_bones_packs: Available_bones_packs || Fish_Pack_Data.available_bones_packs,
             fish_cut: Fish_cut || Fish_Pack_Data.fish_cut,
             average_fish_piece_size: Average_fish_piece_size || Fish_Pack_Data.average_fish_piece_size,
-            head_removed: Head_removed || Fish_Pack_Data.head_removed,
-            skin_removed: Skin_removed || Fish_Pack_Data.skin_removed,
+            head_removed: Head_removed== false ? 0 : 1 || Fish_Pack_Data.head_removed,
+            skin_removed: Skin_removed== false ? 0 : 1 || Fish_Pack_Data.skin_removed,
             kante: Kante || Fish_Pack_Data.kante,
         };
 
@@ -468,34 +471,16 @@ export default function FishPack() {
                                                 <CCol sm={6} lg={6}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Head Removed</CFormLabel>
-                                                    <CFormSelect
-                                                        onChange={handleheadremoved}
-                                                        value={Head_removed}
-                                                        id="validationCustomUsername"
-                                                        aria-describedby="inputGroupPrepend"
-                                                        required
-                                                    >
-                                                        <option >Select</option>
-                                                        <option key='1' value='1'>Yes</option>
-                                                        <option key='0' value='0'>No</option>
-                                                    </CFormSelect>
+                                                    <br/>
+                                                    <InputSwitch checked={Head_removed} onChange={handleheadremoved} />
                                                     <CFormFeedback invalid>Please choose a Head Removed.</CFormFeedback>
                                                 </CCol>
 
                                                 <CCol sm={6} lg={6}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Skin Removed</CFormLabel>
-                                                    <CFormSelect
-                                                        onChange={handleskinremoved}
-                                                        value={Skin_removed}
-                                                        id="validationCustomUsername"
-                                                        aria-describedby="inputGroupPrepend"
-                                                        required
-                                                    >
-                                                        <option >Select</option>
-                                                        <option key='1' value='1'>Yes</option>
-                                                        <option key='0' value='0'>No</option>
-                                                    </CFormSelect>
+                                                    <br/>
+                                                    <InputSwitch checked={Skin_removed} onChange={handleskinremoved} />
                                                     <CFormFeedback invalid>Please choose a Skin Removed.</CFormFeedback>
                                                 </CCol>
                                             </CRow>
