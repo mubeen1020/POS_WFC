@@ -394,7 +394,7 @@ export default function FishPack() {
                                         <br />
                                         <div>
                                             <CRow>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                     <CFormLabel htmlFor="validationCustomUsername">Fish Refrence</CFormLabel>
                                                     <CFormInput
                                                         onChange={handlefish}
@@ -419,7 +419,7 @@ export default function FishPack() {
                                                         ))}
                                                     </datalist>
                                                 </CCol>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                     <CFormLabel htmlFor="validationCustomUsername">Fish Cut</CFormLabel>
                                                     <CFormSelect
                                                         onChange={handlefishcut}
@@ -441,8 +441,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
                                                 </CCol>
                                                
-                                                <CCol sm={6} lg={6}>
-                                                <br />
+                                                <CCol sm={3} lg={3}>
                                                     <CFormLabel htmlFor="validationCustomUsername">Packing Date</CFormLabel>
                                                     <CFormInput
                                                         onChange={(e) => { setPacking_date(e.target.value) }}
@@ -455,8 +454,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Packing Date.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
-                                                <br />
+                                                <CCol sm={3} lg={3}>
                                                     <CFormLabel htmlFor="validationCustomUsername">Average Fish Piece Size (Grams)</CFormLabel>
                                                     <CFormInput
                                                         onChange={handleaveragefishpiecesize}
@@ -468,7 +466,7 @@ export default function FishPack() {
                                                     />
                                                     <CFormFeedback invalid>Please choose a Average Fish Piece Size.</CFormFeedback>
                                                 </CCol>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Head Removed</CFormLabel>
                                                     <br/>
@@ -476,7 +474,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Head Removed.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Skin Removed</CFormLabel>
                                                     <br/>
@@ -491,7 +489,7 @@ export default function FishPack() {
                                         <br />
                                         <div>
                                             <CRow>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Payment (Rs)</CFormLabel>
                                                     <CTooltip content="Rs" placement="left">
@@ -507,7 +505,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Whole Fish Payment.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Total Weight (Kg)</CFormLabel>
                                                     <CTooltip content="Kg" placement="left">
@@ -533,7 +531,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a valid Whole Fish Total Weight.</CFormFeedback>
 
                                                 </CCol>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate (Rs / Kg)</CFormLabel>
                                                     <CTooltip content="Rs/Kg" placement="left">
@@ -557,7 +555,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Whole Fish Purchase Rate</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Sale Rate (Rs / Kg)</CFormLabel>
                                                     <CTooltip content="Rs/Kg" placement="left">
@@ -581,7 +579,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Whole Fish Sale Rate.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Fish Packs (1,2,3...)</CFormLabel>
                                                     <CTooltip content="1,2,3..." placement="left">
@@ -597,7 +595,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Fish Packs.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Pack Weight (Kg)</CFormLabel>
                                                     <CTooltip content="Kg" placement="left">
@@ -621,7 +619,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Whole Fish Pack Weight.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername"> Whole Fish Pack Price (Rs)</CFormLabel>
                                                     <CTooltip content="Rs" placement="left">
@@ -646,7 +644,7 @@ export default function FishPack() {
                                         <br />
                                         <div>
                                             <CRow>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
 
                                                     <CFormLabel htmlFor="validationCustomUsername">Net Meat Total Weight (Kg)</CFormLabel>
@@ -671,7 +669,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a  Net Meat Total Weight.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Net Meat Weight Per Kg (Grams)</CFormLabel>
                                                     <CTooltip content="Gram" placement="left">
@@ -687,7 +685,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Net Meat Weight Per Kg.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Net Meat Sale Rate (Rs / Kg)</CFormLabel>
                                                     <CTooltip content="Rs/Kg" placement="left">
@@ -703,7 +701,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Net Meat Sale Rate.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Net Meat Pack Weight (Kg)</CFormLabel>
                                                     <CTooltip content="Kg" placement="left">
@@ -735,7 +733,7 @@ export default function FishPack() {
                                         <br />
                                         <div>
                                             <CRow>
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
 
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Total Weight (Kg)</CFormLabel>
@@ -760,7 +758,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Bones Total Weight.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Packs (1,2,3...)</CFormLabel>
                                                     <CTooltip content="1,2,3..." placement="left">
@@ -776,7 +774,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Bone Packs.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Pack Weight (Kg)</CFormLabel>
                                                     <CTooltip content="Kg" placement="left">
@@ -792,7 +790,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Bones Pack Weight.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Pack Rate (Rs / Kg)</CFormLabel>
                                                     <CTooltip content="Rs/Kg" placement="left">
@@ -809,7 +807,7 @@ export default function FishPack() {
                                                 </CCol>
 
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Pack Price (Rs)</CFormLabel>
                                                     <CTooltip content="Rs" placement="left">
@@ -825,7 +823,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={6} lg={6}>
+                                                <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
                                                     <CFormSelect
