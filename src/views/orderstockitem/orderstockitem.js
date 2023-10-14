@@ -198,9 +198,9 @@ export default function OrderStockItem(props) {
     const handleitemdiscountpercent = (e) => { setItem_discount_percent(e.target.value) }
 
     const fishordereddata =(fish,ordered)=>{
-        // const finaldata = (fish||fishdataweight) * Number(ordered)
-        // console.log(finaldata,'finaldata')
-        // setFish_weight(finaldata)
+        const finaldata = fish * Number(ordered)
+        console.log(finaldata,'finaldata')
+        setFish_weight(finaldata)
     }
 
 
@@ -437,7 +437,7 @@ export default function OrderStockItem(props) {
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    props.stock_id ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
+                                    props.stock_id && Order_Stock_Item_Data ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
                                 }}
                             >
 
