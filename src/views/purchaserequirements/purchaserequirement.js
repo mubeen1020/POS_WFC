@@ -63,13 +63,14 @@ function PurchaseRequirement() {
         const api = new OrderpurchaseitemService();
         api.getfishrefandfishcut(search)
             .then((res) => {
-                if (Array.isArray(res.data)) {
-                    setDatatable(res.data);
+                const filteredData = res.data.filter((item) =>  item.is_active === 0);
+                if (Array.isArray(filteredData)) {
+                    setDatatable(filteredData);
                 } else {
-                    if (res.data && res.data.message === "order purchase item not found.") {
+                    if (filteredData && filteredData.message === "order purchase item not found.") {
                         setDatatable([]);
                     } else {
-                        setDatatable(res.data);
+                        setDatatable(filteredData);
                     }
                 }
             })

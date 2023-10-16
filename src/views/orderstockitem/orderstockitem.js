@@ -46,6 +46,8 @@ export default function OrderStockItem(props) {
     const [Order_Stock_Item_Data, setOrder_Stock_Item_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [Fishpackfilterdata, setFishpackfilterdata] = useState([])
+    const [Fish_Weightdata,setFish_Weightdata] = useState([])
+    const [Meat_Weightdata,setMeat_Weightdata] = useState([])
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
     const [error, setError] = useState(false);
@@ -87,6 +89,7 @@ export default function OrderStockItem(props) {
         );
         setFilteredCustomers(filteredCustomers);
     };
+
     const handlefishpackref = (e) => {
         const value = e.target.value;
         setFish_pack_ref(value)
@@ -103,8 +106,10 @@ export default function OrderStockItem(props) {
                                 get_fish_pack_data(fishpack.id)
                                 fishpackArray.push(fishpack.id)
                                 setfishpack_id_data(fishpack.id)
-                                setFish_weight(fishpack.net_meat_pack_weight)
-                                setMeat_weight(fishpack.net_meat_weight_per_kg)
+                                setFish_weight(fishpack.net_meat_pack_weight*fishpack.available_meat_packs)
+                                setFish_Weightdata(fishpack.net_meat_pack_weight)
+                                setMeat_weight(fishpack.net_meat_weight_per_kg*fishpack.available_meat_packs)
+                                setMeat_Weightdata(fishpack.net_meat_weight_per_kg)
                                 setFish_rate(fishpack.whole_fish_sale_rate)
                                 setMeat_rate(fishpack.net_meat_sale_rate)
                                 setSkin(fishpack.skin_removed)
@@ -131,7 +136,6 @@ export default function OrderStockItem(props) {
                 return false;
             });
         });
-
         const searchStringArray = fishData
         .map((fish) => {
           const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -155,6 +159,7 @@ export default function OrderStockItem(props) {
       
 
     }
+   
 
     let get_fish_pack_data = (id) => {
         let api = new FishpackService();
@@ -162,8 +167,10 @@ export default function OrderStockItem(props) {
             setTotal_packs_ordered(res.data.fishPack.available_meat_packs)
             setAvailable_meat_packs(res.data.fishPack.available_meat_packs)
             setAvaiablepack(res.data.fishPack.available_meat_packs)
+           
         }).catch((err) => { });
     }
+
     const handletotalpackorder = (e) => {
         const value = e.target.value;
 
@@ -173,10 +180,18 @@ export default function OrderStockItem(props) {
         } else {
             setError(false);
             setTotal_packs_ordered(value);
+            const fishdata = value * Fish_Weightdata
+            const meatData = value * Meat_Weightdata
+            setMeat_weight(meatData)
+            setFish_weight(fishdata)
         }
 
     }
-    const handlefishweight = (e) => { setFish_weight(e.target.value) }
+    const handlefishweight = (e) => { 
+        let value =e.target.value
+        const fishdata = value * Total_packs_ordered
+        setFish_weight(fishdata)
+     }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
     const handlefishrate = (e) => { setFish_rate(e.target.value) }
     const handlemeatrate = (e) => { setMeat_rate(e.target.value) }
@@ -186,6 +201,11 @@ export default function OrderStockItem(props) {
     const handleitemdiscountabsolute = (e) => { setItem_discount_absolute(e.target.value) }
     const handleitemdiscountpercent = (e) => { setItem_discount_percent(e.target.value) }
 
+    const fishordereddata =(fish,ordered)=>{
+        const finaldata = fish * Number(ordered)
+        console.log(finaldata,'finaldata')
+        setFish_weight(finaldata)
+    }
 
 
     const fishpackDataupdateSubmit = () => {
@@ -421,7 +441,7 @@ export default function OrderStockItem(props) {
                                 noValidate
                                 validated={validated}
                                 onSubmit={(event) => {
-                                    Order_Stock_Item_Data ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
+                                    props.stock_id && Order_Stock_Item_Data ? orderstockitemDataupdateSubmit(event) : orderstockitemDataSubmit(event);
                                 }}
                             >
 

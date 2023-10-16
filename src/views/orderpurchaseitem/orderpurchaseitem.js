@@ -12,6 +12,10 @@ import { useRecoilValue } from "recoil";
 import { customerAtom } from "src/_state/customerAtom";
 import { fishAtom } from "src/_state/fishAtom";
 import { fishcutAtom } from "src/_state/fishcutAtom";
+import { fishpackAtom } from "src/_state/fishpackAtom";
+import OrderStatusService from "src/services/orderstatus_services";
+import OrderitemsService from "src/services/orderstockitem_services";
+import OrdersService from "src/services/order_services";
 
 
 export default function Order_Purchase_Item(props) {
@@ -32,6 +36,8 @@ export default function Order_Purchase_Item(props) {
     const [Order_Purchase_Item_Data, setOrder_Purchase_Item_Data] = useState([])
     const [filteredCustomers, setFilteredCustomers] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
+    const [Status, setStatus] = useState([])
+    const [OrderstatusID, setOrderstatusID] = useState([])
 
     const orderData = useRecoilValue(orderAtom)
     const customerData = useRecoilValue(customerAtom)
@@ -40,6 +46,8 @@ export default function Order_Purchase_Item(props) {
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
     const [FishNotFound, setFishNotFound] = useState(false)
+
+    const fishpackData = useRecoilValue(fishpackAtom)
 
     const handleorderid = (e) => {
         const value = e.target.value;
@@ -101,6 +109,7 @@ export default function Order_Purchase_Item(props) {
             setOrder_Purchase_Item_Data(res.data);
             setFish_cut(res.data.fish_cut)
             setPreferred_fish_size(res.data.preferred_fish_size)
+            setStatus(res.data.status)
         }).catch((err) => { });
     }
 
@@ -115,7 +124,7 @@ export default function Order_Purchase_Item(props) {
             meat_weight: Meat_weight || 0,
             preferred_fish_size: Preferred_fish_size,
             other_instructions: Other_instructions || 'N/A',
-            status: 0
+            is_active: 0
         };
 
         const api = new OrderpurchaseitemService();
@@ -160,7 +169,7 @@ export default function Order_Purchase_Item(props) {
             meat_weight: Meat_weight || Order_Purchase_Item_Data.meat_weight,
             preferred_fish_size: Preferred_fish_size || Order_Purchase_Item_Data.preferred_fish_size,
             other_instructions: Other_instructions || Order_Purchase_Item_Data.other_instructions,
-            status: 0
+            is_active: 0
         };
 
         const api = new OrderpurchaseitemService();
@@ -219,6 +228,102 @@ export default function Order_Purchase_Item(props) {
 
     });
 
+    const orderstatus_Data_Get = (orderStatusId) => {
+        let api = new OrderStatusService;
+        api.getorderStatus().then((res) => {
+            const data = res.data.orderStatuses.filter((i) => i.id === orderStatusId);
+            setOrderstatusID(res.data.orderStatuses)
+        })
+            .catch((err) => { });
+    }
+
+
+    const orderstockconvertion = (orderDatastring) => {
+        console.log(Order_Purchase_Item_Data.id,'Order_Purchase_Item_Data')
+        const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
+        
+          const matchingFishpack = fishpackData.find((fishpack) => {
+            return (
+              Number(fishpack.fish_ref) === Number(Order_Purchase_Item_Data.fish_ref) &&
+              Number(fishpack.fish_cut) === Number(Order_Purchase_Item_Data.fish_cut)
+            );
+          });
+
+          if (matchingFishpack) {
+            const formdata = {
+              order_id: Order_Purchase_Item_Data.order_id,
+              fish_pack_ref: matchingFishpack.id,
+              total_packs_ordered: matchingFishpack.available_meat_packs,
+              fish_weight: matchingFishpack.net_meat_pack_weight,
+              meat_weight: matchingFishpack.net_meat_weight_per_kg,
+              fish_rate: matchingFishpack.whole_fish_sale_rate,
+              meat_rate: matchingFishpack.net_meat_sale_rate,
+              skin: matchingFishpack.skin_removed,
+              kante: matchingFishpack.kante,
+              pack_price: matchingFishpack.whole_fish_pack_price,
+              item_discount_absolute: 0,
+              item_discount_percent: 0,
+            };
+      
+            const purchaseUpdateData = {
+                order_id: Order_Purchase_Item_Data.order_id,
+                fish_ref: Order_Purchase_Item_Data.fish_ref,
+                fish_cut: Order_Purchase_Item_Data.fish_cut,
+                fish_weight: Order_Purchase_Item_Data.fish_weight || 0,
+                meat_weight: Order_Purchase_Item_Data.meat_weight || 0,
+                preferred_fish_size: Order_Purchase_Item_Data.preferred_fish_size,
+                other_instructions: Order_Purchase_Item_Data.other_instructions || 'N/A',
+                is_active: 1,
+                status: 'to_be_purchased',
+            };
+            const orderupdatedata = {
+                order_status : data.id
+            }
+
+            const orderparamid = Number(props.orderDataId)
+
+            const api = new OrderitemsService();
+            api.createorderitems(formdata)
+          
+              .then((res) => {
+              
+                const Purchaseapi = new OrderpurchaseitemService();
+                Purchaseapi.updateorderpurchaseitem(Order_Purchase_Item_Data.id, purchaseUpdateData)
+                  .then(() => {
+                    
+                    const orderapi = new OrdersService();
+                    orderapi
+                        .updateorders(orderparamid, orderupdatedata)
+                        .then((res) => {
+                           
+                        })
+                        .catch((error) => {
+            
+                        });
+                  })
+                  .catch((error) => {
+                    console.error('Error updating purchase items:', error);
+                  });;
+                toast.current.show({
+                  severity: 'success',
+                  summary: 'Data Submitted',
+                  detail: 'Your order purchase item convertion into  Order Stock Item information has been successfully submitted and recorded.',
+                  life: 3000,
+                });
+          
+                
+              })
+              .catch((error) => {
+               
+              });
+             
+
+
+          }
+      
+      };
+      
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -231,6 +336,7 @@ export default function Order_Purchase_Item(props) {
                 navigate("/");
             }
         }
+        orderstatus_Data_Get()
         params.id ? get_Order_Purchase_Item_data() : ''
     }, [])
 
@@ -240,16 +346,30 @@ export default function Order_Purchase_Item(props) {
             <CRow>
                 <Toast ref={toast} />
                 <CCol xs={12}>
+
                     <CCard className="mb-4">
-                        {/* <CCardHeader> */}
-                        {/* <h4><Link to="/Order/OrderPurchaseItemsList"><i className="pi pi-arrow-left mx-2" style={{ fontSize: '1rem', color: 'black' }}></i></Link><strong style={{ fontWeight: 550 }}>Order Purchase Item</strong></h4> */}
-                        {/* </CCardHeader> */}
+                        {props.purchase_id &&
+                        <div>
+                            <span style={{ float: 'right', marginRight: 10, marginTop: 10 }}>
+                            <CButton onClick={()=>orderstockconvertion('to_be_purchased')} color="primary">
+                                                <CIcon icon={cilCheck} className="mr-1" />Convert</CButton>
+                            </span>
+                        </div>}
+
+
                         <CCardBody>
                             <CForm
                                 className="row g-3 needs-validation"
                                 noValidate
                                 validated={validated}
-                                onSubmit={(event) => { props.purchase_id.length != 0 ? orderpurchaseitemDataupdateSubmit(event) : orderpurchaseitemDataSubmit(event) }}
+                                onSubmit={(event) => {
+                                    if (props.purchase_id && !Array.isArray(props.purchase_id) || (Array.isArray(props.purchase_id) && props.purchase_id.length > 0)) {
+                                      orderpurchaseitemDataupdateSubmit(event);
+                                    } else {
+                                      orderpurchaseitemDataSubmit(event);
+                                    }
+                                  }}
+                                  
                             >
 
                                 {/* <div>
