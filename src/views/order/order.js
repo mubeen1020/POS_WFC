@@ -912,7 +912,7 @@ export default function Orders() {
                                         </CCol> */}
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Delivery Charges (Kg)</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Delivery Charges (Rs)</CFormLabel>
                                             <CFormInput
                                                 name="delivery_charges"
                                                 type="number"
@@ -927,7 +927,7 @@ export default function Orders() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Urgent Delivery Charges (Kg)</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Urgent Delivery Charges (Rs)</CFormLabel>
                                             <CFormInput
                                                 name="urgent_delivery_charges"
                                                 type="number"
