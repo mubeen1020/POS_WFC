@@ -474,7 +474,7 @@ export default function Customer() {
 
 
                                                                                 <CCol sm={6} lg={6}>
-                                                                                        <CFormLabel htmlFor="validationCustomUsername">Distance</CFormLabel>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Distance (Km)</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handledistance}
                                                                                                 defaultValue={params.id ? Customer_Data.distance : Distance}
@@ -500,7 +500,7 @@ export default function Customer() {
                                                                 <div>
                                                                         <CRow>
                                                                                 <CCol sm={6} lg={6}>
-                                                                                        <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Delivery Charges (Rs)</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handledeliverycharges}
                                                                                                 defaultValue={params.id ? Customer_Data.delivery_charges : DeliveryCharges}

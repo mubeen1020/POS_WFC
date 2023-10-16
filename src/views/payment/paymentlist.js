@@ -164,13 +164,13 @@ function Payments_List() {
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="customer" header="Customer" body={CustomerService.Customername} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_date" header="Payment Date" body={formatDate} sortable></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_amount" header="Payment Amount" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_amount" header="Payment Amount (Rs)" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_method" body={PaymentmethodService.paymentmethodsname} header="Payment Method" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="recieving_staff" header="Recieving Staff" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="recieving_account" header="Recieving Account" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_balance" header="Payment Balance" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_tip" header="Payment Tip" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="tip_for_rider" header="Tip For Rider" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_balance" header="Payment Balance (Rs)" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_tip" header="Payment Tip (Rs)" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="tip_for_rider" header="Tip For Rider (Rs)" ></Column>
                         </DataTable>
                     </CCardBody>
                 </CCard>

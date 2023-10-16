@@ -174,8 +174,8 @@ function Order_List() {
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_date" header="Order Date" body={(dateStr) => formatDate(dateStr, 'order_date')} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_deadline" header="Delivery Deadline" body={(dateStr) => formatDate(dateStr, 'delivery_deadline')} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_status" header="Order Status" body={OrderStatusService.orderStatusname}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="urgent_delivery_charges" header="Urgent Delivery Charges" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges (Kg)" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="urgent_delivery_charges" header="Urgent Delivery Charges (Kg)" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_total" header="Order Total" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_status" header="Payment Status" body={PaymentstatusService.paymentStatusname} ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_mode" header="Payment Mode" body={PaymentmodeService.paymentmodename} ></Column>

@@ -269,7 +269,7 @@ export default function Payments() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Payment Amount</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Amount (Rs)</CFormLabel>
                                             <CFormInput
                                                 onChange={handlepaymentamount}
                                                 onKeyPress={(e) => {
@@ -351,7 +351,7 @@ export default function Payments() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Payment Balance</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Balance (Rs)</CFormLabel>
                                             <CFormInput
                                                 onChange={handlepaymentbalance}
                                                 onKeyPress={(e) => {
@@ -372,7 +372,7 @@ export default function Payments() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Payment Tip</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Payment Tip (Rs)</CFormLabel>
                                             <CFormInput
                                                 onChange={handlepaymenttip}
                                                 onKeyPress={(e) => {
@@ -397,7 +397,7 @@ export default function Payments() {
                                 <div >
                                     <CRow>
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Tip For Rider</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Tip For Rider (Rs)</CFormLabel>
                                             <CFormInput
                                                 onChange={handletipforrider}
                                                 onKeyPress={(e) => {

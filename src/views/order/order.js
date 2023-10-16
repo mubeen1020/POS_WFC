@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect } from "@coreui/react";
+import { CCard, CCardBody, CCardHeader, CCol, CForm, CRow, CFormLabel, CFormInput, CFormFeedback, CButton, CFormSelect, COffcanvasBody } from "@coreui/react";
 import { Toast } from 'primereact/toast';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import 'primeicons/primeicons.css';
@@ -95,7 +95,7 @@ export default function Orders() {
         if (params.id) {
             if (filteredCustomers && filteredCustomers.length > 0) {
                 setDelivery_charges(filteredCustomers[0].delivery_charges);
-                setOrder_total(TableData.length)
+                setOrder_total(TableData)
 
             }
         }
@@ -399,134 +399,96 @@ export default function Orders() {
         )
     }
 
-    const orderstockitemDataSubmit = (event, orderDatastring) => {
-        handleSubmit(event);
-        event.preventDefault();
-        let formdata = {};
-        let Purchasedata = {};
-        let orderdata = {};
-        let purcgaseid;
-        let fishpackid;
-        const data = OrderstatusID.filter((i) => i.order_status === orderDatastring);
-        const selectedData = selectedItemPurchaseRows.map((item) => {
+    const orderstockitemDataSubmit = (orderDatastring) => {
+        const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
+        const activeItems = selectedItemPurchaseRows && selectedItemPurchaseRows.filter((item) => item.is_active === 0);
+        activeItems && activeItems.forEach((item) => {
+          const matchingFishpack = fishpackData.find((fishpack) => {
+            return (
+              Number(fishpack.fish_ref) === Number(item.fish_ref) &&
+              Number(fishpack.fish_cut) === Number(item.fish_cut)
+            );
+          });
 
-            fishpackData.filter((fishpack) => {
-                if (Number(fishpack.fish_ref) === Number(item.fish_ref)) {
-                    return fishcutData.some((fishcut) => {
-                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                            fishpackid = fishpack.id
-                        }
-                        return false;
-                    });
-                }
-                return false;
-            });
-
-
-            purcgaseid = item.id
-            formdata = {
+          if (matchingFishpack) {
+            const formdata = {
+              order_id: item.order_id,
+              fish_pack_ref: matchingFishpack.id,
+              total_packs_ordered: matchingFishpack.available_meat_packs,
+              fish_weight: matchingFishpack.net_meat_pack_weight,
+              meat_weight: matchingFishpack.net_meat_weight_per_kg,
+              fish_rate: matchingFishpack.whole_fish_sale_rate,
+              meat_rate: matchingFishpack.net_meat_sale_rate,
+              skin: matchingFishpack.skin_removed,
+              kante: matchingFishpack.kante,
+              pack_price: matchingFishpack.whole_fish_pack_price,
+              item_discount_absolute: 0,
+              item_discount_percent: 0,
+            };
+      
+            const purchaseUpdateData = {
                 order_id: item.order_id,
-                fish_pack_ref: fishpackid,
-                total_packs_ordered: 0,
-                fish_weight: item.fish_weight,
-                meat_weight: item.meat_weight,
-                fish_rate: 0,
-                meat_rate: 0,
-                skin: 0,
-                kante: 0,
-                pack_price: 0,
-                item_discount_absolute: 0,
-                item_discount_percent: 0,
-            },
-                Purchasedata = {
-                    order_id: item.order_id,
-                    fish_ref: item.fish_ref,
-                    fish_cut: item.fish_cut,
-                    fish_weight: item.fish_weight || 0,
-                    meat_weight: item.meat_weight || 0,
-                    preferred_fish_size: item.preferred_fish_size,
-                    other_instructions: item.other_instructions || 'N/A',
-                    status: 1
-                },
-                orderdata = {
-                    customer: Customer_id || Order_Data.customer,
-                    order_date: Order_date || Order_Data.order_date,
-                    delivery_deadline: Delivery_deadline || Order_Data.delivery_deadline,
-                    order_status: data[0].id || Order_Data.order_status,
-                    delivery_charges: Number(Delivery_charges) + Number(Urgent_delivery_charges || 0) || Order_Data.delivery_charges,
-                    urgent_delivery_charges: Urgent_delivery_charges || Order_Data.urgent_delivery_charges,
-                    order_total: Order_total || Order_Data.order_total,
-                    payment_status: Order_Data.payment_status,
-                    payment_mode: Payment_mode || Order_Data.payment_mode
-                }
+                fish_ref: item.fish_ref,
+                fish_cut: item.fish_cut,
+                fish_weight: item.fish_weight || 0,
+                meat_weight: item.meat_weight || 0,
+                preferred_fish_size: item.preferred_fish_size,
+                other_instructions: item.other_instructions || 'N/A',
+                is_active: 1,
+                status: 'to_be_purchased',
+            };
+          
+            const orderupdatedata = {
+                order_status : data.id
+            }
+           
 
+
+
+            const api = new OrderitemsService();
+            api.createorderitems(formdata)
+          
+              .then((res) => {
+                get_data();
+                const Purchaseapi = new OrderpurchaseitemService();
+                Purchaseapi.updateorderpurchaseitem(item.id, purchaseUpdateData)
+                  .then(() => {
+                    get_data();
+                    const orderapi = new OrdersService();
+                    orderapi
+                        .updateorders(params.id, orderupdatedata)
+                        .then((res) => {
+                            get_order_data()
+                        })
+                        .catch((error) => {
+            
+                        });
+                  })
+                  .catch((error) => {
+                    console.error('Error updating purchase items:', error);
+                  });;
+                toast.current.show({
+                  severity: 'success',
+                  summary: 'Data Submitted',
+                  detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                  life: 3000,
+                });
+          
+                
+              })
+              .catch((error) => {
+               
+              });
+             
+
+
+          }
         });
 
-        if (selectedData.length === 0) {
-            toast.current.show({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Please select at least one row to convert.',
-                life: 3000,
-            });
-            return;
-        }
-
-        const api = new OrderitemsService();
-        api
-            .createorderitems(formdata)
-            .then((res) => {
-                get_data()
-                const orderItem = res.data.orderItem;
-                toast.current.show({
-                    severity: 'success',
-                    summary: 'Data Submitted',
-                    detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
-                    life: 3000,
-                });
-
-                const Purchaseapi = new OrderpurchaseitemService();
-                Purchaseapi
-                    .updateorderpurchaseitem(purcgaseid, Purchasedata)
-                    .then((res) => {
-
-                        get_data()
-                        const orderapi = new OrdersService();
-                        orderapi
-                            .updateorders(params.id, orderdata)
-                            .then((res) => {
-                                get_order_data()
-
-                            })
-                            .catch((error) => {
-                                toast.current.show({
-                                    severity: 'info',
-                                    summary: 'Error',
-                                    detail: `${error}`,
-                                    life: 3000,
-                                });
-
-                            });
-
-                    })
-                    .catch((error) => {
-
-
-                    });
-
-            })
-            .catch((error) => {
-                toast.current.show({
-                    severity: 'info',
-                    summary: 'Error',
-                    detail: `${error}`,
-                    life: 3000,
-                });
-            });
-
-
-
-    };
+      
+        
+      };
+      
 
     const renderItemPurchaseHeader = () => {
         return (
@@ -539,7 +501,7 @@ export default function Orders() {
                     </CButton>
                 </span>
                 <span className="p-input-icon-left" style={{ float: 'right' }}>
-                    <CButton onClick={(event) => { orderstockitemDataSubmit(event, 'to_be_purchased') }} style={{ marginRight: 5 }}>
+                    <CButton onClick={(event) => { orderstockitemDataSubmit('to_be_purchased') }} style={{ marginRight: 5 }}>
                         <CIcon icon={cilSend} className="mr-2" />Convert
                     </CButton>
                     <CButton color="primary" disabled={Order_status === 'closed'} onClick={() => { setItemPurchaseModal(true) }}>
@@ -648,19 +610,23 @@ export default function Orders() {
     const propID = Order_Data.id === undefined ? OrderID : Order_Data.id;
 
     const get_data = (search = '') => {
+        orderstatus_Data_Get()
+
         setGlobatEvent({ eventName: 'refreshorderitems' });
         const api = new OrderitemsService;
         api.getorderitems(search).then((res) => {
             const filteredData = res.data.orderItems.filter((item) => item.order_id === propID);
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setTableData(filteredData);
-                setOrder_total(filteredData.length)
+                const totalPacksOrderedSum = filteredData.reduce((sum, item) => sum + item.total_packs_ordered, 0);
+                setOrder_total(totalPacksOrderedSum);
             } else {
                 if (res.data && res.data.message === "orderItems not found.") {
                     setTableData([]);
                 } else {
                     setTableData(filteredData);
-                    setOrder_total(filteredData.length)
+                    const totalPacksOrderedSum = filteredData.reduce((sum, item) => sum + item.total_packs_ordered, 0);
+                    setOrder_total(totalPacksOrderedSum);
                 }
             }
 
@@ -671,9 +637,11 @@ export default function Orders() {
         setGlobatEvent({ eventName: 'refreshorderpurchaseitem' });
         const apipurchase = new OrderpurchaseitemService;
         apipurchase.getorderpurchaseitem(search).then((res) => {
-            const filteredData = res.data.filter((item) => item.order_id === propID && item.status === 0);
+            const filteredData = res.data.filter((item) => item.order_id === propID && item.is_active === 0);
+
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setItemPurchaseTableData(filteredData);
+                
             } else {
                 if (res.data && res.data.message === "order purchase item not found.") {
                     setItemPurchaseTableData([]);
@@ -713,8 +681,15 @@ export default function Orders() {
         if (!modalVisible || !OrderID) {
             get_data();
             orderstatus_Data_Get();
+
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
+    useEffect(() => {
+        if (!ItemPurchaseModal ) {
+           
+            get_order_data()
+        }
+    }, [ ItemPurchaseModal])
 
 
     return (
@@ -937,7 +912,7 @@ export default function Orders() {
                                         </CCol> */}
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Delivery Charges (Kg)</CFormLabel>
                                             <CFormInput
                                                 name="delivery_charges"
                                                 type="number"
@@ -952,7 +927,7 @@ export default function Orders() {
                                         </CCol>
 
                                         <CCol sm={6} lg={6}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Urgent Delivery Charges</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Urgent Delivery Charges (Kg)</CFormLabel>
                                             <CFormInput
                                                 name="urgent_delivery_charges"
                                                 type="number"
@@ -1021,9 +996,11 @@ export default function Orders() {
                             <div>
                                 <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => {
                                     setModalVisible(false);
+                                   if(OrderstockID){
                                     setOrderstockID(null);
+                                   }
                                 }}>
-                                    <OrderStockItem stock_id={OrderstockID} setstock_id={setOrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
+                                    <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
@@ -1047,23 +1024,23 @@ export default function Orders() {
                                         {/* <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_id" header="Order" body={OrdersService.ordername} ></Column> */}
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_pack_ref" header="Fish Pack Refrence" body={FishpackService.fishpackname} sortable></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="total_packs_ordered" header="Total Packs Ordered" sortable></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight (Kg)" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight (Kg)" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_rate" header="Fish Rate" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_rate" header="Meat Rate" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="skin" header="Skin" body={(rowData) => (rowData.skin === 1 ? 'Yes' : 'No')} ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="kante" header="Kante" ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price (Rs)" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute (Rs)"  ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent (%)" ></Column>
                                     </DataTable>
                                 </div>) : null
                             }
 
                             <br />
                             <div>
-                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => setItemPurchaseModal(false)}>
-                                    <Order_Purchase_Item purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
+                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => {setItemPurchaseModal(false);setPurchaseID(null)}}>
+                                    <Order_Purchase_Item  orderDataId={params.id} purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (
@@ -1085,8 +1062,8 @@ export default function Orders() {
                                         <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight" ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_weight" header="Fish Weight (Kg)" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="meat_weight" header="Meat Weight (Kg)" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="preferred_fish_size" header="Preferred Fish Size" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="other_instructions" header="Other Instructions" ></Column>
                                     </DataTable>

@@ -183,8 +183,8 @@ function Customer_List() {
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="address" header="Address" ></Column>
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="area" header="Area" ></Column>
               <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pin_location" header="Pin Location" ></Column>
-              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="distance" header="Distance" ></Column>
-              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges" ></Column>
+              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="distance" header="Distance (Km)" ></Column>
+              <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges (Rs)" ></Column>
             </DataTable>
           </CCardBody>
         </CCard>
