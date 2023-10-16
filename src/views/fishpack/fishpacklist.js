@@ -159,7 +159,8 @@ function FishPack_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish Refrence" body={FishService.Fishname} sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_pack_no" header="Fish Pack No"  sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_ref" header="Fish" body={FishService.Fishname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_cut" header="Fish Cut" body={FishCutsService.Fishcutname} sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_sale_rate" header="Whole Fish Rate" sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="whole_fish_total_weight" header="Whole Fish Weight" ></Column>

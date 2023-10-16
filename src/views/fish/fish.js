@@ -67,12 +67,19 @@ export default function Fish() {
         setAverage_rate(average)
         const netsteak = Net_steaks
         const boneless = Net_boneless
-        settingsData(average, boneless, netsteak)
+        const netboneshead = Net_head_bones
+        settingsData(average, boneless, netsteak,netboneshead)
     }
     const handleoverallpurchacequantity = (e) => { setOverall_purchace_quantity(e.target.value) }
     const handleavgsize = (e) => {setAvg_Size(e.target.value)}
-    const handleavgheadbones = (e) => {setAvg_head_bones(e.target.value)}
-    const handlenetheadbones=(e) => {setNet_head_bones(e.target.value)}
+    const handlenetheadbones=(e) => {
+        let netboneshead = e.target.value
+        setNet_head_bones(netboneshead)
+        const netsteak = Net_steaks
+        const boneless = Net_boneless
+        const average = Average_rate
+        settingsData(average, boneless, netsteak,netboneshead)
+    }
 
     const fishDataSubmit = (event) => {
         handleSubmit(event)
@@ -105,6 +112,14 @@ export default function Fish() {
         api
             .createfish(formData)
             .then((res) => {
+                const fishno = {
+                    fish_no : res.data.newFish.id
+                }
+                api.updatefish(res.data.newFish.id, fishno)
+                .then((res) => {
+                })
+                .catch((error) => {
+                });
 
                 toast.current.show({
                     severity: 'success',
@@ -186,6 +201,7 @@ export default function Fish() {
     let check;
     let bonelessData;
     let netsteakData;
+    let netboneshead;
 
     let get_fish_data = () => {
         let api = new FishService;
@@ -212,7 +228,9 @@ export default function Fish() {
             const average = Average_rate;
             bonelessData = res.data.fish[0].net_boneless
             netsteakData = res.data.fish[0].net_steaks
-            settingsData(average, bonelessData, netsteakData)
+            console.log(res.data.fish[0].net_head_bones)
+            netboneshead = res.data.fish[0].net_head_bones
+            settingsData(average, bonelessData, netsteakData,netboneshead)
         }).catch((err) => { });
     }
 
@@ -226,14 +244,15 @@ export default function Fish() {
                 const average = (filterbyid[0].average_rate).toFixed(2) || 0
                 const boneless = Net_boneless || bonelessData
                 const netsteak = Net_steaks || netsteakData
+                const netBonesHead = Net_head_bones || netboneshead
                 setAverage_rate(average);
-                settingsData(average, boneless, netsteak)
+                settingsData(average, boneless, netsteak,netBonesHead)
 
             }).catch((err) => { });
         }
     }
 
-    const settingsData = (average, boneless, netsteaks) => {
+    const settingsData = (average, boneless, netsteaks,netboneshead) => {
         if (checked !== false || check === 0) {
             let api = new SettingsService();
             api.getSettings().then((res) => {
@@ -248,7 +267,8 @@ export default function Fish() {
                 setAverage_net_boneless(averagebonless.toFixed(2))
                 const averagenetsteak = Number(averagesaleretail) / Number(netsteaks) 
                 setAverage_net_steaks(averagenetsteak.toFixed(2))
-
+                const averageboneshead = Number(averagesaleretail) / Number(netboneshead) 
+                setAvg_head_bones(averageboneshead.toFixed(2))
 
             }).catch((err) => { });
         }
@@ -291,7 +311,7 @@ export default function Fish() {
 
             }
         }
-    }, [params.id]);
+    }, []);
 
 
 

@@ -48,6 +48,7 @@ export default function FishPack() {
     const [Bones_pack_price, setBones_pack_price] = useState('')
     const [Available_meat_packs, setAvailable_meat_packs] = useState('')
     const [Available_bones_packs, setAvailable_bones_packs] = useState('')
+    const [Fish_pack_no,setFish_pack_no] = useState()
 
     const [Fish_Pack_Data, setFish_Pack_Data] = useState([])
     const [filteredFishes, setFilteredFishes] = useState([])
@@ -182,7 +183,7 @@ export default function FishPack() {
     const handleaveragefishpiecesize = (e) => { setAverage_fish_piece_size(e.target.value) }
     const handleheadremoved = () => { setHead_removed(!Head_removed) }
     const handleskinremoved = () => { setSkin_removed(!Skin_removed) }
-    const handlekante = (e) => { setKante(e.target.value) }
+    const handlefishpackno = (e) => { setFish_pack_no(e.target.value) }
 
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
@@ -214,7 +215,7 @@ export default function FishPack() {
             average_fish_piece_size: Average_fish_piece_size,
             head_removed: Head_removed== false ? 0 : 1 || 0,
             skin_removed: Skin_removed== false ? 0 : 1 || 0,
-            kante: Kante,
+            fish_pack_no: Fish_pack_no,
         };
 
         const api = new FishpackService();
@@ -274,7 +275,7 @@ export default function FishPack() {
             average_fish_piece_size: Average_fish_piece_size || Fish_Pack_Data.average_fish_piece_size,
             head_removed: Head_removed== false ? 0 : 1 || Fish_Pack_Data.head_removed,
             skin_removed: Skin_removed== false ? 0 : 1 || Fish_Pack_Data.skin_removed,
-            kante: Kante || Fish_Pack_Data.kante,
+            fish_pack_no: Fish_pack_no || Fish_Pack_Data.fish_pack_no,
         };
 
         const api = new FishpackService();
@@ -395,7 +396,7 @@ export default function FishPack() {
                                         <div>
                                             <CRow>
                                                 <CCol sm={3} lg={3}>
-                                                    <CFormLabel htmlFor="validationCustomUsername">Fish Refrence</CFormLabel>
+                                                    <CFormLabel htmlFor="validationCustomUsername">Fish </CFormLabel>
                                                     <CFormInput
                                                         onChange={handlefish}
                                                         defaultValue={
@@ -440,6 +441,18 @@ export default function FishPack() {
                                                     </CFormSelect>
                                                     <CFormFeedback invalid>Please choose a Fish Cut.</CFormFeedback>
                                                 </CCol>
+                                                <CCol sm={3} lg={3}>
+                                                    <CFormLabel htmlFor="validationCustomUsername">Fish Pack No</CFormLabel>
+                                                    <CFormInput
+                                                        onChange={handlefishpackno}
+                                                        value={Fish_pack_no}
+                                                        type="number"
+                                                        id="validationCustomUsername"
+                                                        aria-describedby="inputGroupPrepend"
+                                                        required
+                                                    />
+                                                    <CFormFeedback invalid>Please choose a Fish Pack No.</CFormFeedback>
+                                                </CCol>
                                                
                                                 <CCol sm={3} lg={3}>
                                                     <CFormLabel htmlFor="validationCustomUsername">Packing Date</CFormLabel>
@@ -454,39 +467,12 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Packing Date.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={3} lg={3}>
-                                                    <CFormLabel htmlFor="validationCustomUsername">Average Fish Piece Size (Grams)</CFormLabel>
-                                                    <CFormInput
-                                                        onChange={handleaveragefishpiecesize}
-                                                        defaultValue={params.id ? Fish_Pack_Data.average_fish_piece_size : Average_fish_piece_size}
-                                                        type="number"
-                                                        id="validationCustomUsername"
-                                                        aria-describedby="inputGroupPrepend"
-                                                        required
-                                                    />
-                                                    <CFormFeedback invalid>Please choose a Average Fish Piece Size.</CFormFeedback>
-                                                </CCol>
-                                                <CCol sm={3} lg={3}>
-                                                <br />
-                                                    <CFormLabel htmlFor="validationCustomUsername">Head Removed</CFormLabel>
-                                                    <br/>
-                                                    <InputSwitch checked={Head_removed} onChange={handleheadremoved} />
-                                                    <CFormFeedback invalid>Please choose a Head Removed.</CFormFeedback>
-                                                </CCol>
-
-                                                <CCol sm={3} lg={3}>
-                                                <br />
-                                                    <CFormLabel htmlFor="validationCustomUsername">Skin Removed</CFormLabel>
-                                                    <br/>
-                                                    <InputSwitch checked={Skin_removed} onChange={handleskinremoved} />
-                                                    <CFormFeedback invalid>Please choose a Skin Removed.</CFormFeedback>
-                                                </CCol>
+                                               
                                             </CRow>
                                         </div>
                                         <br />
                                     </SplitterPanel>
                                     <SplitterPanel className="flex align-items-center justify-content-center">
-                                        <br />
                                         <div>
                                             <CRow>
                                                 <CCol sm={3} lg={3}>
@@ -504,6 +490,7 @@ export default function FishPack() {
                                                     </CTooltip>
                                                     <CFormFeedback invalid>Please choose a Whole Fish Payment.</CFormFeedback>
                                                 </CCol>
+                                               
 
                                                 <CCol sm={3} lg={3}>
                                                 <br />
@@ -531,6 +518,7 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a valid Whole Fish Total Weight.</CFormFeedback>
 
                                                 </CCol>
+
                                                 <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Whole Fish Purchase Rate (Rs / Kg)</CFormLabel>
@@ -554,6 +542,7 @@ export default function FishPack() {
                                                     </CTooltip>
                                                     <CFormFeedback invalid>Please choose a Whole Fish Purchase Rate</CFormFeedback>
                                                 </CCol>
+                                              
 
                                                 <CCol sm={3} lg={3}>
                                                 <br />
@@ -579,7 +568,16 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Whole Fish Sale Rate.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={3} lg={3}>
+
+                                            </CRow>
+                                        </div>
+                                        <br />
+                                    </SplitterPanel>
+
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
+                                        <div>
+                                            <CRow>
+                                            <CCol sm={4} lg={4}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Fish Packs (1,2,3...)</CFormLabel>
                                                     <CTooltip content="1,2,3..." placement="left">
@@ -634,14 +632,12 @@ export default function FishPack() {
                                                     </CTooltip>
                                                     <CFormFeedback invalid>Please choose a  Whole Fish Pack Price</CFormFeedback>
                                                 </CCol>
-
                                             </CRow>
                                         </div>
-                                        <br />
+                                        <br/>
                                     </SplitterPanel>
 
-                                    <SplitterPanel>
-                                        <br />
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
                                         <div>
                                             <CRow>
                                                 <CCol sm={3} lg={3}>
@@ -729,8 +725,7 @@ export default function FishPack() {
                                         <br />
                                     </SplitterPanel>
 
-                                    <SplitterPanel>
-                                        <br />
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
                                         <div>
                                             <CRow>
                                                 <CCol sm={3} lg={3}>
@@ -790,7 +785,18 @@ export default function FishPack() {
                                                     <CFormFeedback invalid>Please choose a Bones Pack Weight.</CFormFeedback>
                                                 </CCol>
 
-                                                <CCol sm={3} lg={3}>
+                                               
+
+                                               
+                                            </CRow>
+                                        </div>
+                                        <br />
+                                    </SplitterPanel>
+
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
+                                        <div>
+                                            <CRow>
+                                            <CCol sm={3} lg={3}>
                                                 <br />
                                                     <CFormLabel htmlFor="validationCustomUsername">Bones Pack Rate (Rs / Kg)</CFormLabel>
                                                     <CTooltip content="Rs/Kg" placement="left">
@@ -822,33 +828,48 @@ export default function FishPack() {
                                                     </CTooltip>
                                                     <CFormFeedback invalid>Please choose a Bones Pack Price.</CFormFeedback>
                                                 </CCol>
+                                            </CRow>
+                                        </div>
+<br/>
+                                    </SplitterPanel>
 
-                                                <CCol sm={3} lg={3}>
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
+                                        <div>
+                                            <CRow>
+                                            <CCol sm={3} lg={3}>
                                                 <br />
-                                                    <CFormLabel htmlFor="validationCustomUsername">Bones</CFormLabel>
-                                                    <CFormSelect
-                                                        onChange={handlekante}
-                                                        value={Kante}
-                                                        type="text"
+                                                    <CFormLabel htmlFor="validationCustomUsername">Average Fish Piece Size (Grams)</CFormLabel>
+                                                    <CFormInput
+                                                        onChange={handleaveragefishpiecesize}
+                                                        defaultValue={params.id ? Fish_Pack_Data.average_fish_piece_size : Average_fish_piece_size}
+                                                        type="number"
                                                         id="validationCustomUsername"
                                                         aria-describedby="inputGroupPrepend"
                                                         required
-                                                    >
-                                                        <option>Select</option>
-                                                        <option value='middle bone only'>Middle bone only</option>
-                                                        <option value='few bones'>Few bones</option>
-                                                        <option value='many bones'>Many bones</option>
-                                                    </CFormSelect>
-                                                    <CFormFeedback invalid>Please choose a Bones.</CFormFeedback>
+                                                    />
+                                                    <CFormFeedback invalid>Please choose a Average Fish Piece Size.</CFormFeedback>
+                                                </CCol>
+                                                <CCol sm={3} lg={3}>
+                                                <br />
+                                                    <CFormLabel htmlFor="validationCustomUsername">Head Removed</CFormLabel>
+                                                    <br/>
+                                                    <InputSwitch checked={Head_removed} onChange={handleheadremoved} />
+                                                    <CFormFeedback invalid>Please choose a Head Removed.</CFormFeedback>
+                                                </CCol>
 
+                                                <CCol sm={3} lg={3}>
+                                                <br />
+                                                    <CFormLabel htmlFor="validationCustomUsername">Skin Removed</CFormLabel>
+                                                    <br/>
+                                                    <InputSwitch checked={Skin_removed} onChange={handleskinremoved} />
+                                                    <CFormFeedback invalid>Please choose a Skin Removed.</CFormFeedback>
                                                 </CCol>
                                             </CRow>
-                                        </div>
-                                        <br />
-                                    </SplitterPanel>
+                                            </div>
+                                            <br/>
+                                            </SplitterPanel>
 
-                                    <SplitterPanel>
-                                        <br />
+                                    <SplitterPanel className="flex align-items-center justify-content-center">
                                         <div>
                                             <CRow>
                                                 <CCol sm={6} lg={6}>
