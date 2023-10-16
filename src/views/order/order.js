@@ -311,8 +311,7 @@ export default function Orders() {
                 const fishPackRef = filterdata[0].fish_pack_ref;
 
                 fishpackapi.getfishpackbyId(fishPackRef).then((res) => {
-                    const currentFishPack = res.data.fishPack;
-
+                   
                     const formData = {
                         available_meat_packs: currentFishPack.available_meat_packs + totalPacksOrdered,
                     };
@@ -399,7 +398,12 @@ export default function Orders() {
         )
     }
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const orderstockitemDataSubmit = (orderDatastring) => {
+        if (isSubmitting) return; 
+        setIsSubmitting(true); 
+        let orderarray = []
         const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
         const activeItems = selectedItemPurchaseRows && selectedItemPurchaseRows.filter((item) => item.is_active === 0);
         activeItems && activeItems.forEach((item) => {
@@ -411,12 +415,14 @@ export default function Orders() {
           });
 
           if (matchingFishpack) {
+            const fishpack_id_dataid=matchingFishpack.id
+            const ordrerdata =item.fish_weight/1
             const formdata = {
               order_id: item.order_id,
               fish_pack_ref: matchingFishpack.id,
-              total_packs_ordered: matchingFishpack.available_meat_packs,
-              fish_weight: matchingFishpack.net_meat_pack_weight,
-              meat_weight: matchingFishpack.net_meat_weight_per_kg,
+              total_packs_ordered:item.fish_weight/1,
+              fish_weight: item.fish_weight,
+              meat_weight: item.meat_weight,
               fish_rate: matchingFishpack.whole_fish_sale_rate,
               meat_rate: matchingFishpack.net_meat_sale_rate,
               skin: matchingFishpack.skin_removed,
@@ -450,6 +456,7 @@ export default function Orders() {
           
               .then((res) => {
                 get_data();
+                setIsSubmitting(false);
                 const Purchaseapi = new OrderpurchaseitemService();
                 Purchaseapi.updateorderpurchaseitem(item.id, purchaseUpdateData)
                   .then(() => {
@@ -459,6 +466,28 @@ export default function Orders() {
                         .updateorders(params.id, orderupdatedata)
                         .then((res) => {
                             get_order_data()
+                           
+                       
+                        orderarray.push(item.fish_weight/1)
+                            const fishpackapi = new FishpackService();
+              fishpackapi
+                  .getfishpackbyId(matchingFishpack.id)
+                  .then((res) => {
+                      const currentFishPack = res.data.fishPack;
+                      const sum = orderarray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                      let formData = {
+                          available_meat_packs: currentFishPack.available_meat_packs - sum,
+                       };
+                      fishpackapi.updatefishpack(matchingFishpack.id, formData)
+                      .then((res) => {
+                        setselectedItemPurchaseRows([])
+                      })
+                      .catch((error) => {
+                      });
+                  })
+                  .catch((error) => {
+                  });
+
                         })
                         .catch((error) => {
             
@@ -477,10 +506,11 @@ export default function Orders() {
                 
               })
               .catch((error) => {
+                setIsSubmitting(false);
                
               });
              
-
+             
 
           }
         });

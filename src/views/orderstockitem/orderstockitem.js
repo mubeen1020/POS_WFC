@@ -102,7 +102,7 @@ export default function OrderStockItem(props) {
                 if (Number(fishpack.fish_ref) === Number(fish.id)) {
                     return fishcutData.some((fishcut) => {
                         if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                                let fishpackdata = Checkedbones ? fishpack.bones_packs : fishpack.fish_packs;
+                                let fishpackdata = Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs;
                                     const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
                                     const result = searchString.includes(value.toLowerCase());
                                     if (result) {
@@ -149,7 +149,7 @@ export default function OrderStockItem(props) {
                 const matchingStrings = matchingFishpacks.map((fishpack) => {
                     const fishcut = fishcutData.find((fishcut) => Number(fishpack.fish_cut) === Number(fishcut.id));
                     if (fishcut) {
-                        let fishpackdata = Checkedbones ? fishpack.bones_packs :fishpack.fish_packs
+                        let fishpackdata = Checkedbones ? fishpack.available_bones_packs :fishpack.available_meat_packs
                         return (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
                     }
                     return '';

@@ -16,6 +16,7 @@ import { fishpackAtom } from "src/_state/fishpackAtom";
 import OrderStatusService from "src/services/orderstatus_services";
 import OrderitemsService from "src/services/orderstockitem_services";
 import OrdersService from "src/services/order_services";
+import FishpackService from "src/services/fishpack_services";
 
 
 export default function Order_Purchase_Item(props) {
@@ -253,9 +254,9 @@ export default function Order_Purchase_Item(props) {
             const formdata = {
               order_id: Order_Purchase_Item_Data.order_id,
               fish_pack_ref: matchingFishpack.id,
-              total_packs_ordered: matchingFishpack.available_meat_packs,
-              fish_weight: matchingFishpack.net_meat_pack_weight,
-              meat_weight: matchingFishpack.net_meat_weight_per_kg,
+              total_packs_ordered: Order_Purchase_Item_Data.fish_weight/1,
+              fish_weight: Order_Purchase_Item_Data.fish_weight,
+              meat_weight: Order_Purchase_Item_Data.meat_weight,
               fish_rate: matchingFishpack.whole_fish_sale_rate,
               meat_rate: matchingFishpack.net_meat_sale_rate,
               skin: matchingFishpack.skin_removed,
@@ -295,6 +296,23 @@ export default function Order_Purchase_Item(props) {
                     orderapi
                         .updateorders(orderparamid, orderupdatedata)
                         .then((res) => {
+                             const fishpackapi = new FishpackService();
+                            fishpackapi
+                                .getfishpackbyId(matchingFishpack.id)
+                                .then((res) => {
+                                    const currentFishPack = res.data.fishPack;
+                                    let formData = {
+                                        available_meat_packs: currentFishPack.available_meat_packs - (Order_Purchase_Item_Data.fish_weight/1),
+                                     };
+                                    fishpackapi.updatefishpack(matchingFishpack.id, formData)
+                                    .then((res) => {
+                                       console.log('fffffffffff')
+                                    })
+                                    .catch((error) => {
+                                    });
+                                })
+                                .catch((error) => {
+                                });
                            
                         })
                         .catch((error) => {
