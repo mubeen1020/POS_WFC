@@ -9,6 +9,16 @@ import CIcon from "@coreui/icons-react";
 import { cilCheck, cilMap, cilUser } from "@coreui/icons";
 import { Dialog } from "primereact/dialog";
 import GoogleMapReact from 'google-map-react';
+import { DataTable } from "primereact/datatable";
+import { globalEventAtom } from "src/_state/globalEventAtom";
+import { useSetRecoilState } from "recoil";
+import OrdersService from "src/services/order_services";
+import { InputText } from "primereact/inputtext";
+import { Column } from "primereact/column";
+import OrderStatusService from "src/services/orderstatus_services";
+import PaymentstatusService from "src/services/paymentstatus_services";
+import PaymentmodeService from "src/services/paymentmode_services";
+import { Button } from "primereact/button";
 
 
 
@@ -32,10 +42,14 @@ export default function Customer() {
         const [PinLocation, setPinLocation] = useState('')
         const [Distance, setDistance] = useState('')
         const [DeliveryCharges, setDeliveryCharges] = useState('')
+        const [globalFilterValue, setGlobalFilterValue] = useState('');
 
         const [Customer_ref, setCustomer_ref] = useState([])
         const [filteredCustomers, setFilteredCustomers] = useState([])
         const [Customer_Data, setCustomer_Data] = useState([])
+        const [TableData, setTableData] = useState([])
+
+        const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
         const [customerNotFound, setCustomerNotFound] = useState(false)
         const [modalVisible, setModalVisible] = useState(false);
@@ -83,13 +97,33 @@ export default function Customer() {
         const handledistance = (e) => { setDistance(e.target.value) }
         const handledeliverycharges = (e) => { setDeliveryCharges(e.target.value) }
 
-        let get_customer_data = () => {
-                let api = new CustomerService;
-                api.getCustomerbyId(params.id).then((res) => {
-                        setCustomer_Data(res.data.customer);
+        let get_customer_data = (search) => {
+                let customerApi = new CustomerService();
+                customerApi.getCustomerbyId(params.id).then((customerRes) => {
+                        setCustomer_Data(customerRes.data.customer)
+                        const customerData = customerRes.data.customer;
 
-                }).catch((err) => { });
-        }
+                        let orderApi = new OrdersService();
+                        orderApi.getorders(search).then((orderRes) => {
+
+                                const orderData = orderRes.data;
+
+                                const filterdata = orderData.orders.filter((item) => item.customer === customerData.id);
+
+                                if (Array.isArray(filterdata)) {
+                                        setTableData(filterdata);
+                                } else {
+                                        if (filterdata && filterdata.message === "orders not found.") {
+                                                setTableData([]);
+                                        } else {
+                                                setTableData(filterdata);
+                                        }
+                                }
+                        }).catch((err) => {
+                        });
+                }).catch((err) => {
+                });
+        };
 
         const customerDataSubmit = (event) => {
                 handleSubmit(event)
@@ -202,6 +236,46 @@ export default function Customer() {
 
         });
 
+        const renderHeader = () => {
+                return (
+<div className="flex justify-between mb-3">
+  <span className="p-input-icon-left">
+    <h4><strong>Orders</strong></h4>
+  </span>
+  <span className="p-input-icon-right" style={{ float: "right" }}>
+  <div className="p-inputgroup flex-1">
+    <InputText placeholder="Keyword" onChange={onGlobalFilterChange} value={globalFilterValue} />
+    <span className="p-inputgroup-addon">
+        <i className="pi pi-search"></i>
+    </span>
+</div>
+  </span>
+</div>
+
+
+                )
+        }
+
+        const onGlobalFilterChange = (e) => {
+                const value = e.target.value;
+                setGlobalFilterValue(value);
+                get_customer_data(value);
+        }
+
+        const header = renderHeader();
+
+
+        const formatDate = (dateStr, field) => {
+                const date = new Date(dateStr[field]);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}/${month}/${year}`;
+        };
+
+
+
+
         useEffect(() => {
                 const token = localStorage.getItem('token');
                 if (!token) {
@@ -217,7 +291,9 @@ export default function Customer() {
                 Customer_Data_Get();
                 params.id ? get_customer_data() : ''
 
+
         }, [])
+
 
         const AnyReactComponent = ({ text }) => <div>{text}</div>;
         const defaultProps = {
@@ -288,7 +364,7 @@ export default function Customer() {
 
                                                                 <div >
                                                                         <CRow>
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Name</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlename}
@@ -301,7 +377,7 @@ export default function Customer() {
                                                                                         <CFormFeedback invalid>Please choose a Name.</CFormFeedback>
                                                                                 </CCol>
 
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Care of Customer</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlecare_of_ref}
@@ -320,6 +396,19 @@ export default function Customer() {
                                                                                                 <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>
                                                                                         )}
                                                                                 </CCol>
+
+                                                                                <CCol sm={4} lg={4}>
+                                                                                        <CFormLabel htmlFor="validationCustomUsername">Care of name</CFormLabel>
+                                                                                        <CFormInput
+                                                                                                onChange={handlecare_of_name}
+                                                                                                defaultValue={params.id ? Customer_Data.care_of_name : Care_Of_Name}
+                                                                                                type="text"
+                                                                                                id="validationCustomUsername"
+                                                                                                aria-describedby="inputGroupPrepend"
+                                                                                                required
+                                                                                        />
+                                                                                        <CFormFeedback invalid>Please choose a Care of name.</CFormFeedback>
+                                                                                </CCol>
                                                                         </CRow>
                                                                 </div>
 
@@ -337,20 +426,9 @@ export default function Customer() {
 
                                                                 <div >
                                                                         <CRow>
-                                                                                <CCol sm={6} lg={6}>
-                                                                                        <CFormLabel htmlFor="validationCustomUsername">Care of name</CFormLabel>
-                                                                                        <CFormInput
-                                                                                                onChange={handlecare_of_name}
-                                                                                                defaultValue={params.id ? Customer_Data.care_of_name : Care_Of_Name}
-                                                                                                type="text"
-                                                                                                id="validationCustomUsername"
-                                                                                                aria-describedby="inputGroupPrepend"
-                                                                                                required
-                                                                                        />
-                                                                                        <CFormFeedback invalid>Please choose a Care of name.</CFormFeedback>
-                                                                                </CCol>
 
-                                                                                <CCol sm={6} lg={6}>
+
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Phone 1</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlephone1}
@@ -362,15 +440,7 @@ export default function Customer() {
                                                                                         />
                                                                                         <CFormFeedback invalid>Please choose a Phone 1.</CFormFeedback>
                                                                                 </CCol>
-                                                                        </CRow>
-
-                                                                </div>
-
-
-
-                                                                <div >
-                                                                        <CRow>
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Phone 2</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlephone2}
@@ -383,7 +453,7 @@ export default function Customer() {
                                                                                         <CFormFeedback invalid>Please choose a Phone 2.</CFormFeedback>
                                                                                 </CCol>
 
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Phone 3</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlephone3}
@@ -396,13 +466,12 @@ export default function Customer() {
                                                                                         <CFormFeedback invalid>Please choose a Phone 3.</CFormFeedback>
                                                                                 </CCol>
                                                                         </CRow>
+
                                                                 </div>
-
-
 
                                                                 <div >
                                                                         <CRow>
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Address</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handleaddress}
@@ -415,7 +484,7 @@ export default function Customer() {
                                                                                         <CFormFeedback invalid>Please choose a Address.</CFormFeedback>
                                                                                 </CCol>
 
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Area</CFormLabel>
                                                                                         <CFormInput
                                                                                                 onChange={handlearea}
@@ -427,13 +496,8 @@ export default function Customer() {
                                                                                         />
                                                                                         <CFormFeedback invalid>Please choose a Area.</CFormFeedback>
                                                                                 </CCol>
-                                                                        </CRow>
-                                                                </div>
 
-
-                                                                <div >
-                                                                        <CRow>
-                                                                                <CCol sm={6} lg={6}>
+                                                                                <CCol sm={4} lg={4}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Pin Location</CFormLabel>
                                                                                         <CInputGroup>
                                                                                                 <CFormInput
@@ -454,7 +518,7 @@ export default function Customer() {
 
 
 
-
+                                                                                {params.id == undefined &&
                                                                                 <Dialog header="Map" visible={modalVisible} style={{ width: '50vw' }} onHide={() => setModalVisible(false)}>
                                                                                         <div style={{ height: '100vh', width: '100%' }}>
                                                                                                 <GoogleMapReact
@@ -470,6 +534,14 @@ export default function Customer() {
                                                                                                 </GoogleMapReact>
                                                                                         </div>
                                                                                 </Dialog>
+}
+                                                                        </CRow>
+                                                                </div>
+
+
+                                                                <div >
+                                                                        <CRow>
+
 
 
 
@@ -493,12 +565,7 @@ export default function Customer() {
                                                                                         />
                                                                                         <CFormFeedback invalid>Please choose a Distance.</CFormFeedback>
                                                                                 </CCol>
-                                                                        </CRow>
-                                                                </div>
 
-
-                                                                <div>
-                                                                        <CRow>
                                                                                 <CCol sm={6} lg={6}>
                                                                                         <CFormLabel htmlFor="validationCustomUsername">Delivery Charges</CFormLabel>
                                                                                         <CFormInput
@@ -521,6 +588,30 @@ export default function Customer() {
                                                                         </CButton>
                                                                 </CCol>
                                                         </CForm>
+                                                        <br />
+                                                        {params.id &&
+
+                                                                <DataTable
+                                                                        className="responsive-table"
+                                                                        value={TableData}
+                                                                        header={header}
+                                                                        showGridlines
+                                                                        responsiveLayout="scroll"
+                                                                        size="small" paginator
+                                                                        rowHover
+                                                                        rows={10}
+                                                                        rowsPerPageOptions={[10, 20, 50]}>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="customer" header="Customer" body={CustomerService.Customername} ></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_date" header="Order Date" body={(dateStr) => formatDate(dateStr, 'order_date')} sortable></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_deadline" header="Delivery Deadline" body={(dateStr) => formatDate(dateStr, 'delivery_deadline')} sortable></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_status" header="Order Status" body={OrderStatusService.orderStatusname}></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="delivery_charges" header="Delivery Charges" ></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="urgent_delivery_charges" header="Urgent Delivery Charges" ></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="order_total" header="Order Total" ></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_status" header="Payment Status" body={PaymentstatusService.paymentStatusname} ></Column>
+                                                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="payment_mode" header="Payment Mode" body={PaymentmodeService.paymentmodename} ></Column>
+                                                                </DataTable>
+                                                        }
                                                 </CCardBody>
                                         </CCard>
                                 </CCol>
