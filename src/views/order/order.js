@@ -307,13 +307,10 @@ export default function Orders() {
                     totalPacksOrdered += item.total_packs_ordered;
                 });
     
-                console.log(filterdata, 'res.data.orderItems');
                 const fishPackRef = filterdata[0].fish_pack_ref;
-                console.log(fishPackRef, 'fishPackRef');
     
                 fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
-                    const currentFishPack = fishpackRes.data.fishPack; // Extract currentFishPack from the response
-                    console.log(currentFishPack.available_meat_packs, 'currentFishPack.available_meat_packs');
+                    const currentFishPack = fishpackRes.data.fishPack; 
                     const formData = {
                         available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
                     };
@@ -321,17 +318,13 @@ export default function Orders() {
                     fishpackapi
                         .updatefishpack(fishPackRef, formData)
                         .then((res) => {
-                            // Handle successful update
                         })
                         .catch((error) => {
-                            // Handle error during fishpack update
                         });
                 }).catch((err) => {
-                    // Handle error during fishpack retrieval
                 });
             }
         }).catch((err) => {
-            // Handle error during orderitems retrieval
         });
     };
     
@@ -570,12 +563,43 @@ export default function Orders() {
                     api
                         .deleteorderitems(id)
                         .then((res) => {
+
+
+                            
                         })
                         .catch((err) => {
                         })
                 )
             )
                 .then(() => {
+                    console.log(selectedRows,'_data')
+                    const filterdata = selectedRows.filter((item) => item.order_id === parseInt(params.id));
+                    const fishpackapi = new FishpackService();
+                    let totalPacksOrdered = 0;
+        
+                    filterdata.forEach((item) => {
+                        totalPacksOrdered += item.total_packs_ordered;
+                    });
+        
+                    const fishPackRef = filterdata[0].fish_pack_ref;
+        
+                    fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
+                        const currentFishPack = fishpackRes.data.fishPack; 
+                        const formData = {
+                            available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
+                        };
+        
+                        fishpackapi
+                            .updatefishpack(fishPackRef, formData)
+                            .then((res) => {
+                                setSelectedRows([])
+                            })
+                            .catch((error) => {
+                            });
+                    }).catch((err) => {
+                    });
+
+
                     toast.current.show({
                         severity: 'success',
                         summary: 'Success Message',

@@ -140,6 +140,13 @@ export default function OrderStockItem(props) {
                 return false;
             });
         });
+        
+        searchinfishlist()
+
+
+    }
+
+    const searchinfishlist = ()=>{
         const searchStringArray = fishData
             .map((fish) => {
                 const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -157,12 +164,9 @@ export default function OrderStockItem(props) {
 
                 return matchingStrings;
             })
-            .flat() // Flatten the array of arrays
+            .flat() 
 
         setFishpackfilterdata(searchStringArray);
-
-
-
     }
 
 
@@ -418,6 +422,7 @@ export default function OrderStockItem(props) {
 
 
     useEffect(() => {
+        searchinfishlist()
         setGlobatEvent({ eventName: 'refreshCustomer' });
         const token = localStorage.getItem('token');
         if (!token) {
@@ -431,6 +436,7 @@ export default function OrderStockItem(props) {
             }
         }
         props.stock_id ? get_order_stock_item_data() : ''
+        
 
 
     }, []);
