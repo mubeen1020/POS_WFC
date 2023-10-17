@@ -917,6 +917,7 @@ export default function Orders() {
                                                 disabled={Order_status === 'closed'}
                                                 className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
                                                 style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                                autoComplete="off"
                                             />
                                             {customerNotFound && (
                                                 <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>

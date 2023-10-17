@@ -140,13 +140,6 @@ export default function OrderStockItem(props) {
                 return false;
             });
         });
-        
-        searchinfishlist()
-
-
-    }
-
-    const searchinfishlist = ()=>{
         const searchStringArray = fishData
             .map((fish) => {
                 const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -167,6 +160,9 @@ export default function OrderStockItem(props) {
             .flat() 
 
         setFishpackfilterdata(searchStringArray);
+
+
+
     }
 
 
@@ -422,7 +418,6 @@ export default function OrderStockItem(props) {
 
 
     useEffect(() => {
-        searchinfishlist()
         setGlobatEvent({ eventName: 'refreshCustomer' });
         const token = localStorage.getItem('token');
         if (!token) {
@@ -436,7 +431,6 @@ export default function OrderStockItem(props) {
             }
         }
         props.stock_id ? get_order_stock_item_data() : ''
-        
 
 
     }, []);
@@ -502,6 +496,7 @@ export default function OrderStockItem(props) {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                autoComplete="off"
                                             />
                                             <CFormFeedback invalid>Please choose an Fish Pack Refrence.</CFormFeedback>
                                         </CCol>

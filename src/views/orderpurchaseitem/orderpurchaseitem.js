@@ -431,6 +431,7 @@ export default function Order_Purchase_Item(props) {
                                                 required
                                                 className={`form-control ${FishNotFound ? 'is-invalid' : ''}`}
                                                 style={{ borderColor: FishNotFound ? 'red' : '' }}
+                                                autoComplete="off"
 
                                             />
                                             {FishNotFound && (
