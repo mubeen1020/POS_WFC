@@ -161,12 +161,12 @@ function Fish_List() {
                             rows={10}
                             rowsPerPageOptions={[10, 20, 50]}>
                             <Column alignHeader={'center'} align="center" selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_no" header="Fish No" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="local_name" header="Local Name" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="fish_no" header="Fish No" sortable></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="local_name" header="Local Name" sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="english_name" header="English Name" sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="min_purchase_rate" header="Min Purchase Rate" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="max_purchase_rate" header="Max Purchase Rate" ></Column>
-                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_purchase_rate" header="Avg Whole Fish Sale Rate" ></Column>
+                            <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="average_purchase_rate" header="Avg Whole Fish Sale Rate" sortable></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="half_service_charges" header="Half Service Charges" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="full_service_charges" header="Full Service Charges" ></Column>
                             <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="miniumum_order_weight" header="Miniumum Order Weight" ></Column>

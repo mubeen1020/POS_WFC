@@ -543,7 +543,7 @@ export default function Fish() {
                                     <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Avg Net Steaks Rate (Rs / Kg)</CFormLabel>
                                             <CFormInput
-                                                value={Average_net_steaks}
+                                                value={Math.round(Average_net_steaks)}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
@@ -556,7 +556,7 @@ export default function Fish() {
                                         <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Avg Net Boneless Rate (Rs / Kg)</CFormLabel>
                                             <CFormInput
-                                                value={Average_net_boneless}
+                                                value={Math.round(Average_net_boneless)}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
@@ -569,7 +569,7 @@ export default function Fish() {
                                         <CCol sm={4} lg={4}>
                                             <CFormLabel htmlFor="validationCustomUsername">Avg Net Head And Bones Rate (Rs / Kg)</CFormLabel>
                                             <CFormInput
-                                                value={Avg_head_bones}
+                                                value={Math.round(Avg_head_bones)}
                                                 type="number"
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
@@ -632,7 +632,7 @@ export default function Fish() {
                                         </CCol>
 
                                         <CCol sm={4} lg={4}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Avg Size</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Average Size (Kg)</CFormLabel>
                                             <CFormInput
                                                 onChange={handleavgsize}
                                                 defaultValue={params.id ? Fish_Data.avg_size : Avg_Size}

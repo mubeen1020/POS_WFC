@@ -23,6 +23,7 @@ export default function Settings() {
     const [Half_service_charges, setHalf_service_charges] = useState('')
     const [Full_service_charges, setFull_service_charges] = useState('')
     const [Miniumum_order_weight, setMiniumum_order_weight] = useState('')
+    const [Max_profit, setMax_profit] = useState('')
 
     const [Settings, setSettings] = useState([])
 
@@ -38,6 +39,7 @@ export default function Settings() {
     const handlehalfservicecharges = (e) => { setHalf_service_charges(e.target.value) }
     const handlefullservicecharges = (e) => { setFull_service_charges(e.target.value) }
     const handleminiumumorderweight = (e) => { setMiniumum_order_weight(e.target.value) }
+    const handlemaxprofit = (e) => { setMax_profit(e.target.value) }
 
 
     let get_Settings = () => {
@@ -62,6 +64,7 @@ export default function Settings() {
             half_service_charges: Half_service_charges,
             full_service_charges: Full_service_charges,
             miniumum_order_weight: Miniumum_order_weight,
+            max_profit: Max_profit,
         };
 
         const api = new SettingsService();
@@ -102,6 +105,7 @@ export default function Settings() {
             half_service_charges: Half_service_charges || Settings.half_service_charges,
             full_service_charges: Full_service_charges || Settings.full_service_charges,
             miniumum_order_weight: Miniumum_order_weight || Settings.miniumum_order_weight,
+            max_profit: Max_profit || Settings.max_profit,
         };
 
         const api = new SettingsService();
@@ -328,6 +332,21 @@ export default function Settings() {
                                                 />
                                             </CTooltip>
                                             <CFormFeedback invalid>Please choose a Miniumum Order Weight.</CFormFeedback>
+                                        </CCol>
+
+                                        <CCol sm={6} lg={6}>
+                                            <CFormLabel htmlFor="validationCustomUsername">Maximum Profit</CFormLabel>
+                                            <CTooltip content="%" placement="left">
+                                                <CFormInput
+                                                    onChange={handleminiumumorderweight}
+                                                    defaultValue={Settings.max_profit || Miniumum_order_weight}
+                                                    type="number"
+                                                    id="validationCustomUsername"
+                                                    aria-describedby="inputGroupPrepend"
+                                                    required
+                                                />
+                                            </CTooltip>
+                                            <CFormFeedback invalid>Please choose a Maximum Profit.</CFormFeedback>
                                         </CCol>
                                     </CRow>
                                 </div>
