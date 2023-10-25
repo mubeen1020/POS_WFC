@@ -157,7 +157,7 @@ export default function OrderStockItem(props) {
 
                 return matchingStrings;
             })
-            .flat() // Flatten the array of arrays
+            .flat() 
 
         setFishpackfilterdata(searchStringArray);
 
@@ -496,6 +496,7 @@ export default function OrderStockItem(props) {
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
                                                 required
+                                                autoComplete="off"
                                             />
                                             <CFormFeedback invalid>Please choose an Fish Pack Refrence.</CFormFeedback>
                                         </CCol>

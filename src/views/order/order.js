@@ -58,7 +58,7 @@ export default function Orders() {
     const [Paymentmodedata, setPaymentmodedata] = useState([])
     const [Paymentstatusdata, setPaymentstatusdata] = useState([])
     const [OrderstockID, setOrderstockID] = useState([])
-    const [PurchaseID, setPurchaseID] = useState([])
+    const [PurchaseID, setPurchaseID] = useState()
 
     const [customerNotFound, setCustomerNotFound] = useState(false)
 
@@ -296,40 +296,38 @@ export default function Orders() {
     };
     const orderItem = (orderdata) => {
         setGlobatEvent({ eventName: 'refreshorderitems' });
-        const api = new OrderitemsService;
+        const api = new OrderitemsService();
         api.getorderitems().then((res) => {
             if (orderdata === 'returned') {
                 const filterdata = res.data.orderItems.filter((item) => item.order_id === parseInt(params.id));
-
                 const fishpackapi = new FishpackService();
                 let totalPacksOrdered = 0;
-
+    
                 filterdata.forEach((item) => {
                     totalPacksOrdered += item.total_packs_ordered;
                 });
-
+    
                 const fishPackRef = filterdata[0].fish_pack_ref;
-
-                fishpackapi.getfishpackbyId(fishPackRef).then((res) => {
-                   
+    
+                fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
+                    const currentFishPack = fishpackRes.data.fishPack; 
                     const formData = {
-                        available_meat_packs: currentFishPack.available_meat_packs + totalPacksOrdered,
+                        available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
                     };
-
+    
                     fishpackapi
                         .updatefishpack(fishPackRef, formData)
                         .then((res) => {
                         })
                         .catch((error) => {
                         });
-                }).catch((err) => { });
+                }).catch((err) => {
+                });
             }
-        }).catch((err) => { });
-
-
-
-    }
-
+        }).catch((err) => {
+        });
+    };
+    
     const handleSubmit = (event) => {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
@@ -565,12 +563,43 @@ export default function Orders() {
                     api
                         .deleteorderitems(id)
                         .then((res) => {
+
+
+                            
                         })
                         .catch((err) => {
                         })
                 )
             )
                 .then(() => {
+                    console.log(selectedRows,'_data')
+                    const filterdata = selectedRows.filter((item) => item.order_id === parseInt(params.id));
+                    const fishpackapi = new FishpackService();
+                    let totalPacksOrdered = 0;
+        
+                    filterdata.forEach((item) => {
+                        totalPacksOrdered += item.total_packs_ordered;
+                    });
+        
+                    const fishPackRef = filterdata[0].fish_pack_ref;
+        
+                    fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
+                        const currentFishPack = fishpackRes.data.fishPack; 
+                        const formData = {
+                            available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
+                        };
+        
+                        fishpackapi
+                            .updatefishpack(fishPackRef, formData)
+                            .then((res) => {
+                                setSelectedRows([])
+                            })
+                            .catch((error) => {
+                            });
+                    }).catch((err) => {
+                    });
+
+
                     toast.current.show({
                         severity: 'success',
                         summary: 'Success Message',
@@ -888,6 +917,7 @@ export default function Orders() {
                                                 disabled={Order_status === 'closed'}
                                                 className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
                                                 style={{ borderColor: customerNotFound ? 'red' : '' }}
+                                                autoComplete="off"
                                             />
                                             {customerNotFound && (
                                                 <CFormFeedback invalid>Please choose a valid Care of Customer.</CFormFeedback>

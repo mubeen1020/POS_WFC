@@ -47,10 +47,14 @@ function Customer_List() {
               <CButton onClick={handleDelete} style={{ width: 100, padding: 10, marginRight: 5 }}>
                 <CIcon icon={cilTrash} className="mr-2" />Delete
               </CButton>
+          
 
             </>
+     
           </span></h4>
         </span>
+
+        
         <span className="p-input-icon-left">
 
           <i className="pi pi-search" />

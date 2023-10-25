@@ -423,7 +423,7 @@ export default function FishPack() {
                                                         required
                                                         className={`form-control ${FishNotFound ? 'is-invalid' : ''}`}
                                                         style={{ borderColor: FishNotFound ? 'red' : '' }}
-
+                                                        autoComplete="off"
                                                     />
                                                     {FishNotFound && (
                                                         <CFormFeedback invalid>Please choose a Fish.</CFormFeedback>
