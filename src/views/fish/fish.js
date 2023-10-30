@@ -632,7 +632,7 @@ export default function Fish() {
                                         </CCol>
 
                                         <CCol sm={4} lg={4}>
-                                            <CFormLabel htmlFor="validationCustomUsername">Avg Size</CFormLabel>
+                                            <CFormLabel htmlFor="validationCustomUsername">Average Size (Kg)</CFormLabel>
                                             <CFormInput
                                                 onChange={handleavgsize}
                                                 defaultValue={params.id ? Fish_Data.avg_size : Avg_Size}

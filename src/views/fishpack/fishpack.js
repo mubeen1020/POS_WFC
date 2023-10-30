@@ -97,9 +97,13 @@ export default function FishPack() {
     const handlefish = (e) => {
         const fishvalue = e.target.value;
         setFish(fishvalue)
-        const selectedfish = Fishname.find((fish) =>
-            fish.local_name.toLowerCase() === fishvalue.toLowerCase()
+        const selectedfish = Fishname.find((fish) =>{
+        const searchString = ( fish.local_name+' / '+fish.fish_no).toLowerCase();
+        const result = searchString.includes(fishvalue.toLowerCase());
+        return result
+        }
         );
+
         if (selectedfish) {
             setFish_id(selectedfish.id);
             setFishNotFound(false);
@@ -107,10 +111,16 @@ export default function FishPack() {
             setFish_id(null);
             setFishNotFound(true);
         }
-        const filtered = Fishname.filter((fish) =>
-            fish.local_name.toLowerCase().includes(fishvalue.toLowerCase())
+       
+        const filtered = Fishname.filter((fish) =>{
+            const search = ( fish.local_name+' / '+fish.fish_no).toLowerCase();
+            const value = search.includes(fishvalue.toLowerCase());
+            return value;
+        }
         );
+        
         setFilteredFishes(filtered);
+     
 
     }
 
@@ -127,6 +137,7 @@ export default function FishPack() {
 
     const handlewholefishtotalweight = (e) => {
         const totalWeight = parseFloat(e.target.value);
+        setfish_packs(Math.round(totalWeight) )
         setWhole_fish_total_weight(totalWeight);
         const purchaseRate = parseFloat(Whole_fish_payment) / totalWeight || Whole_fish_total_weight;
         setWhole_fish_purchase_rate(purchaseRate);
@@ -139,7 +150,7 @@ export default function FishPack() {
     }
 
     const handlefishpack = (e) => {
-        setfish_packs(e.target.value)
+        setfish_packs(e.target.value )
         setAvailable_meat_packs(e.target.value)
         const packweight = parseFloat(Whole_fish_total_weight) / e.target.value;
         setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) || packweight.toFixed(2) === 'Infinity' ? 0 : packweight.toFixed(2));
@@ -430,7 +441,7 @@ export default function FishPack() {
                                                     )}
                                                     <datalist id="fishSuggestions" >
                                                         {filteredFishes.map((fish) => (
-                                                            <option key={fish.id} value={fish.local_name} />
+                                                            <option key={fish.id} value={fish.local_name +' / '+fish.fish_no} />
                                                         ))}
                                                     </datalist>
                                                 </CCol>

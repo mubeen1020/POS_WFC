@@ -254,7 +254,7 @@ export default function Order_Purchase_Item(props) {
             const formdata = {
               order_id: Order_Purchase_Item_Data.order_id,
               fish_pack_ref: matchingFishpack.id,
-              total_packs_ordered: Order_Purchase_Item_Data.fish_weight/1,
+              total_packs_ordered: Math.trunc(Order_Purchase_Item_Data.fish_weight),
               fish_weight: Order_Purchase_Item_Data.fish_weight,
               meat_weight: Order_Purchase_Item_Data.meat_weight,
               fish_rate: matchingFishpack.whole_fish_sale_rate,
