@@ -96,13 +96,16 @@ export default function OrderStockItem(props) {
     const handlefishpackref = (e) => {
         const value = e.target.value;
         setFish_pack_ref(value)
+        if (value.trim() !== '') {
         const fishpackArray = [];
         fishData.filter((fish) => {
             return fishpackData.some((fishpack) => {
+                if(fishpack.available_bones_packs != 0 || fishpack.available_meat_packs != 0){
                 if (Number(fishpack.fish_ref) === Number(fish.id)) {
                     return fishcutData.some((fishcut) => {
                         if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
                                 let fishpackdata = Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs;
+                                if (fishpackdata > 0) {
                                     const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
                                     const result = searchString.includes(value.toLowerCase());
                                     if (result) {
@@ -110,9 +113,9 @@ export default function OrderStockItem(props) {
                                         get_fish_pack_data(fishpack.id);
                                         fishpackArray.push(fishpack.id);
                                         setfishpack_id_data(fishpack.id);
-                                        setFish_weight(fishpack.net_meat_pack_weight * fishpack.available_meat_packs);
+                                        setFish_weight((fishpack.net_meat_pack_weight * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
                                         setFish_Weightdata(fishpack.net_meat_pack_weight);
-                                        setMeat_weight(fishpack.net_meat_weight_per_kg * fishpack.available_meat_packs);
+                                        setMeat_weight((fishpack.net_meat_weight_per_kg * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
                                         setMeat_Weightdata(fishpack.net_meat_weight_per_kg);
                                         setFish_rate(fishpack.whole_fish_sale_rate);
                                         setMeat_rate(fishpack.net_meat_sale_rate);
@@ -130,6 +133,7 @@ export default function OrderStockItem(props) {
                                     }
                                     return result;
                                 }
+                                }
                                 return false;
                             } else {
                                
@@ -137,9 +141,11 @@ export default function OrderStockItem(props) {
                         
                     });
                 }
+            }
                 return false;
             });
         });
+    }
         const searchStringArray = fishData
             .map((fish) => {
                 const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -147,12 +153,16 @@ export default function OrderStockItem(props) {
                 });
 
                 const matchingStrings = matchingFishpacks.map((fishpack) => {
+               
                     const fishcut = fishcutData.find((fishcut) => Number(fishpack.fish_cut) === Number(fishcut.id));
                     if (fishcut) {
                         let fishpackdata = Checkedbones ? fishpack.available_bones_packs :fishpack.available_meat_packs
+                        if (fishpackdata > 0) { 
                         return (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
+                        }
                     }
                     return '';
+
                 });
 
                 return matchingStrings;
@@ -302,7 +312,8 @@ export default function OrderStockItem(props) {
             skin: Skin,
             pack_price: Pack_price,
             item_discount_absolute: Item_discount_absolute,
-            item_discount_percent: Item_discount_percent
+            item_discount_percent: Item_discount_percent,
+            is_bone: Checkedbones === false ? 0 : 1
         };
 
         const api = new OrderitemsService();
@@ -331,7 +342,7 @@ export default function OrderStockItem(props) {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
             });
@@ -351,7 +362,8 @@ export default function OrderStockItem(props) {
             skin: Skin || Order_Stock_Item_Data.skin,
             pack_price: Pack_price || Order_Stock_Item_Data.Pack_price,
             item_discount_absolute: Item_discount_absolute || Order_Stock_Item_Data.item_discount_absolute,
-            item_discount_percent: Item_discount_percent || Order_Stock_Item_Data.item_discount_percent
+            item_discount_percent: Item_discount_percent || Order_Stock_Item_Data.item_discount_percent,
+            is_bone: Checkedbones === false ? 0 : 1||Order_Stock_Item_Data.is_bone
         };
 
         const api = new OrderitemsService();
@@ -378,7 +390,7 @@ export default function OrderStockItem(props) {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
             });

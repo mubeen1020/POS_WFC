@@ -43,7 +43,7 @@ export default function Orders() {
     const [Delivery_charges, setDelivery_charges] = useState(0)
     const [Urgent_delivery_charges, setUrgent_delivery_charges] = useState(0)
     const [Order_total, setOrder_total] = useState(0)
-    const [Payment_mode, setPayment_mode] = useState('')
+    const [Payment_mode, setPayment_mode] = useState()
     const [OrderID, setOrderID] = useState([])
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -177,7 +177,7 @@ export default function Orders() {
                     toast.current.show({
                         severity: 'info',
                         summary: 'Error',
-                        detail: `${error}`,
+                        detail: `Validation failed. Please check your input.`,
                         life: 3000,
                     });
 
@@ -216,7 +216,7 @@ export default function Orders() {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -253,7 +253,7 @@ export default function Orders() {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -288,7 +288,7 @@ export default function Orders() {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -358,7 +358,12 @@ export default function Orders() {
 
     const paymentmode_Data_Get = (search = "") => {
         let api = new PaymentmodeService;
-        api.getpaymentmode(search).then((res) => { setPaymentmodedata(res.data.paymentmodes); })
+        api.getpaymentmode(search).then((res) => { 
+            const cashPaymentData = res.data.paymentmodes.filter(i => i.payment_mode === 'Cash');
+            const initialPaymentMode = cashPaymentData.length > 0 ? cashPaymentData[0].id : null;
+            setPayment_mode(initialPaymentMode);
+            setPaymentmodedata(res.data.paymentmodes);
+         })
             .catch((err) => { });
     }
 
@@ -572,22 +577,32 @@ export default function Orders() {
                 )
             )
                 .then(() => {
-                    console.log(selectedRows,'_data')
                     const filterdata = selectedRows.filter((item) => item.order_id === parseInt(params.id));
                     const fishpackapi = new FishpackService();
                     let totalPacksOrdered = 0;
+                    let isbones;
         
                     filterdata.forEach((item) => {
                         totalPacksOrdered += item.total_packs_ordered;
+                        isbones = item.is_bone
                     });
         
                     const fishPackRef = filterdata[0].fish_pack_ref;
         
                     fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
-                        const currentFishPack = fishpackRes.data.fishPack; 
-                        const formData = {
-                            available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
-                        };
+                        let formData;
+                        const currentFishPack = fishpackRes.data.fishPack;
+                        if(isbones === 1) {
+                             formData = {
+                                available_bones_packs: currentFishPack.available_bones_packs + Number(totalPacksOrdered),
+                            };
+                        }else{
+                             formData = {
+                                available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
+                            };
+                        }
+                      
+
         
                         fishpackapi
                             .updatefishpack(fishPackRef, formData)
@@ -749,6 +764,10 @@ export default function Orders() {
             get_order_data()
         }
     }, [ ItemPurchaseModal])
+
+    const converter=(row)=>{
+        return row.is_bone === 1 ?'true':'false'
+    }
 
 
     return (
@@ -1026,17 +1045,17 @@ export default function Orders() {
                                             <CFormSelect
                                                 name="payment_mode"
                                                 onChange={handlepaymentmode}
-                                                value={Payment_mode}
+                                                value={Payment_mode || 2}
                                                 id="validationCustomUsername"
                                                 aria-describedby="inputGroupPrepend"
 
                                                 disabled={Order_status === 'closed'}
                                             >
-                                                <option>Select</option>
+                                                
                                                 {
                                                     Paymentmodedata.map((i) => {
                                                         return (
-                                                            <option key={i.id} value={i.id}>{i.payment_mode}</option>
+                                                            <option  selected={i.id === 2 && 'selected' } key={i.id} value={i.id}>{i.payment_mode}</option>
                                                         )
                                                     })
                                                 }
@@ -1093,6 +1112,7 @@ export default function Orders() {
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }}  field="is_bone" header="Bones"   body={converter} ></Column>
                                     </DataTable>
                                 </div>) : null
                             }

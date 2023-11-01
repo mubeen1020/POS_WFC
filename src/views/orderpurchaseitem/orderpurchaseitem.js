@@ -152,7 +152,7 @@ export default function Order_Purchase_Item(props) {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -198,7 +198,7 @@ export default function Order_Purchase_Item(props) {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -240,7 +240,6 @@ export default function Order_Purchase_Item(props) {
 
 
     const orderstockconvertion = (orderDatastring) => {
-        console.log(Order_Purchase_Item_Data.id,'Order_Purchase_Item_Data')
         const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
         
           const matchingFishpack = fishpackData.find((fishpack) => {
@@ -306,7 +305,6 @@ export default function Order_Purchase_Item(props) {
                                      };
                                     fishpackapi.updatefishpack(matchingFishpack.id, formData)
                                     .then((res) => {
-                                       console.log('fffffffffff')
                                     })
                                     .catch((error) => {
                                     });

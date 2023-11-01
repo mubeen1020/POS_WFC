@@ -136,7 +136,7 @@ export default function Fish() {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
 
@@ -192,7 +192,7 @@ export default function Fish() {
                 toast.current.show({
                     severity: 'info',
                     summary: 'Error',
-                    detail: `${error}`,
+                    detail: `Validation failed. Please check your input.`,
                     life: 3000,
                 });
             });
@@ -430,8 +430,11 @@ export default function Fish() {
                                 <div>
                                     <CRow>
                                         <CCol xs={12}>
+                                        <CFormLabel htmlFor="validationCustomUsername">Lock Average</CFormLabel><br/>
                                             <InputSwitch checked={checked} onChange={handleChange} />
+                                         
                                         </CCol>
+                                        <br/>
                                         <CCol sm={4} lg={4}>
 
 

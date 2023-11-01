@@ -18,6 +18,15 @@ class FishService {
         return [];
     }
     }
+    static fishnameno(row) {
+        const fishData = useRecoilValue(fishAtom);
+        const filteredfishpack = fishData.filter(item => row.fish_ref === item.id);
+        console.log(filteredfishpack)
+        const fishlocalname = filteredfishpack.map(item => item.local_name);
+        const  fishfish_no= filteredfishpack.map(item => item.fish_no);
+        const finalNames = fishlocalname.join('/') + ' / ' + fishfish_no.join('/');
+        return finalNames;
+    }
 
 }
 
