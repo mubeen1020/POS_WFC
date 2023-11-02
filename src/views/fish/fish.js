@@ -228,7 +228,6 @@ export default function Fish() {
             const average = Average_rate;
             bonelessData = res.data.fish[0].net_boneless
             netsteakData = res.data.fish[0].net_steaks
-            console.log(res.data.fish[0].net_head_bones)
             netboneshead = res.data.fish[0].net_head_bones
             settingsData(average, bonelessData, netsteakData,netboneshead)
         }).catch((err) => { });

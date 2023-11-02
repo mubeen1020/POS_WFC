@@ -189,7 +189,6 @@ export default function OrderStockItem(props) {
 
     const fishordereddata = (fish, ordered) => {
         const finaldata = fish * Number(ordered)
-        console.log(finaldata, 'finaldata')
         setFish_weight(finaldata)
     }
 

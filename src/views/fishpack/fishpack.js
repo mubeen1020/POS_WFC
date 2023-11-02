@@ -157,8 +157,6 @@ export default function FishPack() {
         const packweight = parseFloat(Whole_fish_total_weight) / e.target.value;
         setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) || packweight.toFixed(2) === 'Infinity' ? 0 : packweight.toFixed(2));
         const meatpackweight = parseFloat((Net_meat_total_weight) / e.target.value);
-        console.log(meatpackweight,'meatpackweight')
-        console.log(Net_meat_total_weight,'Net_meat_total_weight')
         setNet_meat_pack_weight(isNaN(meatpackweight.toFixed(2)) ? '' : meatpackweight.toFixed(2) == 0.00 && params.id === undefined ? '':meatpackweight.toFixed(2))
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
         const meatweightkg = parseFloat(Net_meat_weight_per_kg)
@@ -212,8 +210,6 @@ export default function FishPack() {
     const fishpackDataSubmit = (event) => {
         handleSubmit(event)
         event.preventDefault();
-        console.log(Head_removed, 'Head_removed')
-        console.log(Skin_removed, 'Skin_removed')
         let formData = {
             packing_date: Packing_date,
             fish_ref: Fish_id,

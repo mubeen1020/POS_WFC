@@ -364,7 +364,7 @@ export default function Order_Purchase_Item(props) {
                 <Toast ref={toast} />
                 <CCol xs={12}>
 
-                    <CCard className="mb-4">
+                    <CCard className="mb-4" >
                         {props.purchase_id &&
                         <div>
                             <span style={{ float: 'right', marginRight: 10, marginTop: 10 }}>

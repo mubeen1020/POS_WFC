@@ -303,27 +303,36 @@ export default function Orders() {
                 const filterdata = res.data.orderItems.filter((item) => item.order_id === parseInt(params.id));
                 const fishpackapi = new FishpackService();
                 let totalPacksOrdered = 0;
-
+                let totalbonesPacksOrdered = 0 ;
+                let formData;
                 filterdata.forEach((item) => {
-                    totalPacksOrdered += item.total_packs_ordered;
+                    const fishPackRef = filterdata[0].fish_pack_ref;
+
+                    fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
+                        const currentFishPack = fishpackRes.data.fishPack;
+                        if (item.is_bone === 1) {
+                            totalbonesPacksOrdered += item.total_packs_ordered;
+                            formData = {
+                                available_bones_packs: currentFishPack.available_bones_packs + Number(totalbonesPacksOrdered),
+                            };
+                        } else if (item.is_bone === 0) {
+                            totalPacksOrdered += item.total_packs_ordered;
+                            formData = {
+                                available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
+                            };
+                        }
+    
+                        fishpackapi
+                            .updatefishpack(fishPackRef, formData)
+                            .then((res) => {
+                            })
+                            .catch((error) => {
+                            });
+                    }).catch((err) => {
+                    });
                 });
 
-                const fishPackRef = filterdata[0].fish_pack_ref;
-
-                fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
-                    const currentFishPack = fishpackRes.data.fishPack;
-                    const formData = {
-                        available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
-                    };
-
-                    fishpackapi
-                        .updatefishpack(fishPackRef, formData)
-                        .then((res) => {
-                        })
-                        .catch((error) => {
-                        });
-                }).catch((err) => {
-                });
+            
             }
         }).catch((err) => {
         });
