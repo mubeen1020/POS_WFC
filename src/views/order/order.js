@@ -414,7 +414,8 @@ export default function Orders() {
             const matchingFishpack = fishpackData.find((fishpack) => {
                 return (
                     Number(fishpack.fish_ref) === Number(item.fish_ref) &&
-                    Number(fishpack.fish_cut) === Number(item.fish_cut)
+                    Number(fishpack.fish_cut) === Number(item.fish_cut) && 
+                    Number(fishpack.available_meat_packs) != 0
                 );
             });
 

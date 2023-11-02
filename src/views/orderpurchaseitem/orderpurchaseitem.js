@@ -257,13 +257,14 @@ export default function Order_Purchase_Item(props) {
               fish_weight: Order_Purchase_Item_Data.fish_weight,
               meat_weight: Order_Purchase_Item_Data.meat_weight,
               fish_rate: matchingFishpack.whole_fish_sale_rate,
+              is_bone : 0,
               meat_rate: matchingFishpack.net_meat_sale_rate,
               skin: matchingFishpack.skin_removed,
               kante: matchingFishpack.kante,
               pack_price: matchingFishpack.whole_fish_pack_price,
               item_discount_absolute: 0,
               item_discount_percent: 0,
-              is_bone : 0
+           
             };
       
             const purchaseUpdateData = {
