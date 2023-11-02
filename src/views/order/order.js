@@ -108,8 +108,9 @@ export default function Orders() {
         setUrgent_delivery_charges(urgentDeliveryCharge);
     };
 
-    const handleordertotal = (e) => { 
-        setOrder_total(e.target.value) }
+    const handleordertotal = (e) => {
+        setOrder_total(e.target.value)
+    }
     const handlepaymentmode = (e) => { setPayment_mode(e.target.value) }
 
 
@@ -302,19 +303,19 @@ export default function Orders() {
                 const filterdata = res.data.orderItems.filter((item) => item.order_id === parseInt(params.id));
                 const fishpackapi = new FishpackService();
                 let totalPacksOrdered = 0;
-    
+
                 filterdata.forEach((item) => {
                     totalPacksOrdered += item.total_packs_ordered;
                 });
-    
+
                 const fishPackRef = filterdata[0].fish_pack_ref;
-    
+
                 fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
-                    const currentFishPack = fishpackRes.data.fishPack; 
+                    const currentFishPack = fishpackRes.data.fishPack;
                     const formData = {
                         available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
                     };
-    
+
                     fishpackapi
                         .updatefishpack(fishPackRef, formData)
                         .then((res) => {
@@ -327,7 +328,7 @@ export default function Orders() {
         }).catch((err) => {
         });
     };
-    
+
     const handleSubmit = (event) => {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
@@ -358,12 +359,12 @@ export default function Orders() {
 
     const paymentmode_Data_Get = (search = "") => {
         let api = new PaymentmodeService;
-        api.getpaymentmode(search).then((res) => { 
+        api.getpaymentmode(search).then((res) => {
             const cashPaymentData = res.data.paymentmodes.filter(i => i.payment_mode === 'Cash');
             const initialPaymentMode = cashPaymentData.length > 0 ? cashPaymentData[0].id : null;
             setPayment_mode(initialPaymentMode);
             setPaymentmodedata(res.data.paymentmodes);
-         })
+        })
             .catch((err) => { });
     }
 
@@ -404,124 +405,124 @@ export default function Orders() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const orderstockitemDataSubmit = (orderDatastring) => {
-        if (isSubmitting) return; 
-        setIsSubmitting(true); 
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         let orderarray = []
         const data = OrderstatusID.find((i) => i.order_status === orderDatastring);
         const activeItems = selectedItemPurchaseRows && selectedItemPurchaseRows.filter((item) => item.is_active === 0);
         activeItems && activeItems.forEach((item) => {
-          const matchingFishpack = fishpackData.find((fishpack) => {
-            return (
-              Number(fishpack.fish_ref) === Number(item.fish_ref) &&
-              Number(fishpack.fish_cut) === Number(item.fish_cut)
-            );
-          });
+            const matchingFishpack = fishpackData.find((fishpack) => {
+                return (
+                    Number(fishpack.fish_ref) === Number(item.fish_ref) &&
+                    Number(fishpack.fish_cut) === Number(item.fish_cut)
+                );
+            });
 
-          if (matchingFishpack) {
-            const fishpack_id_dataid=matchingFishpack.id
-            const ordrerdata =item.fish_weight/1
-            const formdata = {
-              order_id: item.order_id,
-              fish_pack_ref: matchingFishpack.id,
-              total_packs_ordered:item.fish_weight/1,
-              fish_weight: item.fish_weight,
-              meat_weight: item.meat_weight,
-              fish_rate: matchingFishpack.whole_fish_sale_rate,
-              meat_rate: matchingFishpack.net_meat_sale_rate,
-              skin: matchingFishpack.skin_removed,
-              kante: matchingFishpack.kante,
-              pack_price: matchingFishpack.whole_fish_pack_price,
-              item_discount_absolute: 0,
-              item_discount_percent: 0,
-            };
-      
-            const purchaseUpdateData = {
-                order_id: item.order_id,
-                fish_ref: item.fish_ref,
-                fish_cut: item.fish_cut,
-                fish_weight: item.fish_weight || 0,
-                meat_weight: item.meat_weight || 0,
-                preferred_fish_size: item.preferred_fish_size,
-                other_instructions: item.other_instructions || 'N/A',
-                is_active: 1,
-                status: 'to_be_purchased',
-            };
-          
-            const orderupdatedata = {
-                order_status : data.id
-            }
-           
+            if (matchingFishpack) {
+                const formdata = {
+                    order_id: item.order_id,
+                    fish_pack_ref: matchingFishpack.id,
+                    total_packs_ordered: item.fish_weight / 1,
+                    fish_weight: item.fish_weight,
+                    meat_weight: item.meat_weight,
+                    is_bone: 0,
+                    fish_rate: matchingFishpack.whole_fish_sale_rate,
+                    meat_rate: matchingFishpack.net_meat_sale_rate,
+                    skin: matchingFishpack.skin_removed,
+                    kante: matchingFishpack.kante,
+                    pack_price: matchingFishpack.whole_fish_pack_price,
+                    item_discount_absolute: 0,
+                    item_discount_percent: 0,
 
+                };
+
+                const purchaseUpdateData = {
+                    order_id: item.order_id,
+                    fish_ref: item.fish_ref,
+                    fish_cut: item.fish_cut,
+                    fish_weight: item.fish_weight || 0,
+                    meat_weight: item.meat_weight || 0,
+                    preferred_fish_size: item.preferred_fish_size,
+                    other_instructions: item.other_instructions || 'N/A',
+                    is_active: 1,
+                    status: 'to_be_purchased',
+                };
+
+                const orderupdatedata = {
+                    order_status: data.id
+                }
 
 
-            const api = new OrderitemsService();
-            api.createorderitems(formdata)
-          
-              .then((res) => {
-                get_data();
-                setIsSubmitting(false);
-                const Purchaseapi = new OrderpurchaseitemService();
-                Purchaseapi.updateorderpurchaseitem(item.id, purchaseUpdateData)
-                  .then(() => {
-                    get_data();
-                    const orderapi = new OrdersService();
-                    orderapi
-                        .updateorders(params.id, orderupdatedata)
-                        .then((res) => {
-                            get_order_data()
-                           
-                       
-                        orderarray.push(item.fish_weight/1)
-                            const fishpackapi = new FishpackService();
-              fishpackapi
-                  .getfishpackbyId(matchingFishpack.id)
-                  .then((res) => {
-                      const currentFishPack = res.data.fishPack;
-                      const sum = orderarray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                      let formData = {
-                          available_meat_packs: currentFishPack.available_meat_packs - sum,
-                       };
-                      fishpackapi.updatefishpack(matchingFishpack.id, formData)
-                      .then((res) => {
-                        setselectedItemPurchaseRows([])
-                      })
-                      .catch((error) => {
-                      });
-                  })
-                  .catch((error) => {
-                  });
 
-                        })
-                        .catch((error) => {
-            
+
+                const api = new OrderitemsService();
+                api.createorderitems(formdata)
+
+                    .then((res) => {
+                        get_data();
+                        setIsSubmitting(false);
+                        const Purchaseapi = new OrderpurchaseitemService();
+                        Purchaseapi.updateorderpurchaseitem(item.id, purchaseUpdateData)
+                            .then(() => {
+                                get_data();
+                                const orderapi = new OrdersService();
+                                orderapi
+                                    .updateorders(params.id, orderupdatedata)
+                                    .then((res) => {
+                                        get_order_data()
+
+
+                                        orderarray.push(item.fish_weight / 1)
+                                        const fishpackapi = new FishpackService();
+                                        fishpackapi
+                                            .getfishpackbyId(matchingFishpack.id)
+                                            .then((res) => {
+                                                const currentFishPack = res.data.fishPack;
+                                                const sum = orderarray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                                                let formData = {
+                                                    available_meat_packs: currentFishPack.available_meat_packs - sum,
+                                                };
+                                                fishpackapi.updatefishpack(matchingFishpack.id, formData)
+                                                    .then((res) => {
+                                                        setselectedItemPurchaseRows([])
+                                                    })
+                                                    .catch((error) => {
+                                                    });
+                                            })
+                                            .catch((error) => {
+                                            });
+
+                                    })
+                                    .catch((error) => {
+
+                                    });
+                            })
+                            .catch((error) => {
+                                console.error('Error updating purchase items:', error);
+                            });;
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Data Submitted',
+                            detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
+                            life: 3000,
                         });
-                  })
-                  .catch((error) => {
-                    console.error('Error updating purchase items:', error);
-                  });;
-                toast.current.show({
-                  severity: 'success',
-                  summary: 'Data Submitted',
-                  detail: 'Your Order Stock Item information has been successfully submitted and recorded.',
-                  life: 3000,
-                });
-          
-                
-              })
-              .catch((error) => {
-                setIsSubmitting(false);
-               
-              });
-             
-             
 
-          }
+
+                    })
+                    .catch((error) => {
+                        setIsSubmitting(false);
+
+                    });
+
+
+
+            }
         });
 
-      
-        
-      };
-      
+
+
+    };
+
 
     const renderItemPurchaseHeader = () => {
         return (
@@ -561,6 +562,7 @@ export default function Orders() {
             isDeleteInProgress = true;
 
             let _data = selectedRows.map((i) => i.id);
+
             let api = new OrderitemsService();
 
             Promise.all(
@@ -568,9 +570,6 @@ export default function Orders() {
                     api
                         .deleteorderitems(id)
                         .then((res) => {
-
-
-                            
                         })
                         .catch((err) => {
                         })
@@ -578,57 +577,61 @@ export default function Orders() {
             )
                 .then(() => {
                     const filterdata = selectedRows.filter((item) => item.order_id === parseInt(params.id));
-                    const fishpackapi = new FishpackService();
+
+                    let fishpackapi = new FishpackService();
+
                     let totalPacksOrdered = 0;
+                    let totalbonesPacksOrdered = 0;
                     let isbones;
-        
+
+
                     filterdata.forEach((item) => {
-                        totalPacksOrdered += item.total_packs_ordered;
-                        isbones = item.is_bone
-                    });
-        
-                    const fishPackRef = filterdata[0].fish_pack_ref;
-        
-                    fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
-                        let formData;
-                        const currentFishPack = fishpackRes.data.fishPack;
-                        if(isbones === 1) {
-                             formData = {
-                                available_bones_packs: currentFishPack.available_bones_packs + Number(totalPacksOrdered),
-                            };
-                        }else{
-                             formData = {
-                                available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
-                            };
-                        }
-                      
+                        const fishPackRef = filterdata[0].fish_pack_ref;
 
-        
-                        fishpackapi
-                            .updatefishpack(fishPackRef, formData)
-                            .then((res) => {
-                                setSelectedRows([])
-                            })
-                            .catch((error) => {
-                            });
-                    }).catch((err) => {
-                    });
+                        fishpackapi.getfishpackbyId(fishPackRef).then((fishpackRes) => {
+                            const currentFishPack = fishpackRes.data.fishPack;
 
+                            let formData;
 
-                    toast.current.show({
-                        severity: 'success',
-                        summary: 'Success Message',
-                        detail: 'Deleted Successfully',
+                            if (item.is_bone === 1) {
+                                totalbonesPacksOrdered += item.total_packs_ordered;
+                                formData = {
+                                    available_bones_packs: currentFishPack.available_bones_packs + Number(totalbonesPacksOrdered),
+                                };
+                            } else if (item.is_bone === 0) {
+                                totalPacksOrdered += item.total_packs_ordered;
+                                formData = {
+                                    available_meat_packs: currentFishPack.available_meat_packs + Number(totalPacksOrdered),
+                                };
+                            }
+
+                            fishpackapi
+                                .updatefishpack(fishPackRef, formData)
+                                .then((res) => {
+                                    setSelectedRows([]);
+                                })
+                                .catch((error) => {
+                                });
+                        }).catch((err) => {
+                        });
+
+                        toast.current.show({
+                            severity: 'success',
+                            summary: 'Success Message',
+                            detail: 'Deleted Successfully',
+                        });
+
+                        get_data();
+
+                        isDeleteInProgress = false;
                     });
-                    get_data();
-                    setGlobatEvent({ eventName: 'refreshfishpack' });
-                    isDeleteInProgress = false;
                 })
                 .catch((err) => {
                     isDeleteInProgress = false;
                 });
         }
     };
+
 
     const handleDelete = () => {
         if (selectedRows.length > 0) {
@@ -705,7 +708,7 @@ export default function Orders() {
                 }
             }
 
-          
+
 
         }).catch((err) => { });
 
@@ -716,7 +719,7 @@ export default function Orders() {
 
             if (Array.isArray(filteredData) && filteredData.length > 0) {
                 setItemPurchaseTableData(filteredData);
-                
+
             } else {
                 if (res.data && res.data.message === "order purchase item not found.") {
                     setItemPurchaseTableData([]);
@@ -760,14 +763,14 @@ export default function Orders() {
         }
     }, [modalVisible, OrderID, Order_Data, ItemPurchaseModal, PurchaseID])
     useEffect(() => {
-        if (!ItemPurchaseModal ) {
-           
+        if (!ItemPurchaseModal) {
+
             get_order_data()
         }
-    }, [ ItemPurchaseModal])
+    }, [ItemPurchaseModal])
 
-    const converter=(row)=>{
-        return row.is_bone === 1 ?'true':'false'
+    const converter = (row) => {
+        return row.is_bone === 1 ? 'true' : 'false'
     }
 
 
@@ -1052,11 +1055,11 @@ export default function Orders() {
 
                                                 disabled={Order_status === 'closed'}
                                             >
-                                                
+
                                                 {
                                                     Paymentmodedata.map((i) => {
                                                         return (
-                                                            <option  selected={i.id === 2 && 'selected' } key={i.id} value={i.id}>{i.payment_mode}</option>
+                                                            <option selected={i.id === 2 && 'selected'} key={i.id} value={i.id}>{i.payment_mode}</option>
                                                         )
                                                     })
                                                 }
@@ -1076,9 +1079,9 @@ export default function Orders() {
                             <div>
                                 <Dialog header="Order Stock Item" visible={modalVisible} style={{ width: '50vw' }} onHide={() => {
                                     setModalVisible(false);
-                                   if(OrderstockID){
-                                    setOrderstockID(null);
-                                   }
+                                    if (OrderstockID) {
+                                        setOrderstockID(null);
+                                    }
                                 }}>
                                     <OrderStockItem stock_id={OrderstockID} propName={propID} setVisible={setModalVisible} ispopup={true} />
                                 </Dialog>
@@ -1113,15 +1116,15 @@ export default function Orders() {
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="pack_price" header="Pack Price" ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_absolute" header="Item Discount Absolute"  ></Column>
                                         <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="item_discount_percent" header="Item Discount Percent" ></Column>
-                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }}  field="is_bone" header="Bones"   body={converter} ></Column>
+                                        <Column alignHeader={'center'} style={{ cursor: 'pointer' }} field="is_bone" header="Bones" body={converter} ></Column>
                                     </DataTable>
                                 </div>) : null
                             }
 
                             <br />
                             <div>
-                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => {setItemPurchaseModal(false);setPurchaseID(null)}}>
-                                    <Order_Purchase_Item  orderDataId={params.id} purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
+                                <Dialog header="Order Purchase Item" visible={ItemPurchaseModal} style={{ width: '50vw' }} onHide={() => { setItemPurchaseModal(false); setPurchaseID(null) }}>
+                                    <Order_Purchase_Item orderDataId={params.id} purchase_id={PurchaseID} propName={propID} setVisible={setItemPurchaseModal} ispopup={true} />
                                 </Dialog>
                             </div>
                             {Popup || params.id ? (

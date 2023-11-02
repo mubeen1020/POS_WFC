@@ -263,6 +263,7 @@ export default function Order_Purchase_Item(props) {
               pack_price: matchingFishpack.whole_fish_pack_price,
               item_discount_absolute: 0,
               item_discount_percent: 0,
+              is_bone : 0
             };
       
             const purchaseUpdateData = {
