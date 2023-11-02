@@ -75,6 +75,7 @@ export default function FishPack() {
             setNet_meat_pack_weight(res.data.fishPack.net_meat_pack_weight)
             setNet_meat_weight_per_kg(res.data.fishPack.net_meat_weight_per_kg)
             setNet_meat_sale_rate(Math.round(res.data.fishPack.net_meat_sale_rate))
+            setNet_meat_total_weight(res.data.fishPack.net_meat_total_weight)
             setBones_pack_weight(res.data.fishPack.bones_pack_weight)
             setBones_pack_rate(Math.round(res.data.fishPack.bones_pack_rate))
             setBones_pack_price(Math.round(res.data.fishPack.bones_pack_price))
@@ -156,13 +157,15 @@ export default function FishPack() {
         const packweight = parseFloat(Whole_fish_total_weight) / e.target.value;
         setWhole_fish_pack_weight(isNaN(packweight.toFixed(2)) || packweight.toFixed(2) === 'Infinity' ? 0 : packweight.toFixed(2));
         const meatpackweight = parseFloat((Net_meat_total_weight) / e.target.value);
-        setNet_meat_pack_weight(isNaN(meatpackweight.toFixed(2)) ? '' : meatpackweight.toFixed(2) == 0.00 ? '':meatpackweight.toFixed(2))
+        console.log(meatpackweight,'meatpackweight')
+        console.log(Net_meat_total_weight,'Net_meat_total_weight')
+        setNet_meat_pack_weight(isNaN(meatpackweight.toFixed(2)) ? '' : meatpackweight.toFixed(2) == 0.00 && params.id === undefined ? '':meatpackweight.toFixed(2))
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
         const meatweightkg = parseFloat(Net_meat_weight_per_kg)
         const bonepackweight = parseFloat(Bones_pack_weight)
         settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
-    console.log(params.id)
+    
     const handlenetmeattotalweight = (e) => {
         setNet_meat_total_weight(e.target.value)
         const meatweightkg = parseFloat((e.target.value) / Whole_fish_total_weight);
