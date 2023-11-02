@@ -8,10 +8,7 @@ import CIcon from "@coreui/icons-react";
 import { cilCheck } from "@coreui/icons";
 import OrderitemsService from "src/services/orderstockitem_services";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { orderAtom } from "src/_state/orderAtom";
-import { customerAtom } from "src/_state/customerAtom";
 import { fishAtom } from "src/_state/fishAtom";
-import { fishpackAtom } from "src/_state/fishpackAtom";
 import { fishcutAtom } from "src/_state/fishcutAtom";
 import { globalEventAtom } from "src/_state/globalEventAtom";
 import FishpackService from "src/services/fishpack_services";
@@ -23,7 +20,6 @@ export default function OrderStockItem(props) {
     const [validated, setValidated] = useState(false)
     const toast = useRef(null);
     const navigate = useNavigate();
-    const [Order_id, setOrder_id] = useState('')
     const [Fish_pack_ref, setFish_pack_ref] = useState('')
     const [Total_packs_ordered, setTotal_packs_ordered] = useState('')
     const [Fish_weight, setFish_weight] = useState('')
@@ -41,111 +37,84 @@ export default function OrderStockItem(props) {
     const [Avaiablepack, setAvaiablepack] = useState('')
     const [Available_meat_packs, setAvailable_meat_packs] = useState([])
     const [Available_bones_packs, setAvailable_bones_packs] = useState([])
-    
+
 
 
     const [fishpack_id_data, setfishpack_id_data] = useState([])
     const [Order_Stock_Item_Data, setOrder_Stock_Item_Data] = useState([])
-    const [filteredCustomers, setFilteredCustomers] = useState([])
     const [Fishpackfilterdata, setFishpackfilterdata] = useState([])
     const [Fish_Weightdata, setFish_Weightdata] = useState([])
     const [Meat_Weightdata, setMeat_Weightdata] = useState([])
+    const [fishpackData, setfishData] = useState([])
 
-    const [customerNotFound, setCustomerNotFound] = useState(false)
     const [error, setError] = useState(false);
     const [Checkedbones, setCheckedbones] = useState(false)
 
-    const orderData = useRecoilValue(orderAtom)
-    const customerData = useRecoilValue(customerAtom)
     const fishData = useRecoilValue(fishAtom)
-    const fishpackData = useRecoilValue(fishpackAtom)
     const fishcutData = useRecoilValue(fishcutAtom)
     const setGlobatEvent = useSetRecoilState(globalEventAtom)
 
-
-    const handleorderid = (e) => {
-        const value = e.target.value;
-        setOrder_id(value);
-        const selectedCustomer = customerData.find((customer) =>
-            customer.full_name.toLowerCase() === value.toLowerCase()
-        );
-        if (selectedCustomer) {
-            const selectOrder = orderData.filter((order) => order.customer === selectedCustomer.id);
-            const orderIds = selectOrder.map((order) => order.id);
-            setOrder_id_data(orderIds);
-            customerData.filter((customer) =>
-                orderData.some((order) =>
-                    order.customer === customer.id &&
-                    setCustomerNotFound(false)
-                )
-            );
-
-        } else {
-            setOrder_id_data([]);
-            setCustomerNotFound(true);
-        }
-        const filteredCustomers = customerData.filter((customer) =>
-            orderData.some((order) =>
-                order.customer === customer.id &&
-                customer.full_name.toLowerCase().includes(value.toLowerCase())
-            )
-        );
-        setFilteredCustomers(filteredCustomers);
-    };
+    const fish_packdata = () => {
+        const api = new FishpackService;
+        api.getfishpack()
+            .then((res) => {
+                setfishData(res.data.fishPacks)
+            }).catch((error) => { });
+    }
 
     const handlefishpackref = (e) => {
         const value = e.target.value;
         setFish_pack_ref(value)
         if (value.trim() !== '') {
-        const fishpackArray = [];
-        fishData.filter((fish) => {
-            return fishpackData.some((fishpack) => {
-                if(fishpack.available_bones_packs != 0 || fishpack.available_meat_packs != 0){
-                if (Number(fishpack.fish_ref) === Number(fish.id)) {
-                    return fishcutData.some((fishcut) => {
-                        if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
-                                let fishpackdata = Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs;
-                                if (fishpackdata > 0) {
-                                    const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
-                                    const result = searchString.includes(value.toLowerCase());
-                                    if (result) {
-                                        fishpackArray.push(searchString);
-                                        get_fish_pack_data(fishpack.id);
-                                        fishpackArray.push(fishpack.id);
-                                        setfishpack_id_data(fishpack.id);
-                                        setFish_weight((fishpack.net_meat_pack_weight * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
-                                        setFish_Weightdata(fishpack.net_meat_pack_weight);
-                                        setMeat_weight((fishpack.net_meat_weight_per_kg * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
-                                        setMeat_Weightdata(fishpack.net_meat_weight_per_kg);
-                                        setFish_rate(fishpack.whole_fish_sale_rate);
-                                        setMeat_rate(fishpack.net_meat_sale_rate);
-                                        setSkin(fishpack.skin_removed);
-                                        setPack_price(fishpack.whole_fish_pack_price);
-                                        setFishname(fish.local_name);
-                                        setFish_cut(fishcut.fish_cut);
-                                        const isoDate = fishpack.packing_date;
-                        
-                                        if (isoDate) {
-                                            const parsedDate = new Date(isoDate);
-                                            parsedDate.setHours(parsedDate.getHours() + 5);
-                                            const formattedDate = parsedDate.toISOString().split('T')[0];
-                                            setPackingdate(formattedDate);
+            const fishpackArray = [];
+            fishData.filter((fish) => {
+                return fishpackData.some((fishpack) => {
+                    if (fishpack.available_bones_packs != 0 || fishpack.available_meat_packs != 0) {
+                        if (Number(fishpack.fish_ref) === Number(fish.id)) {
+                            return fishcutData.some((fishcut) => {
+                                if (Number(fishpack.fish_cut) === Number(fishcut.id)) {
+                                    let fishpackdata = Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs;
+                                    if (fishpackdata > 0) {
+                                        const searchString = (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
+                                        const result = searchString.includes(value.toLowerCase());
+                                        if (result) {
+                                            fishpackArray.push(searchString);
+                                            get_fish_pack_data(fishpack.id);
+                                            fishpackArray.push(fishpack.id);
+                                            setfishpack_id_data(fishpack.id);
+                                            setFish_weight((fishpack.net_meat_pack_weight * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
+                                            setFish_Weightdata(fishpack.net_meat_pack_weight);
+                                            setMeat_weight((fishpack.net_meat_weight_per_kg * (Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs)).toFixed(2));
+                                            setMeat_Weightdata(fishpack.net_meat_weight_per_kg);
+                                            setFish_rate(fishpack.whole_fish_sale_rate);
+                                            setMeat_rate(fishpack.net_meat_sale_rate);
+                                            setSkin(fishpack.skin_removed);
+                                            setPack_price(fishpack.whole_fish_pack_price);
+                                            setFishname(fish.local_name);
+                                            setFish_cut(fishcut.fish_cut);
+                                            const isoDate = fishpack.packing_date;
+
+                                            if (isoDate) {
+                                                const parsedDate = new Date(isoDate);
+                                                parsedDate.setHours(parsedDate.getHours() + 5);
+                                                const formattedDate = parsedDate.toISOString().split('T')[0];
+                                                setPackingdate(formattedDate);
+                                            }
+                                            return result;
+                                        }
                                     }
-                                    return result;
+                                    return false;
+                                } else {
+
                                 }
-                                }
-                                return false;
-                            } else {
-                               
-                            }
-                        
-                    });
-                }
-            }
-                return false;
+
+                            });
+                        }
+                    }
+                    return false;
+                });
             });
-        });
-    }
+        }
         const searchStringArray = fishData
             .map((fish) => {
                 const matchingFishpacks = fishpackData.filter((fishpack) => {
@@ -153,12 +122,12 @@ export default function OrderStockItem(props) {
                 });
 
                 const matchingStrings = matchingFishpacks.map((fishpack) => {
-               
+
                     const fishcut = fishcutData.find((fishcut) => Number(fishpack.fish_cut) === Number(fishcut.id));
                     if (fishcut) {
-                        let fishpackdata = Checkedbones ? fishpack.available_bones_packs :fishpack.available_meat_packs
-                        if (fishpackdata > 0) { 
-                        return (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
+                        let fishpackdata = Checkedbones ? fishpack.available_bones_packs : fishpack.available_meat_packs
+                        if (fishpackdata > 0) {
+                            return (fish.local_name + ' / ' + fishcut.fish_cut + ' / ' + fishpackdata).toLowerCase();
                         }
                     }
                     return '';
@@ -167,7 +136,7 @@ export default function OrderStockItem(props) {
 
                 return matchingStrings;
             })
-            .flat() 
+            .flat()
 
         setFishpackfilterdata(searchStringArray);
 
@@ -179,7 +148,7 @@ export default function OrderStockItem(props) {
     let get_fish_pack_data = (id) => {
         let api = new FishpackService();
         api.getfishpackbyId(id).then((res) => {
-            let avaiblepackdata = Checkedbones ? res.data.fishPack.available_bones_packs: res.data.fishPack.available_meat_packs
+            let avaiblepackdata = Checkedbones ? res.data.fishPack.available_bones_packs : res.data.fishPack.available_meat_packs
             setTotal_packs_ordered(avaiblepackdata)
             setAvailable_meat_packs(avaiblepackdata)
             setAvailable_bones_packs(avaiblepackdata)
@@ -199,15 +168,15 @@ export default function OrderStockItem(props) {
             setTotal_packs_ordered(value);
             const fishdata = value * Fish_Weightdata
             const meatData = value * Meat_Weightdata
-            setMeat_weight(meatData)
-            setFish_weight(fishdata)
+            setMeat_weight(meatData.toFixed(2))
+            setFish_weight(fishdata.toFixed(2))
         }
 
     }
     const handlefishweight = (e) => {
         let value = e.target.value
         const fishdata = value * Total_packs_ordered
-        setFish_weight(fishdata)
+        setFish_weight(fishdata.toFixed(2))
     }
     const handlemeatweight = (e) => { setMeat_weight(e.target.value) }
     const handlefishrate = (e) => { setFish_rate(e.target.value) }
@@ -227,11 +196,11 @@ export default function OrderStockItem(props) {
 
     const fishpackDataupdateSubmit = () => {
         const avaiabledata = Checkedbones ? Available_bones_packs : Available_meat_packs;
-    
+
         let formData = {
             [Checkedbones ? 'available_bones_packs' : 'available_meat_packs']: avaiabledata - Total_packs_ordered,
         };
-    
+
         const api = new FishpackService();
         api
             .updatefishpack(fishpack_id_data, formData)
@@ -240,7 +209,7 @@ export default function OrderStockItem(props) {
             .catch((error) => {
             });
     };
-    
+
 
 
     let get_order_stock_item_data = () => {
@@ -363,7 +332,7 @@ export default function OrderStockItem(props) {
             pack_price: Pack_price || Order_Stock_Item_Data.Pack_price,
             item_discount_absolute: Item_discount_absolute || Order_Stock_Item_Data.item_discount_absolute,
             item_discount_percent: Item_discount_percent || Order_Stock_Item_Data.item_discount_percent,
-            is_bone: Checkedbones === false ? 0 : 1||Order_Stock_Item_Data.is_bone
+            is_bone: Checkedbones === false ? 0 : 1 || Order_Stock_Item_Data.is_bone
         };
 
         const api = new OrderitemsService();
@@ -430,6 +399,7 @@ export default function OrderStockItem(props) {
 
 
     useEffect(() => {
+        fish_packdata()
         setGlobatEvent({ eventName: 'refreshCustomer' });
         const token = localStorage.getItem('token');
         if (!token) {
@@ -467,36 +437,13 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                        {/* <CCol>
-                                            <CFormLabel htmlFor="validationCustomUsername">Customer</CFormLabel>
-                                            <CFormInput
-                                                onChange={handleorderid}
-                                                defaultValue={props.stock_id && filter_name.length > 0 && filter_name[0].full_name ? filter_name[0].full_name : Order_id}
-                                                list="orderSuggestions"
-                                                type="text"
-                                                id="validationCustomUsername"
-                                                aria-describedby="inputGroupPrepend"
-                                                required
-                                                className={`form-control ${customerNotFound ? 'is-invalid' : ''}`}
-                                                style={{ borderColor: customerNotFound ? 'red' : '' }}
-                                            />
-                                            {customerNotFound && (
-                                                <CFormFeedback invalid>Please choose a valid Customer.</CFormFeedback>
-                                            )}
-                                        </CCol>
-                                        <datalist id="orderSuggestions" >
-                                            {filteredCustomers.map((customer) => (
-                                                <option key={customer.id} value={customer.full_name} />
-                                            ))}
-                                        </datalist> */}
-
                                         <CCol sm={2} lg={2}>
                                             <CFormLabel htmlFor="validationCustomUsername">Bones Pack</CFormLabel>
                                             <br />
                                             <InputSwitch checked={Checkedbones} onChange={handlebones} />
                                             <CFormFeedback invalid>Please choose a Bones Pack.</CFormFeedback>
                                         </CCol>
-                                       
+
                                         <CCol sm={5} lg={5}>
                                             <CFormLabel htmlFor="validationCustomUsername">Fish Pack Refrence</CFormLabel>
                                             <CFormInput
@@ -530,7 +477,7 @@ export default function OrderStockItem(props) {
                                             {error && <><br /><div style={{ color: 'red' }}>There are {Avaiablepack} packs remaining </div></>}
                                         </CCol>
                                         <datalist id="fishpackSuggestions" >
-                                            {Fishpackfilterdata.map((item,index) => (
+                                            {Fishpackfilterdata.map((item, index) => (
                                                 <option key={index} value={item} />
                                             ))}
                                         </datalist>
@@ -684,7 +631,7 @@ export default function OrderStockItem(props) {
 
                                 <div>
                                     <CRow>
-                                       
+
                                         <CCol sm={6} lg={6}>
                                             <CFormLabel htmlFor="validationCustomUsername">Item Discount Absolute</CFormLabel>
                                             <CFormInput

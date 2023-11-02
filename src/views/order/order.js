@@ -621,6 +621,7 @@ export default function Orders() {
                         detail: 'Deleted Successfully',
                     });
                     get_data();
+                    setGlobatEvent({ eventName: 'refreshfishpack' });
                     isDeleteInProgress = false;
                 })
                 .catch((err) => {

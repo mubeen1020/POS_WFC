@@ -162,12 +162,13 @@ export default function FishPack() {
         const bonepackweight = parseFloat(Bones_pack_weight)
         settingsData(purchaseRate, packweight, meatweightkg, bonepackweight)
     }
+    console.log(params.id)
     const handlenetmeattotalweight = (e) => {
         setNet_meat_total_weight(e.target.value)
         const meatweightkg = parseFloat((e.target.value) / Whole_fish_total_weight);
         setNet_meat_weight_per_kg(isNaN(meatweightkg.toFixed(2)) ? '' : meatweightkg.toFixed(2)== 0.00 ?'':meatweightkg.toFixed(2))
         const meatpackweight = parseFloat((e.target.value) / Fish_packs);
-        setNet_meat_pack_weight(isNaN(meatpackweight.toFixed(2)) ? '' : meatpackweight.toFixed(2) == 0.00 ? '':meatpackweight.toFixed(2))
+        setNet_meat_pack_weight(isNaN(meatpackweight.toFixed(2)) ? '' : meatpackweight.toFixed(2) == 0.00  ? '':meatpackweight.toFixed(2))
         const purchaseRate = parseFloat(Whole_fish_purchase_rate)
         const packweight = parseFloat(Whole_fish_pack_weight)
         const bonepackweight = parseFloat(Bones_pack_weight)
@@ -426,7 +427,7 @@ export default function FishPack() {
                                                     <CFormInput
                                                         onChange={handlefish}
                                                         defaultValue={
-                                                            params.id && filter_name.length > 0 ? filter_name[0].local_name : Fish
+                                                            params.id && filter_name.length > 0 ? filter_name[0].local_name  +' / '+ filter_name[0].fish_no: Fish
                                                         }
                                                         type="text"
                                                         list="fishSuggestions"
