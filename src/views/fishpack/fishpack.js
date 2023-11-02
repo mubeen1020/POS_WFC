@@ -386,7 +386,7 @@ export default function FishPack() {
             setWhole_fish_sale_rate(Math.round(newsalerate));
             const packprice = parseFloat(packweight.toFixed(2)) * saleRate.toFixed(2)
             setWhole_fish_pack_price(Math.round(packprice))
-            const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))) * 1000)
+            const netmeatsale = ((saleRate.toFixed(2) / parseFloat(meatweightkg.toFixed(2))))
             setNet_meat_sale_rate(Math.round(netmeatsale))
             const bonesrate = Math.round((saleRate * bonepackweight) / 3 * 100) / 100;
             setBones_pack_rate(Math.round(bonesrate));
